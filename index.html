@@ -17,11 +17,11 @@
         button:hover { background: #2ecc71; }
         .btn-danger { background: #c0392b; }
         .btn-danger:hover { background: #e74c3c; }
-        .btn-print { background: #2980b9; font-size: 15px; padding: 8px 16px; }
+        .btn-print { background: #2980b9; font-size: 14px; padding: 6px 12px; }
         .btn-print:hover { background: #3498db; }
         
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; margin-bottom: 15px; }
         th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 12px; }
         
         .head-info { background: #2c3e50; color: #fff; }
@@ -51,14 +51,20 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .personel-box { background: #242430; padding: 10px; border-radius: 5px; border: 1px solid #333; }
 
+        /* Yazdırma ve Liste Düzeni */
+        .print-list-card { background: #242430; padding: 15px; border-radius: 6px; margin-bottom: 25px; border: 1px solid #555; }
+        .print-list-card table { min-width: 100%; }
+        .print-list-card th { background-color: #34495e; color: #fff; }
+
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
-            .tab-buttons, button, input, select, .btn-danger, .excel-import-area { display: none !important; }
-            .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; page-break-after: always; }
+            .tab-buttons, button, input, select, .btn-danger, .excel-import-area, .no-print { display: none !important; }
+            .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
             table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 10px !important; }
-            .head-info, .head-etap1, .head-etap2, .head-etap3, .head-total { background: #ddd !important; color: #000 !important; }
+            .head-info, .head-etap1, .head-etap2, .head-etap3, .head-total, .print-list-card th { background: #ddd !important; color: #000 !important; }
             .col-etap1, .col-etap1-sum, .col-etap2, .col-etap2-sum, .col-etap3, .col-etap3-sum, .col-total { background: none !important; color: #000 !important; }
+            .print-list-card { background: none !important; border: none !important; page-break-after: always; padding: 0 !important; margin-bottom: 0 !important; }
         }
     </style>
 </head>
@@ -73,13 +79,13 @@
         <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
         <button class="tab-btn" onclick="openTab('skorTab')">5. Özet Liderlik</button>
         <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Genel Şampiyonluk Matrisi</button>
+        <button class="tab-btn" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Kura & Hakem Atış Çıktıları</button>
     </div>
 
     <!-- 1. BİRLİK VE PERSONEL KAYIT TABI -->
     <div id="birliklerTab" class="tab-content active">
         <h2>Unsur, Nişancı / Gözcü ve Silah Bilgisi Kaydı</h2>
         
-        <!-- EXCEL İÇE AKTARMA BÖLÜMÜ -->
         <div class="excel-import-area" style="background:#242430; padding:15px; border-radius:8px; border:1px dashed #f39c12; max-width:800px; margin:0 auto 20px auto; text-align:center;">
             <h3 style="margin-top:0; color:#f39c12;">📥 Excel / CSV ile Toplu Birlik Aktarma</h3>
             <p style="font-size:12px; color:#bdc3c7;">Hazırladığınız CSV dosyasını seçerek bütün unsurları tek tıkla yükleyebilirsiniz.</p>
@@ -88,7 +94,6 @@
             <button onclick="ornekCsvIndir()" style="background:#34495e;">📄 Örnek CSV Şablonu İndir</button>
         </div>
 
-        <!-- MANUEL EKLEME FORMU -->
         <div class="card" style="max-width: 800px; margin: 0 auto;">
             <h3>Manuel Unsur Ekleme</h3>
             <div style="margin-bottom:15px; text-align:center;">
@@ -97,7 +102,6 @@
             </div>
 
             <div class="form-grid">
-                <!-- KESKİN NİŞANCI -->
                 <div class="personel-box">
                     <h4 style="color:#e67e22; margin-top:0;">🎯 1. Yarışmacı: Keskin Nişancı</h4>
                     <div class="input-group"><label>Rütbesi:</label><input type="text" id="knRutbe" placeholder="Örn: J.Üçvş."></div>
@@ -105,9 +109,8 @@
                     <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="knSilah" placeholder="Örn: KSR-11 / Bora 12"></div>
                 </div>
 
-                <!-- GÖZCÜ -->
                 <div class="personel-box">
-                    <h4 style="color:#3498db; margin-top:0;">👁️ 2. Yarışmacı: Gözcü</h4>
+                    <h4 style="color:#3498db; margin-top:0;">👁️️ 2. Yarışmacı: Gözcü</h4>
                     <div class="input-group"><label>Rütbesi:</label><input type="text" id="gozcuRutbe" placeholder="Örn: J.Uzmand Çvş."></div>
                     <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="gozcuAd" placeholder="Örn: Mehmet KAYA"></div>
                     <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="gozcuSilah" placeholder="Örn: MPT-76"></div>
@@ -190,7 +193,7 @@
         <h2>📊 TÜM BİRLİKLER DETAYLI ŞAMPİYONLUK MATRİSİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️ Matris Raporunu Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨️️ Matris Raporunu Yazdır / PDF</button>
         </div>
         
         <div class="table-responsive">
@@ -203,7 +206,6 @@
                         <th class="head-info">Keskin Nişancı</th>
                         <th class="head-info">Gözcü</th>
                         
-                        <!-- 1. ETAP -->
                         <th class="head-etap1">Algı-1 (300)</th>
                         <th class="head-etap1">Algı-2 (200)</th>
                         <th class="head-etap1">Rehine-1 (200)</th>
@@ -213,23 +215,30 @@
                         <th class="head-etap1">Kademeli (750)</th>
                         <th class="head-etap1">1. Etap (2250)</th>
 
-                        <!-- 2. ETAP -->
                         <th class="head-etap2">Sızma (500)</th>
                         <th class="head-etap2">Gece (750)</th>
                         <th class="head-etap2">2. Etap (1250)</th>
 
-                        <!-- 3. ETAP -->
                         <th class="head-etap3">Senaryo (1300)</th>
                         <th class="head-etap3">Senaryo Tab. (200)</th>
                         <th class="head-etap3">3. Etap (1500)</th>
 
-                        <!-- GENEL PUAN -->
                         <th class="head-total">Genel Puan (5000)</th>
                     </tr>
                 </thead>
                 <tbody id="matrisBody"></tbody>
             </table>
         </div>
+    </div>
+
+    <!-- 7. KURA & HAKEM ATIŞ ÇIKTILARI TABI -->
+    <div id="ciktiTab" class="tab-content">
+        <h2>📄 Kura Sıralı Hakem Atış & Vuruş Çizelgeleri</h2>
+        <div style="text-align: center; margin-bottom: 20px;" class="no-print">
+            <button onclick="ciktilariOlustur()" style="background:#e67e22; padding:8px 16px;">🔄 Çıktı Listelerini Yenile</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Tüm Sayfaları Yazdır / PDF</button>
+        </div>
+        <div id="ciktiAlanlari"></div>
     </div>
 
 <script>
@@ -276,6 +285,7 @@
         if(tabId === 'skorTab') tabloGuncelle();
         if(tabId === 'detayTab') detayTablosuGuncelle();
         if(tabId === 'matrisTab') matrisGuncelle();
+        if(tabId === 'ciktiTab') ciktilariOlustur();
     }
 
     function birlikEkle() {
@@ -428,6 +438,7 @@
                 }
 
                 gruplanmisPairs.sort(() => Math.random() - 0.5);
+                kuralar[etap.id] = gruplanmisPairs;
 
                 let html = `<div class="card two-lane">
                     <h3 style="color:#3498db;">${etap.ad}</h3>
@@ -441,12 +452,150 @@
 
             } else {
                 let karisik = [...birlikler].sort(() => Math.random() - 0.5);
+                kuralar[etap.id] = karisik.map(b => b.ad);
+
                 let html = `<div class="card"><h3 style="color:#f1c40f;">${etap.ad}</h3><ol>`;
                 karisik.forEach(b => html += `<li><b>${b.ad}</b></li>`);
                 html += `</ol></div>`;
                 container.innerHTML += html;
             }
         });
+    }
+
+    /* KURA VE HAKEM ÇIKTILARI OLUŞTURMA */
+    function ciktilariOlustur() {
+        let div = document.getElementById('ciktiAlanlari');
+        div.innerHTML = '';
+
+        if(Object.keys(kuralar).length === 0) {
+            div.innerHTML = `<div style="text-align:center; color:#e74c3c; padding:20px;">⚠️ Henüz kura çekilmedi. Lütfen önce <b>2. Kura Sıralaması</b> sekmesinden kura çekiniz.</div>`;
+            return;
+        }
+
+        etaplar.forEach(etap => {
+            let kuraData = kuralar[etap.id];
+            if(!kuraData) return;
+
+            let card = document.createElement('div');
+            card.className = 'print-list-card';
+
+            let headerHtml = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f39c12; padding-bottom:8px; margin-bottom:12px;">
+                <h3 style="margin:0; color:#f39c12; text-align:left;">📋 ${etap.ad} — HAKEM ATIŞ ÇİZELGESİ</h3>
+                <button class="btn-print no-print" onclick="tekSayıfayiYazdir(this)">🖨️ Bu Etabı Yazdır</button>
+            </div>`;
+
+            let tableHtml = '';
+
+            if(etap.senaryo) {
+                // Senaryo Atışı (Büyük Kapışma) Kapsamlı Çizelge
+                tableHtml = `<table>
+                    <thead>
+                        <tr>
+                            <th style="width:40px;">Sıra</th>
+                            <th>Unsur / Birlik Adı</th>
+                            <th>1. Çatı (KN)<br><small>600m (0-1)</small></th>
+                            <th>2. Platform (Gözcü)<br><small>200m (0-3)</small></th>
+                            <th>3a. Anahtar (KN)<br><small>200m (0-1)</small></th>
+                            <th>3b. Beşik (Gözcü)<br><small>200m (0-3)</small></th>
+                            <th>4. Zayıf El (Gözcü)<br><small>300m (0-3)</small></th>
+                            <th>5. Har. Hedef (Gözcü)<br><small>300m (0-3)</small></th>
+                            <th>6. Tabanca (KN)<br><small>8m A Bölge (0-4)</small></th>
+                            <th>Atış Süresi<br><small>(Saniye)</small></th>
+                            <th>Hakem İmza</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                kuraData.forEach((bAd, idx) => {
+                    let b = birlikler.find(x => x.ad === bAd);
+                    let knInfo = b ? `${b.kn.rutbe} ${b.kn.ad}` : '';
+                    let gozcuInfo = b ? `${b.gozcu.rutbe} ${b.gozcu.ad}` : '';
+                    tableHtml += `<tr>
+                        <td><b>${idx + 1}</b></td>
+                        <td style="text-align:left;"><b>${bAd}</b><br><small style="color:#aaa;">KN: ${knInfo} | GZ: ${gozcuInfo}</small></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>`;
+                });
+                tableHtml += `</tbody></table>`;
+
+            } else if(etap.ciftYol) {
+                // İkili Yol Atışı Çizelgesi
+                tableHtml = `<table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Grup</th>
+                            <th>YOL 1 Unsur Adı</th>
+                            <th>Vuruş / Derece</th>
+                            <th>YOL 2 Unsur Adı</th>
+                            <th>Vuruş / Derece</th>
+                            <th style="width:100px;">Hakem İmza</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                kuraData.forEach((pair, idx) => {
+                    tableHtml += `<tr>
+                        <td><b>${idx + 1}</b></td>
+                        <td style="text-align:left;"><b>${pair[0]}</b></td>
+                        <td></td>
+                        <td style="text-align:left;"><b>${pair[1]}</b></td>
+                        <td></td>
+                        <td></td>
+                    </tr>`;
+                });
+                tableHtml += `</tbody></table>`;
+
+            } else {
+                // Standart Tekli Etap Çizelgesi
+                tableHtml = `<table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Sıra</th>
+                            <th>Unsur / Birlik Adı</th>
+                            <th>Keskin Nişancı</th>
+                            <th>Gözcü</th>
+                            <th>Atış Vuruş Sayısı / Puan</th>
+                            <th>Atış Süresi / Not</th>
+                            <th style="width:120px;">Hakem İmza</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                kuraData.forEach((bAd, idx) => {
+                    let b = birlikler.find(x => x.ad === bAd);
+                    tableHtml += `<tr>
+                        <td><b>${idx + 1}</b></td>
+                        <td style="text-align:left; font-weight:bold;">${bAd}</td>
+                        <td style="text-align:left;">${b ? b.kn.rutbe + ' ' + b.kn.ad : '—'}</td>
+                        <td style="text-align:left;">${b ? b.gozcu.rutbe + ' ' + b.gozcu.ad : '—'}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>`;
+                });
+                tableHtml += `</tbody></table>`;
+            }
+
+            card.innerHTML = headerHtml + tableHtml;
+            div.appendChild(card);
+        });
+    }
+
+    function tekSayıfayiYazdir(btn) {
+        let card = btn.closest('.print-list-card');
+        let printWindow = window.open('', '_blank');
+        printWindow.document.write(`<html><head><title>Hakem Atış Çizelgesi</title>
+        <style>
+            body { font-family: sans-serif; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            th, td { border: 1px solid #000; padding: 8px 5px; text-align: center; font-size: 11px; }
+            th { background-color: #eee; }
+            h3 { text-align: center; margin-bottom: 5px; }
+            .no-print { display: none; }
+        </style>
+        </head><body>`);
+        printWindow.document.write(card.outerHTML);
+        printWindow.document.write(`</body></html>`);
+        printWindow.document.close();
+        printWindow.print();
     }
 
     function etapFormuGuncelle() {
