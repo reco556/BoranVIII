@@ -6,7 +6,7 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 20px; }
         h1, h2, h3 { color: #f39c12; text-align: center; }
-        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn { padding: 12px 20px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; background: #333; color: #fff; border-radius: 5px; }
         .tab-btn.active { background: #f39c12; color: #000; }
         .tab-content { display: none; background: #2b2b36; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -123,7 +123,7 @@
                     <th>Unsur / Birlik Adı</th>
                     <th>Er Meydanı (2.250)</th>
                     <th>Gece Yaklaşıyor (1.250)</th>
-                    <th>Büyük Kapışma (Senaryo)</th>
+                    <th>Büyük Kapışma (Senaryo 1.500)</th>
                     <th>Senaryo Süresi</th>
                     <th>TOPLAM PUAN</th>
                 </tr>
@@ -339,11 +339,19 @@
                 <div class="input-group"><label>Gece Atışı (1) Vuruş Sayısı (0-3):</label><input type="number" id="gece1_vurus" min="0" max="3" value="0"></div>
                 <div class="input-group"><label>Gece Atışı (2) Vuruş Sayısı (0-1):</label><input type="number" id="gece2_vurus" min="0" max="1" value="0"></div>
                 <button onclick="kaydetGece()">Hesapla ve Kaydet</button>`;
-        } else if (etapId === 10) {
+        } else if (etapId === 10) { 
+            // TABLO 18 BİREBİR SENARYO ATIŞI GİRDİLERİ
             alan.innerHTML = `
-                <h3>10. Senaryo Atışı (Max 1500 Puan + Süre Primi)</h3>
-                <div class="input-group"><label>Vuruş Puanı (Max 1500):</label><input type="number" id="senaryo_vurus" min="0" max="1500" value="0"></div>
-                <div class="input-group"><label>Tamamlama Süresi (Saniye Cinsinden):</label><input type="number" id="senaryo_sure" placeholder="480 (8 dk)"></div>
+                <h3>9. Senaryo Atışı [Büyük Kapışma] (Max 1.500 Puan)</h3>
+                <div class="input-group"><label>1. Çatı Atışı - KN (600m) Vuruş (0-1):</label><input type="number" id="sen_cati" min="0" max="1" value="0"></div>
+                <div class="input-group"><label>2. Platform Atışı - Gözcü (200m) Vuruş (0-3):</label><input type="number" id="sen_platform" min="0" max="3" value="0"></div>
+                <div class="input-group"><label>3a. Anahtar Materyal - KN (200m) Vuruş (0-1):</label><input type="number" id="sen_besik_anahtar" min="0" max="1" value="0"></div>
+                <div class="input-group"><label>3b. Hareketli Beşik - Gözcü (200m) Vuruş (0-3):</label><input type="number" id="sen_besik_hareketli" min="0" max="3" value="0"></div>
+                <div class="input-group"><label>4. Zayıf El Atışı - Gözcü (300m) Vuruş (0-3):</label><input type="number" id="sen_zayifel" min="0" max="3" value="0"></div>
+                <div class="input-group"><label>5. Hareketli Hedef - Gözcü (300m) Vuruş (0-3):</label><input type="number" id="sen_hareketli" min="0" max="3" value="0"></div>
+                <div class="input-group"><label>6. Tabanca Atışı - KN (8m) A Bölgesi (0-4):</label><input type="number" id="sen_tabanca" min="0" max="4" value="0"></div>
+                <hr style="border: 0.5px solid #444; margin:10px 0;">
+                <div class="input-group"><label>Tamamlama Süresi (Saniye):</label><input type="number" id="senaryo_sure" placeholder="480 (8 dk)"></div>
                 <button onclick="kaydetSenaryo()">Hesapla ve Kaydet</button>`;
         }
     }
@@ -428,13 +436,25 @@
         veriKaydet(9, `Gece-1: ${v1} Vuruş, Gece-2: ${v2} Vuruş`, p1 + p2);
     }
 
+    // TABLO 18 PUANLAMA HESAPLAMASI
     function kaydetSenaryo() {
-        let vp = parseFloat(document.getElementById('senaryo_vurus').value) || 0;
+        let cati = parseInt(document.getElementById('sen_cati').value) || 0;
+        let platform = parseInt(document.getElementById('sen_platform').value) || 0;
+        let besikAnahtar = parseInt(document.getElementById('sen_besik_anahtar').value) || 0;
+        let besikHareketli = parseInt(document.getElementById('sen_besik_hareketli').value) || 0;
+        let zayıfel = parseInt(document.getElementById('sen_zayifel').value) || 0;
+        let hareketli = parseInt(document.getElementById('sen_hareketli').value) || 0;
+        let tabanca = parseInt(document.getElementById('sen_tabanca').value) || 0;
+
+        let vurusPuan = (cati * 200) + (platform * 100) + (besikAnahtar * 50) + (besikHareketli * 50) + (zayıfel * 100) + (hareketli * 100) + (tabanca * 50);
+        
         let sure = parseInt(document.getElementById('senaryo_sure').value) || 480;
         let fark = 480 - sure;
         let bonus = fark > 0 ? fark * 1 : fark * 5;
-        let net = vp + bonus;
-        veriKaydet(10, `Vuruş: ${vp}, Süre: ${sure}sn (Bonus/Ceza: ${bonus >= 0 ? '+' : ''}${bonus})`, net, { sure: sure });
+        let netPuan = vurusPuan + bonus;
+
+        let detayMetni = `Çatı:${cati}, Platf:${platform}, Anahtar:${besikAnahtar}, Har.Beşik:${besikHareketli}, ZayıfEl:${zayıfel}, Har.Hedef:${hareketli}, Tabanca:${tabanca} | Süre:${sure}sn (${bonus >= 0 ? '+' : ''}${bonus} Pn)`;
+        veriKaydet(10, detayMetni, netPuan, { sure: sure });
     }
 
     function detayTablosuGuncelle() {
@@ -458,7 +478,7 @@
                 html += `<tr>
                     <td><b>${e.id}</b></td>
                     <td style="text-align:left;">${e.ad}</td>
-                    <td>${rec.detay}</td>
+                    <td style="text-align:left;">${rec.detay}</td>
                     <td style="color:#2ecc71; font-weight:bold;">${rec.puan}</td>
                 </tr>`;
             });
@@ -470,7 +490,6 @@
         });
     }
 
-    // TIE-BREAKER (EŞİTLİK BOZMA) SIRALAMA ALGORİTMASI
     function tabloGuncelle() {
         let tbody = document.getElementById('skorBody');
         tbody.innerHTML = '';
@@ -488,13 +507,12 @@
             return { birlik: b, erMeydani, gece, kapisma, senaryoSure, toplam };
         });
 
-        // GELİŞMİŞ EŞİTLİK BOZMA SIRALAMASI
         sonuclar.sort((a, b) => {
-            if (b.toplam !== a.toplam) return b.toplam - a.toplam;                   // 1. Genel Puan
-            if (b.kapisma !== a.kapisma) return b.kapisma - a.kapisma;               // 2. Senaryo Puanı
-            if (b.gece !== a.gece) return b.gece - a.gece;                           // 3. Gece Yaklaşıyor Puanı
-            if (b.erMeydani !== a.erMeydani) return b.erMeydani - a.erMeydani;       // 4. Er Meydanı Puanı
-            return a.senaryoSure - b.senaryoSure;                                    // 5. Senaryo Süresi (Daha az olan öne geçer)
+            if (b.toplam !== a.toplam) return b.toplam - a.toplam;
+            if (b.kapisma !== a.kapisma) return b.kapisma - a.kapisma;
+            if (b.gece !== a.gece) return b.gece - a.gece;
+            if (b.erMeydani !== a.erMeydani) return b.erMeydani - a.erMeydani;
+            return a.senaryoSure - b.senaryoSure;
         });
 
         sonuclar.forEach((s, index) => {
