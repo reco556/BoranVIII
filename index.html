@@ -48,6 +48,9 @@
         .input-group label { font-size: 13px; }
         .input-group input { width: 140px; text-align: center; }
 
+        .ceza-box { background: #3a1c1c; border: 1px dashed #e74c3c; padding: 10px; border-radius: 5px; margin-top: 15px; margin-bottom: 15px; }
+        .ceza-box h4 { color: #e74c3c; margin: 0 0 8px 0; text-align: left; font-size: 13px; }
+
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .personel-box { background: #242430; padding: 10px; border-radius: 5px; border: 1px solid #333; }
 
@@ -110,7 +113,7 @@
                 </div>
 
                 <div class="personel-box">
-                    <h4 style="color:#3498db; margin-top:0;">👁️️ 2. Yarışmacı: Gözcü</h4>
+                    <h4 style="color:#3498db; margin-top:0;">👁️ 2. Yarışmacı: Gözcü</h4>
                     <div class="input-group"><label>Rütbesi:</label><input type="text" id="gozcuRutbe" placeholder="Örn: J.Uzmand Çvş."></div>
                     <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="gozcuAd" placeholder="Örn: Mehmet KAYA"></div>
                     <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="gozcuSilah" placeholder="Örn: MPT-76"></div>
@@ -480,28 +483,30 @@
             card.className = 'print-list-card';
 
             let headerHtml = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f39c12; padding-bottom:8px; margin-bottom:12px;">
-                <h3 style="margin:0; color:#f39c12; text-align:left;">📋 ${etap.ad} — HAKEM ATIŞ ÇİZELGESİ</h3>
+                <h3 style="margin:0; color:#f39c12; text-align:left;">📋 ${etap.ad} — HAKEM ATIŞ & CEZA ÇİZELGESİ</h3>
                 <button class="btn-print no-print" onclick="tekSayıfayiYazdir(this)">🖨️ Bu Etabı Yazdır</button>
             </div>`;
 
             let tableHtml = '';
 
             if(etap.senaryo) {
-                // Senaryo Atışı (Büyük Kapışma) Kapsamlı Çizelge
+                // Senaryo Atışı Kapsamlı Çizelge
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:40px;">Sıra</th>
+                            <th style="width:30px;">Sıra</th>
                             <th>Unsur / Birlik Adı</th>
-                            <th>1. Çatı (KN)<br><small>600m (0-1)</small></th>
-                            <th>2. Platform (Gözcü)<br><small>200m (0-3)</small></th>
-                            <th>3a. Anahtar (KN)<br><small>200m (0-1)</small></th>
-                            <th>3b. Beşik (Gözcü)<br><small>200m (0-3)</small></th>
-                            <th>4. Zayıf El (Gözcü)<br><small>300m (0-3)</small></th>
-                            <th>5. Har. Hedef (Gözcü)<br><small>300m (0-3)</small></th>
-                            <th>6. Tabanca (KN)<br><small>8m A Bölge (0-4)</small></th>
-                            <th>Atış Süresi<br><small>(Saniye)</small></th>
-                            <th>Hakem İmza</th>
+                            <th>1. Çatı<br><small>600m</small></th>
+                            <th>2. Platf.<br><small>200m</small></th>
+                            <th>3a. Anht.<br><small>200m</small></th>
+                            <th>3b. Beşik<br><small>200m</small></th>
+                            <th>4. Z.El<br><small>300m</small></th>
+                            <th>5. Har.H.<br><small>300m</small></th>
+                            <th>6. Tab.<br><small>8m</small></th>
+                            <th>Atış Süresi</th>
+                            <th style="color:#ff7675;">Ceza Puanı</th>
+                            <th>Ceza Nedeni</th>
+                            <th>İmza</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -512,8 +517,8 @@
                     let gozcuInfo = b ? `${b.gozcu.rutbe} ${b.gozcu.ad}` : '';
                     tableHtml += `<tr>
                         <td><b>${idx + 1}</b></td>
-                        <td style="text-align:left;"><b>${bAd}</b><br><small style="color:#aaa;">KN: ${knInfo} | GZ: ${gozcuInfo}</small></td>
-                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        <td style="text-align:left;"><b>${bAd}</b><br><small style="color:#aaa;">KN: ${knInfo}<br>GZ: ${gozcuInfo}</small></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>`;
                 });
                 tableHtml += `</tbody></table>`;
@@ -523,12 +528,14 @@
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:50px;">Grup</th>
+                            <th style="width:40px;">Grup</th>
                             <th>YOL 1 Unsur Adı</th>
                             <th>Vuruş / Derece</th>
                             <th>YOL 2 Unsur Adı</th>
                             <th>Vuruş / Derece</th>
-                            <th style="width:100px;">Hakem İmza</th>
+                            <th style="color:#ff7675;">Ceza Puanı</th>
+                            <th>Ceza Nedeni / Açıklama</th>
+                            <th style="width:80px;">İmza</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -540,6 +547,8 @@
                         <td style="text-align:left;"><b>${pair[1]}</b></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>`;
                 });
                 tableHtml += `</tbody></table>`;
@@ -549,13 +558,14 @@
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:50px;">Sıra</th>
+                            <th style="width:40px;">Sıra</th>
                             <th>Unsur / Birlik Adı</th>
                             <th>Keskin Nişancı</th>
                             <th>Gözcü</th>
-                            <th>Atış Vuruş Sayısı / Puan</th>
-                            <th>Atış Süresi / Not</th>
-                            <th style="width:120px;">Hakem İmza</th>
+                            <th>Atış Vuruş / Puan</th>
+                            <th style="color:#ff7675;">Ceza Puanı</th>
+                            <th>Ceza Nedeni / İhlal</th>
+                            <th style="width:90px;">Hakem İmza</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -566,6 +576,7 @@
                         <td style="text-align:left; font-weight:bold;">${bAd}</td>
                         <td style="text-align:left;">${b ? b.kn.rutbe + ' ' + b.kn.ad : '—'}</td>
                         <td style="text-align:left;">${b ? b.gozcu.rutbe + ' ' + b.gozcu.ad : '—'}</td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -598,24 +609,50 @@
         printWindow.print();
     }
 
+    function getCezaFormHtml() {
+        return `
+            <div class="ceza-box">
+                <h4>⚠️ ATANAN CEZA PUANI & KURAL İHLALİ (OPSİYONEL)</h4>
+                <div class="input-group">
+                    <label style="color:#e74c3c; font-weight:bold;">Düşülecek Ceza Puanı:</label>
+                    <input type="number" id="ceza_puan" min="0" value="0" style="border-color:#e74c3c;">
+                </div>
+                <div class="input-group">
+                    <label style="color:#bdc3c7;">Ceza Nedeni / Açıklaması:</label>
+                    <input type="text" id="ceza_nedeni" placeholder="Örn: Emniyet ihlali / Süre aşımı" style="width:220px;">
+                </div>
+            </div>
+        `;
+    }
+
+    function getCezaBilgisi() {
+        let cezaPuan = parseInt(document.getElementById('ceza_puan')?.value) || 0;
+        let cezaNedeni = document.getElementById('ceza_nedeni')?.value.trim() || '';
+        return { cezaPuan, cezaNedeni };
+    }
+
     function etapFormuGuncelle() {
         let etapId = parseInt(document.getElementById('puanEtapSelect').value);
         let alan = document.getElementById('etapFormAlani');
-        
+        let cezaHtml = getCezaFormHtml();
+
         if (etapId === 1) {
             alan.innerHTML = `
                 <h3>1. Algı Atışı (Kolay - Max 300 Puan)</h3>
                 <div class="input-group"><label>Vurulan Doğru Hedef Sayısı (0-3):</label><input type="number" id="algi1_vurus" min="0" max="3" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetAlgi1()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 2) {
             alan.innerHTML = `
                 <h3>2. Algı Atışı (Zor - Max 200 Puan)</h3>
                 <div class="input-group"><label>Vurulan Doğru Hedef Sayısı (0-1):</label><input type="number" id="algi2_vurus" min="0" max="1" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetAlgi2()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 3) {
             alan.innerHTML = `
                 <h3>3. Rehine Atışı (1) (Max 200 Puan)</h3>
                 <div class="input-group"><label>Kırmızı Bölge Vuruş Sayısı (0-1):</label><input type="number" id="rehine1_vurus" min="0" max="1" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetRehine1()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 4) {
             alan.innerHTML = `
@@ -624,6 +661,7 @@
                 <div class="input-group"><label>Beyaz Bölge Vuruş (80 Pn):</label><input type="number" id="r2_beyaz" min="0" max="4" value="0"></div>
                 <div class="input-group"><label>Mavi Bölge Vuruş (60 Pn):</label><input type="number" id="r2_mavi" min="0" max="4" value="0"></div>
                 <div class="input-group"><label>Sarı Bölge Vuruş (40 Pn):</label><input type="number" id="r2_sari" min="0" max="4" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetRehine2()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 5) {
             alan.innerHTML = `
@@ -640,11 +678,13 @@
                 <div class="input-group"><label>C Bölgesi (20 Pn):</label><input type="number" id="t15_c" value="0"></div>
                 <div class="input-group"><label>D Bölgesi (10 Pn):</label><input type="number" id="t15_d" value="0"></div>
                 <div class="input-group"><label>E Bölgesi (2 Pn):</label><input type="number" id="t15_e" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetTabancaGuc()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 6) {
             alan.innerHTML = `
                 <h3>6. Tabanca Düello Atışı (Max 200 Puan)</h3>
                 <div class="input-group"><label>Materyal Hedef Vuruş Sayısı (Her biri 40 Pn, Max 5):</label><input type="number" id="duello_vurus" min="0" max="5" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetTabancaDuello()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 7) {
             alan.innerHTML = `
@@ -660,17 +700,20 @@
                     <option value="700">4 Hedef - 5 Fişekte Vuruş (700 Puan)</option>
                     <option value="750">4 Hedef - 4 Fişekte Vuruş (750 Puan)</option>
                 </select><br><br>
+                ${cezaHtml}
                 <button onclick="kaydetKademeli()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 8) {
             alan.innerHTML = `
                 <h3>8. Sızma Faaliyet Atışı (Max 500 Puan)</h3>
                 <div class="input-group"><label>Süre (Dakika Cinsinden):</label><input type="number" id="sizma_saniye" placeholder="Örn: 85"></div>
+                ${cezaHtml}
                 <button onclick="kaydetSizma()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 9) {
             alan.innerHTML = `
                 <h3>9. Gece Atışı (1 & 2) (Max 750 Puan)</h3>
                 <div class="input-group"><label>Gece Atışı (1) Vuruş Sayısı (0-3):</label><input type="number" id="gece1_vurus" min="0" max="3" value="0"></div>
                 <div class="input-group"><label>Gece Atışı (2) Vuruş Sayısı (0-1):</label><input type="number" id="gece2_vurus" min="0" max="1" value="0"></div>
+                ${cezaHtml}
                 <button onclick="kaydetGece()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 10) { 
             alan.innerHTML = `
@@ -684,15 +727,32 @@
                 <div class="input-group"><label>6. Tabanca Atışı - KN (8m) A Bölgesi (0-4):</label><input type="number" id="sen_tabanca" min="0" max="4" value="0"></div>
                 <hr style="border: 0.5px solid #444; margin:10px 0;">
                 <div class="input-group"><label>Tamamlama Süresi (Saniye):</label><input type="number" id="senaryo_sure" placeholder="480 (8 dk)"></div>
+                ${cezaHtml}
                 <button onclick="kaydetSenaryo()">Hesapla ve Kaydet</button>`;
         }
     }
 
-    function veriKaydet(etapId, detayMetni, puan, extraData = {}) {
+    function veriKaydet(etapId, detayMetni, brutPuan, extraData = {}) {
         let birlik = document.getElementById('puanBirlikSelect').value;
+        let { cezaPuan, cezaNedeni } = getCezaBilgisi();
+        let netPuan = brutPuan - cezaPuan;
+
         if(!detayPuanlar[birlik]) detayPuanlar[birlik] = {};
-        detayPuanlar[birlik][etapId] = { detay: detayMetni, puan: puan, ...extraData };
-        alert(`${birlik} - ${etaplar.find(e => e.id === etapId).ad}\nPuan: ${puan}\nDetay: ${detayMetni}`);
+        detayPuanlar[birlik][etapId] = { 
+            detay: detayMetni, 
+            brutPuan: brutPuan,
+            cezaPuan: cezaPuan,
+            cezaNedeni: cezaNedeni,
+            puan: netPuan, 
+            ...extraData 
+        };
+
+        let msg = `${birlik} - ${etaplar.find(e => e.id === etapId).ad}\nBrüt Puan: ${brutPuan}`;
+        if(cezaPuan > 0) {
+            msg += `\nCeza Puanı: -${cezaPuan} (${cezaNedeni || 'Nedeni belirtilmedi'})`;
+        }
+        msg += `\nNET PUAN: ${netPuan}`;
+        alert(msg);
     }
 
     function kaydetAlgi1() {
@@ -783,10 +843,10 @@
         let sure = parseInt(document.getElementById('senaryo_sure').value) || 480;
         let fark = 480 - sure;
         let bonus = fark > 0 ? fark * 1 : fark * 5;
-        let netPuan = tufekPuan + tabancaPuan + bonus;
+        let brutPuan = tufekPuan + tabancaPuan + bonus;
 
         let detayMetni = `Çatı:${cati}, Platf:${platform}, Anahtar:${besikAnahtar}, Har.Beşik:${besikHareketli}, ZayıfEl:${zayıfel}, Har.Hedef:${hareketli}, Tabanca:${tabanca} | Süre:${sure}sn (${bonus >= 0 ? '+' : ''}${bonus} Pn)`;
-        veriKaydet(10, detayMetni, netPuan, { sure: sure, tufekPuan: tufekPuan, tabancaPuan: tabancaPuan });
+        veriKaydet(10, detayMetni, brutPuan, { sure: sure, tufekPuan: tufekPuan, tabancaPuan: tabancaPuan });
     }
 
     function detayTablosuGuncelle() {
@@ -803,24 +863,29 @@
                 </p>
                 <table>
                     <thead>
-                        <tr><th>Etap No</th><th>Etap Adı</th><th>Atış Detayı / Vuruş Sayısı</th><th>Kazanılan Puan</th></tr>
+                        <tr><th>Etap No</th><th>Etap Adı</th><th>Atış Detayı / Vuruş Sayısı</th><th>Brüt Puan</th><th>Ceza Puanı / Nedeni</th><th>Net Puan</th></tr>
                     </thead>
                     <tbody>`;
             
             let toplam = 0;
             etaplar.forEach(e => {
-                let rec = userPuanlar[e.id] || { detay: 'Henüz Girilmedi', puan: 0 };
+                let rec = userPuanlar[e.id] || { detay: 'Henüz Girilmedi', brutPuan: 0, cezaPuan: 0, cezaNedeni: '', puan: 0 };
                 toplam += rec.puan;
+
+                let cezaText = rec.cezaPuan > 0 ? `<span style="color:#e74c3c; font-weight:bold;">-${rec.cezaPuan}</span> <small>(${rec.cezaNedeni || 'İhlal'})</small>` : '0';
+
                 html += `<tr>
                     <td><b>${e.id}</b></td>
                     <td style="text-align:left;">${e.ad}</td>
                     <td style="text-align:left;">${rec.detay}</td>
+                    <td>${rec.brutPuan || rec.puan}</td>
+                    <td>${cezaText}</td>
                     <td style="color:#2ecc71; font-weight:bold;">${rec.puan}</td>
                 </tr>`;
             });
 
             html += `</tbody></table>
-            <div style="text-align:right; font-size:16px; font-weight:bold; margin-top:10px; color:#f39c12;">GÜNCEL TOPLAM: ${toplam} PUAN</div>
+            <div style="text-align:right; font-size:16px; font-weight:bold; margin-top:10px; color:#f39c12;">GÜNCEL TOPLAM NET PUAN: ${toplam} PUAN</div>
             </div>`;
             div.innerHTML += html;
         });
