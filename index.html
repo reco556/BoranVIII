@@ -24,7 +24,6 @@
         table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 12px; }
         
-        /* Matris Tablosu Renk Teması */
         .head-info { background: #2c3e50; color: #fff; }
         .head-etap1 { background: #1e4620; color: #2ecc71; }
         .head-etap2 { background: #4a4e51; color: #bdc3c7; }
@@ -41,17 +40,20 @@
 
         tr:nth-child(even) { opacity: 0.95; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; }
         .two-lane { background: #2c3e50; border: 1px solid #3498db; }
         .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 13px; text-align: left; }
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .input-group label { font-size: 13px; }
-        .input-group input { width: 80px; text-align: center; }
+        .input-group input { width: 140px; text-align: center; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .personel-box { background: #242430; padding: 10px; border-radius: 5px; border: 1px solid #333; }
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
-            .tab-buttons, button, input, select, .btn-danger { display: none !important; }
+            .tab-buttons, button, input, select, .btn-danger, .excel-import-area { display: none !important; }
             .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; page-break-after: always; }
             h1, h2, h3 { color: #000 !important; }
             table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 10px !important; }
@@ -65,7 +67,7 @@
     <h1>🎯 ATIŞ ŞAMPİYONASI YÖNETİM SİSTEMİ</h1>
 
     <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik Kaydı</button>
+        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik & Personel Kaydı</button>
         <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
         <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Girişi</button>
         <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
@@ -73,14 +75,52 @@
         <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Genel Şampiyonluk Matrisi</button>
     </div>
 
-    <!-- 1. BİRLİK KAYIT TABI -->
+    <!-- 1. BİRLİK VE PERSONEL KAYIT TABI -->
     <div id="birliklerTab" class="tab-content active">
-        <h2>Katılımcı Birlik ve Unsur Ekleme</h2>
-        <div style="text-align: center;">
-            <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 250px;">
-            <button onclick="birlikEkle()">Unsur Ekle</button>
+        <h2>Unsur, Nişancı / Gözcü ve Silah Bilgisi Kaydı</h2>
+        
+        <!-- EXCEL İÇE AKTARMA BÖLÜMÜ -->
+        <div class="excel-import-area" style="background:#242430; padding:15px; border-radius:8px; border:1px dashed #f39c12; max-width:800px; margin:0 auto 20px auto; text-align:center;">
+            <h3 style="margin-top:0; color:#f39c12;">📥 Excel / CSV ile Toplu Birlik Aktarma</h3>
+            <p style="font-size:12px; color:#bdc3c7;">Hazırladığınız CSV dosyasını seçerek bütün unsurları tek tıkla yükleyebilirsiniz.</p>
+            <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="csvYukle(event)">
+            <button onclick="document.getElementById('csvFileInput').click()" style="background:#8e44ad;">📁 CSV Dosyası Seç ve Yükle</button>
+            <button onclick="ornekCsvIndir()" style="background:#34495e;">📄 Örnek CSV Şablonu İndir</button>
         </div>
-        <ul id="birlikListesi" style="max-width: 450px; margin: 20px auto; background: #1e1e24; padding: 20px; border-radius: 5px;"></ul>
+
+        <!-- MANUEL EKLEME FORMU -->
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <h3>Manuel Unsur Ekleme</h3>
+            <div style="margin-bottom:15px; text-align:center;">
+                <label><b>Unsur / Birlik Adı:</b> </label>
+                <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 300px;">
+            </div>
+
+            <div class="form-grid">
+                <!-- KESKİN NİŞANCI -->
+                <div class="personel-box">
+                    <h4 style="color:#e67e22; margin-top:0;">🎯 1. Yarışmacı: Keskin Nişancı</h4>
+                    <div class="input-group"><label>Rütbesi:</label><input type="text" id="knRutbe" placeholder="Örn: J.Üçvş."></div>
+                    <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="knAd" placeholder="Örn: Ahmet YILMAZ"></div>
+                    <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="knSilah" placeholder="Örn: KSR-11 / Bora 12"></div>
+                </div>
+
+                <!-- GÖZCÜ -->
+                <div class="personel-box">
+                    <h4 style="color:#3498db; margin-top:0;">👁️ 2. Yarışmacı: Gözcü</h4>
+                    <div class="input-group"><label>Rütbesi:</label><input type="text" id="gozcuRutbe" placeholder="Örn: J.Uzmand Çvş."></div>
+                    <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="gozcuAd" placeholder="Örn: Mehmet KAYA"></div>
+                    <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="gozcuSilah" placeholder="Örn: MPT-76"></div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:15px;">
+                <button onclick="birlikEkle()" style="font-size:15px; padding:10px 25px;">➕ Unsuru Sisteme Kaydet</button>
+            </div>
+        </div>
+
+        <h3 style="margin-top:25px;">Kayıtlı Unsur Listesi</h3>
+        <div id="birlikKartlari" class="grid-container" style="margin-top:15px;"></div>
     </div>
 
     <!-- 2. KURA TABI -->
@@ -132,6 +172,8 @@
                 <tr>
                     <th>Sıra</th>
                     <th>Unsur / Birlik Adı</th>
+                    <th>Keskin Nişancı</th>
+                    <th>Gözcü</th>
                     <th>Er Meydanı (2.250)</th>
                     <th>Gece Yaklaşıyor (1.250)</th>
                     <th>Büyük Kapışma (1.500)</th>
@@ -158,26 +200,28 @@
                         <th class="head-info">S. No</th>
                         <th class="head-info">Unsur No</th>
                         <th class="head-info">Birliği</th>
+                        <th class="head-info">Keskin Nişancı</th>
+                        <th class="head-info">Gözcü</th>
                         
                         <!-- 1. ETAP -->
-                        <th class="head-etap1">Algı Atışı-1 (300)</th>
-                        <th class="head-etap1">Algı Atışı-2 (200)</th>
-                        <th class="head-etap1">Rehine Atışı-1 (200)</th>
-                        <th class="head-etap1">Rehine Atışı-2 (300)</th>
+                        <th class="head-etap1">Algı-1 (300)</th>
+                        <th class="head-etap1">Algı-2 (200)</th>
+                        <th class="head-etap1">Rehine-1 (200)</th>
+                        <th class="head-etap1">Rehine-2 (300)</th>
                         <th class="head-etap1">Tabanca Güç (300)</th>
                         <th class="head-etap1">Tabanca Düello (200)</th>
-                        <th class="head-etap1">Kademeli Mesafe (750)</th>
-                        <th class="head-etap1">1. Etap Sonucu (2250)</th>
+                        <th class="head-etap1">Kademeli (750)</th>
+                        <th class="head-etap1">1. Etap (2250)</th>
 
                         <!-- 2. ETAP -->
-                        <th class="head-etap2">Sızma Atışı (500)</th>
-                        <th class="head-etap2">Gece Atışı (750)</th>
-                        <th class="head-etap2">2. Etap Sonucu (1250)</th>
+                        <th class="head-etap2">Sızma (500)</th>
+                        <th class="head-etap2">Gece (750)</th>
+                        <th class="head-etap2">2. Etap (1250)</th>
 
                         <!-- 3. ETAP -->
-                        <th class="head-etap3">Senaryo Atışı (1300)</th>
-                        <th class="head-etap3">Senaryo Tabanca (200)</th>
-                        <th class="head-etap3">3. Etap Sonucu (1500)</th>
+                        <th class="head-etap3">Senaryo (1300)</th>
+                        <th class="head-etap3">Senaryo Tab. (200)</th>
+                        <th class="head-etap3">3. Etap (1500)</th>
 
                         <!-- GENEL PUAN -->
                         <th class="head-total">Genel Puan (5000)</th>
@@ -203,13 +247,18 @@
     ];
 
     let birlikler = [
-        "İzmir Tugayı 1. Unsur", 
-        "İzmir Tugayı 2. Unsur", 
-        "Ankara Tugayı 1. Unsur", 
-        "Ankara Tugayı 2. Unsur",
-        "Bursa Tugayı 1. Unsur",
-        "Bursa Tugayı 2. Unsur"
+        {
+            ad: "İzmir Tugayı 1. Unsur",
+            kn: { rutbe: "J.Üçvş.", ad: "Ahmet YILMAZ", silah: "KSR-11" },
+            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Mehmet KAYA", silah: "MPT-76" }
+        },
+        {
+            ad: "İzmir Tugayı 2. Unsur",
+            kn: { rutbe: "J.Kd.Çvş.", ad: "Ali DEMİR", silah: "Bora 12" },
+            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Caner ŞAHİN", silah: "KCR-556" }
+        }
     ];
+
     let kuralar = {}; 
     let detayPuanlar = {}; 
 
@@ -230,21 +279,52 @@
     }
 
     function birlikEkle() {
-        let input = document.getElementById('birlikAdi');
-        let ad = input.value.trim();
-        if (ad && !birlikler.includes(ad)) {
-            birlikler.push(ad);
-            input.value = '';
+        let ad = document.getElementById('birlikAdi').value.trim();
+        let knRutbe = document.getElementById('knRutbe').value.trim();
+        let knAd = document.getElementById('knAd').value.trim();
+        let knSilah = document.getElementById('knSilah').value.trim();
+
+        let gozcuRutbe = document.getElementById('gozcuRutbe').value.trim();
+        let gozcuAd = document.getElementById('gozcuAd').value.trim();
+        let gozcuSilah = document.getElementById('gozcuSilah').value.trim();
+
+        if (ad) {
+            birlikler.push({
+                ad: ad,
+                kn: { rutbe: knRutbe || '—', ad: knAd || '—', silah: knSilah || '—' },
+                gozcu: { rutbe: gozcuRutbe || '—', ad: gozcuAd || '—', silah: gozcuSilah || '—' }
+            });
+            
+            document.getElementById('birlikAdi').value = '';
+            document.getElementById('knRutbe').value = '';
+            document.getElementById('knAd').value = '';
+            document.getElementById('knSilah').value = '';
+            document.getElementById('gozcuRutbe').value = '';
+            document.getElementById('gozcuAd').value = '';
+            document.getElementById('gozcuSilah').value = '';
+
             birlikListele();
             etapSelectDoldur();
+        } else {
+            alert("Lütfen en azından Unsur Adı alanını doldurun.");
         }
     }
 
     function birlikListele() {
-        let ul = document.getElementById('birlikListesi');
-        ul.innerHTML = '';
+        let div = document.getElementById('birlikKartlari');
+        div.innerHTML = '';
         birlikler.forEach((b, index) => {
-            ul.innerHTML += `<li>${b} <button class="btn-danger" style="padding:2px 6px;" onclick="birlikSil(${index})">X</button></li>`;
+            div.innerHTML += `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="color:#f39c12; margin:0;">${b.ad}</h3>
+                        <button class="btn-danger" style="padding:2px 8px;" onclick="birlikSil(${index})">X</button>
+                    </div>
+                    <hr style="border:0.5px solid #444; margin:8px 0;">
+                    <p style="font-size:12px; margin:4px 0;">🎯 <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad} <br><span style="color:#bdc3c7;">(Silah: ${b.kn.silah})</span></p>
+                    <p style="font-size:12px; margin:4px 0;">👁️ <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad} <br><span style="color:#bdc3c7;">(Silah: ${b.gozcu.silah})</span></p>
+                </div>
+            `;
         });
     }
 
@@ -254,10 +334,57 @@
         etapSelectDoldur();
     }
 
+    function csvYukle(e) {
+        let file = e.target.files[0];
+        if (!file) return;
+
+        let reader = new FileReader();
+        reader.onload = function(evt) {
+            let contents = evt.target.result;
+            let lines = contents.split('\n');
+            let yuklenenSayi = 0;
+
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line) {
+                    let cols = line.split(';');
+                    if(cols.length < 2) cols = line.split(',');
+
+                    if (cols[0]) {
+                        birlikler.push({
+                            ad: cols[0].trim(),
+                            kn: { rutbe: cols[1]?.trim()||'—', ad: cols[2]?.trim()||'—', silah: cols[3]?.trim()||'—' },
+                            gozcu: { rutbe: cols[4]?.trim()||'—', ad: cols[5]?.trim()||'—', silah: cols[6]?.trim()||'—' }
+                        });
+                        yuklenenSayi++;
+                    }
+                }
+            }
+            alert(`${yuklenenSayi} adet Unsur ve personel bilgisi Excel/CSV'den başarıyla yüklendi!`);
+            birlikListele();
+            etapSelectDoldur();
+        };
+        reader.readAsText(file, 'UTF-8');
+    }
+
+    function ornekCsvIndir() {
+        let csvContent = "data:text/csv;charset=utf-8,Unsur Adı;KN Rütbe;KN Ad Soyad;KN Silah;Gözcü Rütbe;Gözcü Ad Soyad;Gözcü Silah\n" +
+            "Ankara Tugayı 1. Unsur;J.Üçvş.;Ahmet YILMAZ;KSR-11;J.Uzmand Çvş.;Mehmet KAYA;MPT-76\n" +
+            "Bursa Tugayı 1. Unsur;J.Kd.Çvş.;Ali DEMİR;Bora 12;J.Uzmand Çvş.;Caner ŞAHİN;KCR-556";
+        
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "birlik_yukleme_sablonu.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     function etapSelectDoldur() {
         let bSelect = document.getElementById('puanBirlikSelect');
         let eSelect = document.getElementById('puanEtapSelect');
-        bSelect.innerHTML = birlikler.map(b => `<option value="${b}">${b}</option>`).join('');
+        bSelect.innerHTML = birlikler.map(b => `<option value="${b.ad}">${b.ad}</option>`).join('');
         eSelect.innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad}</option>`).join('');
     }
 
@@ -274,9 +401,9 @@
                 let birlikGruplari = {};
                 
                 kopyalansin.forEach(u => {
-                    let anaAd = u.replace(/( \d+\. Unsur|\d+\.Unsur| Unsur \d+| Unsur)/gi, '').trim();
+                    let anaAd = u.ad.replace(/( \d+\. Unsur|\d+\.Unsur| Unsur \d+| Unsur)/gi, '').trim();
                     if(!birlikGruplari[anaAd]) birlikGruplari[anaAd] = [];
-                    birlikGruplari[anaAd].push(u);
+                    birlikGruplari[anaAd].push(u.ad);
                 });
 
                 let eslesmeyenTekler = [];
@@ -315,7 +442,7 @@
             } else {
                 let karisik = [...birlikler].sort(() => Math.random() - 0.5);
                 let html = `<div class="card"><h3 style="color:#f1c40f;">${etap.ad}</h3><ol>`;
-                karisik.forEach(b => html += `<li><b>${b}</b></li>`);
+                karisik.forEach(b => html += `<li><b>${b.ad}</b></li>`);
                 html += `</ol></div>`;
                 container.innerHTML += html;
             }
@@ -518,9 +645,13 @@
         div.innerHTML = '';
 
         birlikler.forEach(b => {
-            let userPuanlar = detayPuanlar[b] || {};
+            let userPuanlar = detayPuanlar[b.ad] || {};
             let html = `<div class="card" style="margin-bottom:20px;">
-                <h3 style="color:#f39c12; text-align:left; border-bottom:1px solid #444; padding-bottom:5px;">🎯 ${b} - Atış Karnesi</h3>
+                <h3 style="color:#f39c12; text-align:left; border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px;">🎯 ${b.ad}</h3>
+                <p style="font-size:12px; margin-bottom:10px; color:#bdc3c7;">
+                    <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad} (${b.kn.silah}) | 
+                    <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad} (${b.gozcu.silah})
+                </p>
                 <table>
                     <thead>
                         <tr><th>Etap No</th><th>Etap Adı</th><th>Atış Detayı / Vuruş Sayısı</th><th>Kazanılan Puan</th></tr>
@@ -551,7 +682,7 @@
         tbody.innerHTML = '';
 
         let sonuclar = birlikler.map(b => {
-            let p = detayPuanlar[b] || {};
+            let p = detayPuanlar[b.ad] || {};
             
             let erMeydani = (p[1]?.puan||0) + (p[2]?.puan||0) + (p[3]?.puan||0) + (p[4]?.puan||0) + (p[5]?.puan||0) + (p[6]?.puan||0) + (p[7]?.puan||0);
             let gece = (p[8]?.puan||0) + (p[9]?.puan||0);
@@ -576,7 +707,9 @@
             tbody.innerHTML += `
                 <tr>
                     <td><b>${index + 1}</b></td>
-                    <td style="text-align:left; font-weight:bold;">${s.birlik}</td>
+                    <td style="text-align:left; font-weight:bold;">${s.birlik.ad}</td>
+                    <td style="text-align:left; font-size:12px;">${s.birlik.kn.rutbe} ${s.birlik.kn.ad}</td>
+                    <td style="text-align:left; font-size:12px;">${s.birlik.gozcu.rutbe} ${s.birlik.gozcu.ad}</td>
                     <td>${s.erMeydani} / 2.250</td>
                     <td>${s.gece} / 1.250</td>
                     <td style="color:#e74c3c; font-weight:bold;">${s.kapisma} Puan</td>
@@ -592,7 +725,7 @@
         tbody.innerHTML = '';
 
         let sonuclar = birlikler.map((b, idx) => {
-            let p = detayPuanlar[b] || {};
+            let p = detayPuanlar[b.ad] || {};
 
             let a1 = p[1]?.puan || 0;
             let a2 = p[2]?.puan || 0;
@@ -614,7 +747,7 @@
             let sure = (p[10]?.sure !== undefined) ? p[10].sure : 99999;
             let genelPuan = etap1Sum + etap2Sum + etap3Sum;
 
-            let match = b.match(/\d+/);
+            let match = b.ad.match(/\d+/);
             let unsurNo = match ? match[0] : (idx + 1);
 
             return {
@@ -639,7 +772,9 @@
                 <tr>
                     <td><b>${index + 1}</b></td>
                     <td>${s.unsurNo}</td>
-                    <td style="text-align:left; font-weight:bold;">${s.birlik}</td>
+                    <td style="text-align:left; font-weight:bold;">${s.birlik.ad}</td>
+                    <td style="text-align:left; font-size:12px;">${s.birlik.kn.rutbe} ${s.birlik.kn.ad}</td>
+                    <td style="text-align:left; font-size:12px;">${s.birlik.gozcu.rutbe} ${s.birlik.gozcu.ad}</td>
                     
                     <td class="col-etap1">${s.a1}</td>
                     <td class="col-etap1">${s.a2}</td>
