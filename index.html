@@ -17,6 +17,8 @@
         button:hover { background: #2ecc71; }
         .btn-danger { background: #c0392b; }
         .btn-danger:hover { background: #e74c3c; }
+        .btn-warning { background: #d35400; color: #fff; }
+        .btn-warning:hover { background: #e67e22; }
         .btn-print { background: #2980b9; font-size: 14px; padding: 6px 12px; }
         .btn-print:hover { background: #3498db; }
         
@@ -51,6 +53,8 @@
         .ceza-box { background: #3a1c1c; border: 1px dashed #e74c3c; padding: 10px; border-radius: 5px; margin-top: 15px; margin-bottom: 15px; }
         .ceza-box h4 { color: #e74c3c; margin: 0 0 8px 0; text-align: left; font-size: 13px; }
 
+        .reset-box { background: #2c2222; border: 1px dashed #e74c3c; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .personel-box { background: #242430; padding: 10px; border-radius: 5px; border: 1px solid #333; }
 
@@ -63,7 +67,7 @@
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
-            .tab-buttons, button, input, select, .btn-danger, .excel-import-area, .no-print { display: none !important; }
+            .tab-buttons, button, input, select, .btn-danger, .excel-import-area, .no-print, .reset-box { display: none !important; }
             .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
             table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9px !important; }
@@ -91,6 +95,14 @@
     <!-- 1. BİRLİK VE PERSONEL KAYIT TABI -->
     <div id="birliklerTab" class="tab-content active">
         <h2>Unsur, Nişancı / Gözcü ve Silah & Seri No Kaydı</h2>
+
+        <!-- SIFIRLAMA VE VERİ YÖNETİMİ PANELİ -->
+        <div class="reset-box">
+            <h4 style="margin:0 0 10px 0; color:#e74c3c;">⚙️ VERİ TEMİZLEME VE YENİDEN BAŞLATMA SEÇENEKLERİ</h4>
+            <button onclick="tumVerileriSifirla()" class="btn-danger">🗑️ Tüm Verileri Sıfırla (Sistemi Temizle)</button>
+            <button onclick="sadeceKuraSifirla()" class="btn-warning">🎲 Sadece Kura Sıralamasını Sil</button>
+            <button onclick="sadecePuanSifirla()" class="btn-warning">📝 Sadece Girilen Puan/Vuruş Verilerini Sil</button>
+        </div>
         
         <div class="excel-import-area" style="background:#242430; padding:15px; border-radius:8px; border:1px dashed #f39c12; max-width:850px; margin:0 auto 20px auto; text-align:center;">
             <h3 style="margin-top:0; color:#f39c12;">📥 Excel / CSV ile Toplu Birlik & Silah Aktarma</h3>
@@ -142,7 +154,8 @@
     <div id="kuraTab" class="tab-content">
         <h2>🎲 Her Atış İçin Ayrı Birlik Kura Sıralaması</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="kuraCek()" style="font-size: 15px; padding: 8px 16px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN KURA ÇEK</button>
+            <button onclick="kuraCek()" style="font-size: 15px; padding: 8px 16px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN YENİ KURA ÇEK</button>
+            <button onclick="sadeceKuraSifirla()" class="btn-warning">🗑️ Kurayı Sil</button>
             <button onclick="window.print()" class="btn-print">🖨️ Kura Listesini Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="grid-container"></div>
@@ -180,7 +193,7 @@
         <h2>🏆 GENEL KLASMAN VE ŞAMPİYONLUK ÖZETİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️ Rapor Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨️️ Rapor Yazdır / PDF</button>
         </div>
         <table>
             <thead>
@@ -248,7 +261,7 @@
         <h2>📄 Kura Sıralı Hakem Atış & Vuruş Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;" class="no-print">
             <button onclick="ciktilariOlustur()" style="background:#e67e22; padding:8px 16px;">🔄 Çıktı Listelerini Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️️ Tüm Sayfaları Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨 Tüm Sayfaları Yazdır / PDF</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
@@ -267,7 +280,12 @@
         { id: 10, ad: "10. Senaryo Atışı [Büyük Kapışma]", senaryo: true }
     ];
 
-    let birlikler = [
+    let birlikler = [];
+    let kuralar = {}; 
+    let detayPuanlar = {}; 
+
+    /* VARSAYILAN BAŞLANGIÇ VERİLERİ */
+    const varsayilanBirlikler = [
         {
             ad: "İzmir Tugayı 1. Unsur",
             kn: { rutbe: "J.Üçvş.", ad: "Ahmet YILMAZ", tufek: "KSR-11", tufekSeri: "1036835", tabanca: "Canik TP9", tabancaSeri: "BHBF 829" },
@@ -280,13 +298,68 @@
         }
     ];
 
-    let kuralar = {}; 
-    let detayPuanlar = {}; 
+    /* LOCALSTORAGE VERİLERİNİ KAYDETME VE YÜKLEME */
+    function verileriKaydet() {
+        localStorage.setItem('atis_birlikler', JSON.stringify(birlikler));
+        localStorage.setItem('atis_kuralar', JSON.stringify(kuralar));
+        localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar));
+    }
+
+    function verileriYukle() {
+        let kayitliBirlikler = localStorage.getItem('atis_birlikler');
+        let kayitliKuralar = localStorage.getItem('atis_kuralar');
+        let kayitliPuanlar = localStorage.getItem('atis_detayPuanlar');
+
+        if (kayitliBirlikler) {
+            birlikler = JSON.parse(kayitliBirlikler);
+        } else {
+            birlikler = [...varsayilanBirlikler];
+        }
+
+        if (kayitliKuralar) kuralar = JSON.parse(kayitliKuralar);
+        if (kayitliPuanlar) detayPuanlar = JSON.parse(kayitliPuanlar);
+    }
+
+    /* SIFIRLAMA / TEMİZLEME FONKSİYONLARI */
+    function tumVerileriSifirla() {
+        if(confirm("DİKKAT! Tüm unsurlar, kura sonuçları ve girilen puanlar TAMAMEN SİLİNECEK. Onaylıyor musunuz?")) {
+            localStorage.clear();
+            birlikler = [];
+            kuralar = {};
+            detayPuanlar = {};
+            verileriKaydet();
+            init();
+            alert("Sistem tamamen temizlendi.");
+        }
+    }
+
+    function sadeceKuraSifirla() {
+        if(confirm("Çekilmiş olan tüm kuralar silinecek. Onaylıyor musunuz?")) {
+            kuralar = {};
+            localStorage.setItem('atis_kuralar', JSON.stringify(kuralar));
+            document.getElementById('kuraSonuclari').innerHTML = '';
+            ciktilariOlustur();
+            alert("Kura sonuçları sıfırlandı.");
+        }
+    }
+
+    function sadecePuanSifirla() {
+        if(confirm("Girilen tüm vuruş, zaman ve puan kayıtları silinecek. Onaylıyor musunuz?")) {
+            detayPuanlar = {};
+            localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar));
+            detayTablosuGuncelle();
+            tabloGuncelle();
+            matrisGuncelle();
+            alert("Atış ve puan kayıtları sıfırlandı.");
+        }
+    }
 
     function init() {
+        verileriYukle();
         birlikListele();
         etapSelectDoldur();
         etapFormuGuncelle();
+        kuralariEkranaBas();
     }
 
     function openTab(tabId) {
@@ -331,6 +404,7 @@
             document.getElementById('gozcuTufek').value = ''; document.getElementById('gozcuTufekSeri').value = '';
             document.getElementById('gozcuTabanca').value = ''; document.getElementById('gozcuTabancaSeri').value = '';
 
+            verileriKaydet();
             birlikListele();
             etapSelectDoldur();
         } else {
@@ -359,7 +433,10 @@
     }
 
     function birlikSil(index) {
+        let silinen = birlikler[index];
         birlikler.splice(index, 1);
+        if(detayPuanlar[silinen.ad]) delete detayPuanlar[silinen.ad];
+        verileriKaydet();
         birlikListele();
         etapSelectDoldur();
     }
@@ -390,6 +467,7 @@
                     }
                 }
             }
+            verileriKaydet();
             alert(`${yuklenenSayi} adet Unsur ve Silah Bilgisi Excel/CSV'den başarıyla yüklendi!`);
             birlikListele();
             etapSelectDoldur();
@@ -420,8 +498,6 @@
 
     function kuraCek() {
         if(birlikler.length === 0) { alert("Lütfen önce unsur ekleyin!"); return; }
-        let container = document.getElementById('kuraSonuclari');
-        container.innerHTML = '';
         kuralar = {};
 
         etaplar.forEach(etap => {
@@ -460,29 +536,45 @@
                 gruplanmisPairs.sort(() => Math.random() - 0.5);
                 kuralar[etap.id] = gruplanmisPairs;
 
+            } else {
+                let karisik = [...birlikler].sort(() => Math.random() - 0.5);
+                kuralar[etap.id] = karisik.map(b => b.ad);
+            }
+        });
+
+        verileriKaydet();
+        kuralariEkranaBas();
+    }
+
+    function kuralariEkranaBas() {
+        let container = document.getElementById('kuraSonuclari');
+        container.innerHTML = '';
+
+        if(Object.keys(kuralar).length === 0) return;
+
+        etaplar.forEach(etap => {
+            let data = kuralar[etap.id];
+            if(!data) return;
+
+            if (etap.ciftYol) {
                 let html = `<div class="card two-lane">
                     <h3 style="color:#3498db;">${etap.ad}</h3>
                     <p style="font-size:12px; text-align:center; color:#bdc3c7;">(Aynı Birlik Unsurları İkili Yolda Eş Zamanlı Atış Yapar)</p>`;
                 
-                gruplanmisPairs.forEach((pair, idx) => {
+                data.forEach((pair, idx) => {
                     html += `<div class="lane-box"><b>${idx + 1}. ATIŞ GRUBU:</b><br>🎯 <b>YOL 1:</b> ${pair[0]}<br>🎯 <b>YOL 2:</b> ${pair[1]}</div>`;
                 });
                 html += `</div>`;
                 container.innerHTML += html;
-
             } else {
-                let karisik = [...birlikler].sort(() => Math.random() - 0.5);
-                kuralar[etap.id] = karisik.map(b => b.ad);
-
                 let html = `<div class="card"><h3 style="color:#f1c40f;">${etap.ad}</h3><ol>`;
-                karisik.forEach(b => html += `<li><b>${b.ad}</b></li>`);
+                data.forEach(bAd => html += `<li><b>${bAd}</b></li>`);
                 html += `</ol></div>`;
                 container.innerHTML += html;
             }
         });
     }
 
-    /* SİLAH BİLGİSİ YAZDIRMA FORMATÇISI */
     function getSilahHtmlInfo(b) {
         if(!b) return '';
         return `
@@ -491,7 +583,6 @@
         `;
     }
 
-    /* KURA VE HAKEM ÇIKTILARI OLUŞTURMA */
     function ciktilariOlustur() {
         let div = document.getElementById('ciktiAlanlari');
         div.innerHTML = '';
@@ -516,7 +607,6 @@
             let tableHtml = '';
 
             if(etap.senaryo) {
-                // Senaryo Atışı Çizelgesi
                 tableHtml = `<table>
                     <thead>
                         <tr>
@@ -554,7 +644,6 @@
                 tableHtml += `</tbody></table>`;
 
             } else if(etap.ciftYol) {
-                // İkili Yol Atışı Çizelgesi
                 tableHtml = `<table>
                     <thead>
                         <tr>
@@ -593,7 +682,6 @@
                 tableHtml += `</tbody></table>`;
 
             } else {
-                // Standart Tekli Etap Çizelgesi
                 tableHtml = `<table>
                     <thead>
                         <tr>
@@ -765,7 +853,7 @@
                 <button onclick="kaydetGece()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 10) { 
             alan.innerHTML = `
-                <h3>9. Senaryo Atışı [Büyük Kapışma] (Max 1.500 Puan)</h3>
+                <h3>10. Senaryo Atışı [Büyük Kapışma] (Max 1.500 Puan)</h3>
                 <div class="input-group"><label>1. Çatı Atışı - KN (600m) Vuruş (0-1):</label><input type="number" id="sen_cati" min="0" max="1" value="0"></div>
                 <div class="input-group"><label>2. Platform Atışı - Gözcü (200m) Vuruş (0-3):</label><input type="number" id="sen_platform" min="0" max="3" value="0"></div>
                 <div class="input-group"><label>3a. Anahtar Materyal - KN (200m) Vuruş (0-1):</label><input type="number" id="sen_besik_anahtar" min="0" max="1" value="0"></div>
@@ -782,6 +870,8 @@
 
     function veriKaydet(etapId, detayMetni, brutPuan, extraData = {}) {
         let birlik = document.getElementById('puanBirlikSelect').value;
+        if(!birlik) { alert("Lütfen önce bir unsur seçin!"); return; }
+
         let { cezaPuan, cezaNedeni } = getCezaBilgisi();
         let netPuan = brutPuan - cezaPuan;
 
@@ -795,11 +885,13 @@
             ...extraData 
         };
 
+        verileriKaydet();
+
         let msg = `${birlik} - ${etaplar.find(e => e.id === etapId).ad}\nBrüt Puan: ${brutPuan}`;
         if(cezaPuan > 0) {
             msg += `\nCeza Puanı: -${cezaPuan} (${cezaNedeni || 'Nedeni belirtilmedi'})`;
         }
-        msg += `\nNET PUAN: ${netPuan}`;
+        msg += `\nNET PUAN: ${netPuan}\n\n✅ Başarıyla Kaydedildi!`;
         alert(msg);
     }
 
