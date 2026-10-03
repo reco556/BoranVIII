@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>Atış Şampiyonası Yönetim Sistemi</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 20px; }
-        h1, h2, h3 { color: #f39c12; text-align: center; }
-        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { padding: 12px 20px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; background: #333; color: #fff; border-radius: 5px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 15px; }
+        h1, h2, h3 { color: #f39c12; text-align: center; margin-bottom: 10px; }
+        .tab-buttons { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 16px; font-size: 14px; font-weight: bold; cursor: pointer; border: none; background: #333; color: #fff; border-radius: 5px; }
         .tab-btn.active { background: #f39c12; color: #000; }
-        .tab-content { display: none; background: #2b2b36; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .tab-content { display: none; background: #2b2b36; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .tab-content.active { display: block; }
         
         input, select, button { padding: 8px 12px; margin: 5px; border-radius: 4px; border: 1px solid #444; background: #1e1e24; color: #fff; }
@@ -17,30 +17,46 @@
         button:hover { background: #2ecc71; }
         .btn-danger { background: #c0392b; }
         .btn-danger:hover { background: #e74c3c; }
-        .btn-print { background: #2980b9; font-size: 16px; padding: 10px 20px; }
+        .btn-print { background: #2980b9; font-size: 15px; padding: 8px 16px; }
         .btn-print:hover { background: #3498db; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #444; padding: 8px; text-align: center; font-size: 14px; }
-        th { background: #333; color: #f39c12; }
-        tr:nth-child(even) { background-color: #24242f; }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 12px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        /* Matris Tablosu Renk Teması */
+        .head-info { background: #2c3e50; color: #fff; }
+        .head-etap1 { background: #1e4620; color: #2ecc71; }
+        .head-etap2 { background: #4a4e51; color: #bdc3c7; }
+        .head-etap3 { background: #5c3214; color: #e67e22; }
+        .head-total { background: #8e44ad; color: #fff; }
+
+        .col-etap1 { background-color: #1b2e1e; }
+        .col-etap1-sum { background-color: #274e2a; font-weight: bold; color: #2ecc71; }
+        .col-etap2 { background-color: #282a2c; }
+        .col-etap2-sum { background-color: #3f4346; font-weight: bold; color: #bdc3c7; }
+        .col-etap3 { background-color: #311f14; }
+        .col-etap3-sum { background-color: #53301a; font-weight: bold; color: #e67e22; }
+        .col-total { background-color: #4a235a; font-weight: bold; color: #f1c40f; font-size: 13px; }
+
+        tr:nth-child(even) { opacity: 0.95; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; }
         .two-lane { background: #2c3e50; border: 1px solid #3498db; }
-        .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 14px; text-align: left; }
+        .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 13px; text-align: left; }
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .input-group label { font-size: 14px; }
+        .input-group label { font-size: 13px; }
         .input-group input { width: 80px; text-align: center; }
 
         @media print {
-            body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 10px; }
+            body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
             .tab-buttons, button, input, select, .btn-danger { display: none !important; }
             .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; page-break-after: always; }
             h1, h2, h3 { color: #000 !important; }
-            table, th, td { border: 1px solid #000 !important; color: #000 !important; }
-            th { background-color: #eee !important; }
-            .card, .lane-box { background: none !important; border: 1px solid #000 !important; color: #000 !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 10px !important; }
+            .head-info, .head-etap1, .head-etap2, .head-etap3, .head-total { background: #ddd !important; color: #000 !important; }
+            .col-etap1, .col-etap1-sum, .col-etap2, .col-etap2-sum, .col-etap3, .col-etap3-sum, .col-total { background: none !important; color: #000 !important; }
         }
     </style>
 </head>
@@ -49,11 +65,12 @@
     <h1>🎯 ATIŞ ŞAMPİYONASI YÖNETİM SİSTEMİ</h1>
 
     <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik / Unsur Kaydı</button>
-        <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Listesi</button>
-        <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Girişi & Otomatik Puanlama</button>
-        <button class="tab-btn" onclick="openTab('detayTab')">4. Detaylı Atış Karnesi</button>
-        <button class="tab-btn" onclick="openTab('skorTab')">5. Genel Klasman / Liderlik Tablosu</button>
+        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik Kaydı</button>
+        <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
+        <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Girişi</button>
+        <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
+        <button class="tab-btn" onclick="openTab('skorTab')">5. Özet Liderlik</button>
+        <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Genel Şampiyonluk Matrisi</button>
     </div>
 
     <!-- 1. BİRLİK KAYIT TABI -->
@@ -63,9 +80,6 @@
             <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 250px;">
             <button onclick="birlikEkle()">Unsur Ekle</button>
         </div>
-        <p style="text-align:center; font-size:13px; color:#bdc3c7;">
-            * Aynı birliğin unsurlarını eklerken ana adını aynı tutun (Örn: <i>İzmir Tugayı 1. Unsur</i> ve <i>İzmir Tugayı 2. Unsur</i>)
-        </p>
         <ul id="birlikListesi" style="max-width: 450px; margin: 20px auto; background: #1e1e24; padding: 20px; border-radius: 5px;"></ul>
     </div>
 
@@ -73,7 +87,7 @@
     <div id="kuraTab" class="tab-content">
         <h2>🎲 Her Atış İçin Ayrı Birlik Kura Sıralaması</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="kuraCek()" style="font-size: 16px; padding: 10px 20px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN KURA ÇEK</button>
+            <button onclick="kuraCek()" style="font-size: 15px; padding: 8px 16px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN KURA ÇEK</button>
             <button onclick="window.print()" class="btn-print">🖨️ Kura Listesini Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="grid-container"></div>
@@ -106,15 +120,12 @@
         <div id="detayIcerik"></div>
     </div>
 
-    <!-- 5. LİDERLİK TABLOSU -->
+    <!-- 5. ÖZET LİDERLİK TABLOSU -->
     <div id="skorTab" class="tab-content">
-        <h2>🏆 GENEL KLASMAN VE ŞAMPİYONLUK TABLOSU</h2>
-        <p style="text-align:center; font-size:12px; color:#bdc3c7;">
-            * Eşitlik bozma sırası: 1- Toplam Puan | 2- Senaryo Puanı | 3- Gece Yaklaşıyor Puanı | 4- Er Meydanı Puanı | 5- Senaryo Süresi (Az Olan)
-        </p>
+        <h2>🏆 GENEL KLASMAN VE ŞAMPİYONLUK ÖZETİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️ Genel Klasman Raporunu Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Rapor Yazdır / PDF</button>
         </div>
         <table>
             <thead>
@@ -123,13 +134,58 @@
                     <th>Unsur / Birlik Adı</th>
                     <th>Er Meydanı (2.250)</th>
                     <th>Gece Yaklaşıyor (1.250)</th>
-                    <th>Büyük Kapışma (Senaryo 1.500)</th>
+                    <th>Büyük Kapışma (1.500)</th>
                     <th>Senaryo Süresi</th>
                     <th>TOPLAM PUAN</th>
                 </tr>
             </thead>
             <tbody id="skorBody"></tbody>
         </table>
+    </div>
+
+    <!-- 6. GENEL ŞAMPİYONLUK MATRİSİ -->
+    <div id="matrisTab" class="tab-content">
+        <h2>📊 TÜM BİRLİKLER DETAYLI ŞAMPİYONLUK MATRİSİ</h2>
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Matris Raporunu Yazdır / PDF</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="head-info">S. No</th>
+                        <th class="head-info">Unsur No</th>
+                        <th class="head-info">Birliği</th>
+                        
+                        <!-- 1. ETAP -->
+                        <th class="head-etap1">Algı Atışı-1 (300)</th>
+                        <th class="head-etap1">Algı Atışı-2 (200)</th>
+                        <th class="head-etap1">Rehine Atışı-1 (200)</th>
+                        <th class="head-etap1">Rehine Atışı-2 (300)</th>
+                        <th class="head-etap1">Tabanca Güç (300)</th>
+                        <th class="head-etap1">Tabanca Düello (200)</th>
+                        <th class="head-etap1">Kademeli Mesafe (750)</th>
+                        <th class="head-etap1">1. Etap Sonucu (2250)</th>
+
+                        <!-- 2. ETAP -->
+                        <th class="head-etap2">Sızma Atışı (500)</th>
+                        <th class="head-etap2">Gece Atışı (750)</th>
+                        <th class="head-etap2">2. Etap Sonucu (1250)</th>
+
+                        <!-- 3. ETAP -->
+                        <th class="head-etap3">Senaryo Atışı (1300)</th>
+                        <th class="head-etap3">Senaryo Tabanca (200)</th>
+                        <th class="head-etap3">3. Etap Sonucu (1500)</th>
+
+                        <!-- GENEL PUAN -->
+                        <th class="head-total">Genel Puan (5000)</th>
+                    </tr>
+                </thead>
+                <tbody id="matrisBody"></tbody>
+            </table>
+        </div>
     </div>
 
 <script>
@@ -170,6 +226,7 @@
         event.target.classList.add('active');
         if(tabId === 'skorTab') tabloGuncelle();
         if(tabId === 'detayTab') detayTablosuGuncelle();
+        if(tabId === 'matrisTab') matrisGuncelle();
     }
 
     function birlikEkle() {
@@ -340,7 +397,6 @@
                 <div class="input-group"><label>Gece Atışı (2) Vuruş Sayısı (0-1):</label><input type="number" id="gece2_vurus" min="0" max="1" value="0"></div>
                 <button onclick="kaydetGece()">Hesapla ve Kaydet</button>`;
         } else if (etapId === 10) { 
-            // TABLO 18 BİREBİR SENARYO ATIŞI GİRDİLERİ
             alan.innerHTML = `
                 <h3>9. Senaryo Atışı [Büyük Kapışma] (Max 1.500 Puan)</h3>
                 <div class="input-group"><label>1. Çatı Atışı - KN (600m) Vuruş (0-1):</label><input type="number" id="sen_cati" min="0" max="1" value="0"></div>
@@ -436,7 +492,6 @@
         veriKaydet(9, `Gece-1: ${v1} Vuruş, Gece-2: ${v2} Vuruş`, p1 + p2);
     }
 
-    // TABLO 18 PUANLAMA HESAPLAMASI
     function kaydetSenaryo() {
         let cati = parseInt(document.getElementById('sen_cati').value) || 0;
         let platform = parseInt(document.getElementById('sen_platform').value) || 0;
@@ -446,15 +501,16 @@
         let hareketli = parseInt(document.getElementById('sen_hareketli').value) || 0;
         let tabanca = parseInt(document.getElementById('sen_tabanca').value) || 0;
 
-        let vurusPuan = (cati * 200) + (platform * 100) + (besikAnahtar * 50) + (besikHareketli * 50) + (zayıfel * 100) + (hareketli * 100) + (tabanca * 50);
-        
+        let tufekPuan = (cati * 200) + (platform * 100) + (besikAnahtar * 50) + (besikHareketli * 50) + (zayıfel * 100) + (hareketli * 100);
+        let tabancaPuan = (tabanca * 50);
+
         let sure = parseInt(document.getElementById('senaryo_sure').value) || 480;
         let fark = 480 - sure;
         let bonus = fark > 0 ? fark * 1 : fark * 5;
-        let netPuan = vurusPuan + bonus;
+        let netPuan = tufekPuan + tabancaPuan + bonus;
 
         let detayMetni = `Çatı:${cati}, Platf:${platform}, Anahtar:${besikAnahtar}, Har.Beşik:${besikHareketli}, ZayıfEl:${zayıfel}, Har.Hedef:${hareketli}, Tabanca:${tabanca} | Süre:${sure}sn (${bonus >= 0 ? '+' : ''}${bonus} Pn)`;
-        veriKaydet(10, detayMetni, netPuan, { sure: sure });
+        veriKaydet(10, detayMetni, netPuan, { sure: sure, tufekPuan: tufekPuan, tabancaPuan: tabancaPuan });
     }
 
     function detayTablosuGuncelle() {
@@ -531,8 +587,84 @@
         });
     }
 
+    function matrisGuncelle() {
+        let tbody = document.getElementById('matrisBody');
+        tbody.innerHTML = '';
+
+        let sonuclar = birlikler.map((b, idx) => {
+            let p = detayPuanlar[b] || {};
+
+            let a1 = p[1]?.puan || 0;
+            let a2 = p[2]?.puan || 0;
+            let r1 = p[3]?.puan || 0;
+            let r2 = p[4]?.puan || 0;
+            let tg = p[5]?.puan || 0;
+            let td = p[6]?.puan || 0;
+            let km = p[7]?.puan || 0;
+            let etap1Sum = a1 + a2 + r1 + r2 + tg + td + km;
+
+            let sizma = p[8]?.puan || 0;
+            let gece = p[9]?.puan || 0;
+            let etap2Sum = sizma + gece;
+
+            let senAtis = p[10]?.tufekPuan !== undefined ? p[10].tufekPuan : (p[10]?.puan || 0);
+            let senTabanca = p[10]?.tabancaPuan || 0;
+            let etap3Sum = p[10]?.puan || 0;
+
+            let sure = (p[10]?.sure !== undefined) ? p[10].sure : 99999;
+            let genelPuan = etap1Sum + etap2Sum + etap3Sum;
+
+            let match = b.match(/\d+/);
+            let unsurNo = match ? match[0] : (idx + 1);
+
+            return {
+                birlik: b, unsurNo,
+                a1, a2, r1, r2, tg, td, km, etap1Sum,
+                sizma, gece, etap2Sum,
+                senAtis, senTabanca, etap3Sum,
+                sure, genelPuan
+            };
+        });
+
+        sonuclar.sort((a, b) => {
+            if (b.genelPuan !== a.genelPuan) return b.genelPuan - a.genelPuan;
+            if (b.etap3Sum !== a.etap3Sum) return b.etap3Sum - a.etap3Sum;
+            if (b.etap2Sum !== a.etap2Sum) return b.etap2Sum - a.etap2Sum;
+            if (b.etap1Sum !== a.etap1Sum) return b.etap1Sum - a.etap1Sum;
+            return a.sure - b.sure;
+        });
+
+        sonuclar.forEach((s, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><b>${index + 1}</b></td>
+                    <td>${s.unsurNo}</td>
+                    <td style="text-align:left; font-weight:bold;">${s.birlik}</td>
+                    
+                    <td class="col-etap1">${s.a1}</td>
+                    <td class="col-etap1">${s.a2}</td>
+                    <td class="col-etap1">${s.r1}</td>
+                    <td class="col-etap1">${s.r2}</td>
+                    <td class="col-etap1">${s.tg}</td>
+                    <td class="col-etap1">${s.td}</td>
+                    <td class="col-etap1">${s.km}</td>
+                    <td class="col-etap1-sum">${s.etap1Sum}</td>
+
+                    <td class="col-etap2">${s.sizma}</td>
+                    <td class="col-etap2">${s.gece}</td>
+                    <td class="col-etap2-sum">${s.etap2Sum}</td>
+
+                    <td class="col-etap3">${s.senAtis}</td>
+                    <td class="col-etap3">${s.senTabanca}</td>
+                    <td class="col-etap3-sum">${s.etap3Sum}</td>
+
+                    <td class="col-total">${s.genelPuan}</td>
+                </tr>
+            `;
+        });
+    }
+
     window.onload = init;
 </script>
 </body>
 </html>
-
