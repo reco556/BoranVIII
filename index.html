@@ -46,7 +46,7 @@
         .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 13px; text-align: left; }
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .input-group label { font-size: 13px; }
-        .input-group input { width: 140px; text-align: center; }
+        .input-group input { width: 150px; text-align: center; }
 
         .ceza-box { background: #3a1c1c; border: 1px dashed #e74c3c; padding: 10px; border-radius: 5px; margin-top: 15px; margin-bottom: 15px; }
         .ceza-box h4 { color: #e74c3c; margin: 0 0 8px 0; text-align: left; font-size: 13px; }
@@ -59,15 +59,18 @@
         .print-list-card table { min-width: 100%; }
         .print-list-card th { background-color: #34495e; color: #fff; }
 
+        .silah-badge { font-size: 10px; color: #f1c40f; display: block; text-align: left; }
+
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
             .tab-buttons, button, input, select, .btn-danger, .excel-import-area, .no-print { display: none !important; }
             .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
-            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 10px !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9px !important; }
             .head-info, .head-etap1, .head-etap2, .head-etap3, .head-total, .print-list-card th { background: #ddd !important; color: #000 !important; }
             .col-etap1, .col-etap1-sum, .col-etap2, .col-etap2-sum, .col-etap3, .col-etap3-sum, .col-total { background: none !important; color: #000 !important; }
             .print-list-card { background: none !important; border: none !important; page-break-after: always; padding: 0 !important; margin-bottom: 0 !important; }
+            .silah-badge { color: #333 !important; font-weight: normal; }
         }
     </style>
 </head>
@@ -87,18 +90,18 @@
 
     <!-- 1. BİRLİK VE PERSONEL KAYIT TABI -->
     <div id="birliklerTab" class="tab-content active">
-        <h2>Unsur, Nişancı / Gözcü ve Silah Bilgisi Kaydı</h2>
+        <h2>Unsur, Nişancı / Gözcü ve Silah & Seri No Kaydı</h2>
         
-        <div class="excel-import-area" style="background:#242430; padding:15px; border-radius:8px; border:1px dashed #f39c12; max-width:800px; margin:0 auto 20px auto; text-align:center;">
-            <h3 style="margin-top:0; color:#f39c12;">📥 Excel / CSV ile Toplu Birlik Aktarma</h3>
-            <p style="font-size:12px; color:#bdc3c7;">Hazırladığınız CSV dosyasını seçerek bütün unsurları tek tıkla yükleyebilirsiniz.</p>
+        <div class="excel-import-area" style="background:#242430; padding:15px; border-radius:8px; border:1px dashed #f39c12; max-width:850px; margin:0 auto 20px auto; text-align:center;">
+            <h3 style="margin-top:0; color:#f39c12;">📥 Excel / CSV ile Toplu Birlik & Silah Aktarma</h3>
+            <p style="font-size:12px; color:#bdc3c7;">CSV dosyasından Personel, Tüfek, Tabanca ve Seri Numaralarını yükleyebilirsiniz.</p>
             <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="csvYukle(event)">
             <button onclick="document.getElementById('csvFileInput').click()" style="background:#8e44ad;">📁 CSV Dosyası Seç ve Yükle</button>
             <button onclick="ornekCsvIndir()" style="background:#34495e;">📄 Örnek CSV Şablonu İndir</button>
         </div>
 
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <h3>Manuel Unsur Ekleme</h3>
+        <div class="card" style="max-width: 850px; margin: 0 auto;">
+            <h3>Manuel Unsur & Silah Ekleme</h3>
             <div style="margin-bottom:15px; text-align:center;">
                 <label><b>Unsur / Birlik Adı:</b> </label>
                 <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 300px;">
@@ -109,14 +112,20 @@
                     <h4 style="color:#e67e22; margin-top:0;">🎯 1. Yarışmacı: Keskin Nişancı</h4>
                     <div class="input-group"><label>Rütbesi:</label><input type="text" id="knRutbe" placeholder="Örn: J.Üçvş."></div>
                     <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="knAd" placeholder="Örn: Ahmet YILMAZ"></div>
-                    <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="knSilah" placeholder="Örn: KSR-11 / Bora 12"></div>
+                    <div class="input-group"><label>Tüfek Modeli:</label><input type="text" id="knTufek" placeholder="Örn: KSR-11"></div>
+                    <div class="input-group"><label>Tüfek Seri No:</label><input type="text" id="knTufekSeri" placeholder="Örn: 1036835"></div>
+                    <div class="input-group"><label>Tabanca Modeli:</label><input type="text" id="knTabanca" placeholder="Örn: Canik TP9"></div>
+                    <div class="input-group"><label>Tabanca Seri No:</label><input type="text" id="knTabancaSeri" placeholder="Örn: BHBF 829"></div>
                 </div>
 
                 <div class="personel-box">
                     <h4 style="color:#3498db; margin-top:0;">👁️ 2. Yarışmacı: Gözcü</h4>
                     <div class="input-group"><label>Rütbesi:</label><input type="text" id="gozcuRutbe" placeholder="Örn: J.Uzmand Çvş."></div>
                     <div class="input-group"><label>Adı Soyadı:</label><input type="text" id="gozcuAd" placeholder="Örn: Mehmet KAYA"></div>
-                    <div class="input-group"><label>Tüfek / Silah:</label><input type="text" id="gozcuSilah" placeholder="Örn: MPT-76"></div>
+                    <div class="input-group"><label>Tüfek Modeli:</label><input type="text" id="gozcuTufek" placeholder="Örn: MPT-76"></div>
+                    <div class="input-group"><label>Tüfek Seri No:</label><input type="text" id="gozcuTufekSeri" placeholder="Örn: BSUL 103"></div>
+                    <div class="input-group"><label>Tabanca Modeli:</label><input type="text" id="gozcuTabanca" placeholder="Örn: Sarsılmaz K12"></div>
+                    <div class="input-group"><label>Tabanca Seri No:</label><input type="text" id="gozcuTabancaSeri" placeholder="Örn: AAB0348"></div>
                 </div>
             </div>
 
@@ -196,7 +205,7 @@
         <h2>📊 TÜM BİRLİKLER DETAYLI ŞAMPİYONLUK MATRİSİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️️ Matris Raporunu Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨 Matris Raporunu Yazdır / PDF</button>
         </div>
         
         <div class="table-responsive">
@@ -239,7 +248,7 @@
         <h2>📄 Kura Sıralı Hakem Atış & Vuruş Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;" class="no-print">
             <button onclick="ciktilariOlustur()" style="background:#e67e22; padding:8px 16px;">🔄 Çıktı Listelerini Yenile</button>
-            <button onclick="window.print()" class="btn-print">🖨️ Tüm Sayfaları Yazdır / PDF</button>
+            <button onclick="window.print()" class="btn-print">🖨️️ Tüm Sayfaları Yazdır / PDF</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
@@ -261,13 +270,13 @@
     let birlikler = [
         {
             ad: "İzmir Tugayı 1. Unsur",
-            kn: { rutbe: "J.Üçvş.", ad: "Ahmet YILMAZ", silah: "KSR-11" },
-            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Mehmet KAYA", silah: "MPT-76" }
+            kn: { rutbe: "J.Üçvş.", ad: "Ahmet YILMAZ", tufek: "KSR-11", tufekSeri: "1036835", tabanca: "Canik TP9", tabancaSeri: "BHBF 829" },
+            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Mehmet KAYA", tufek: "MPT-76", tufekSeri: "BSUL 103", tabanca: "Sarsılmaz K12", tabancaSeri: "AAB0348" }
         },
         {
             ad: "İzmir Tugayı 2. Unsur",
-            kn: { rutbe: "J.Kd.Çvş.", ad: "Ali DEMİR", silah: "Bora 12" },
-            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Caner ŞAHİN", silah: "KCR-556" }
+            kn: { rutbe: "J.Kd.Çvş.", ad: "Ali DEMİR", tufek: "Bora 12", tufekSeri: "1055563", tabanca: "Canik TP9", tabancaSeri: "BSUL 120" },
+            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Caner ŞAHİN", tufek: "KCR-556", tufekSeri: "9823411", tabanca: "Glock 17", tabancaSeri: "GL10982" }
         }
     ];
 
@@ -295,26 +304,32 @@
         let ad = document.getElementById('birlikAdi').value.trim();
         let knRutbe = document.getElementById('knRutbe').value.trim();
         let knAd = document.getElementById('knAd').value.trim();
-        let knSilah = document.getElementById('knSilah').value.trim();
+        let knTufek = document.getElementById('knTufek').value.trim();
+        let knTufekSeri = document.getElementById('knTufekSeri').value.trim();
+        let knTabanca = document.getElementById('knTabanca').value.trim();
+        let knTabancaSeri = document.getElementById('knTabancaSeri').value.trim();
 
         let gozcuRutbe = document.getElementById('gozcuRutbe').value.trim();
         let gozcuAd = document.getElementById('gozcuAd').value.trim();
-        let gozcuSilah = document.getElementById('gozcuSilah').value.trim();
+        let gozcuTufek = document.getElementById('gozcuTufek').value.trim();
+        let gozcuTufekSeri = document.getElementById('gozcuTufekSeri').value.trim();
+        let gozcuTabanca = document.getElementById('gozcuTabanca').value.trim();
+        let gozcuTabancaSeri = document.getElementById('gozcuTabancaSeri').value.trim();
 
         if (ad) {
             birlikler.push({
                 ad: ad,
-                kn: { rutbe: knRutbe || '—', ad: knAd || '—', silah: knSilah || '—' },
-                gozcu: { rutbe: gozcuRutbe || '—', ad: gozcuAd || '—', silah: gozcuSilah || '—' }
+                kn: { rutbe: knRutbe || '—', ad: knAd || '—', tufek: knTufek || '—', tufekSeri: knTufekSeri || '—', tabanca: knTabanca || '—', tabancaSeri: knTabancaSeri || '—' },
+                gozcu: { rutbe: gozcuRutbe || '—', ad: gozcuAd || '—', tufek: gozcuTufek || '—', tufekSeri: gozcuTufekSeri || '—', tabanca: gozcuTabanca || '—', tabancaSeri: gozcuTabancaSeri || '—' }
             });
             
             document.getElementById('birlikAdi').value = '';
-            document.getElementById('knRutbe').value = '';
-            document.getElementById('knAd').value = '';
-            document.getElementById('knSilah').value = '';
-            document.getElementById('gozcuRutbe').value = '';
-            document.getElementById('gozcuAd').value = '';
-            document.getElementById('gozcuSilah').value = '';
+            document.getElementById('knRutbe').value = ''; document.getElementById('knAd').value = '';
+            document.getElementById('knTufek').value = ''; document.getElementById('knTufekSeri').value = '';
+            document.getElementById('knTabanca').value = ''; document.getElementById('knTabancaSeri').value = '';
+            document.getElementById('gozcuRutbe').value = ''; document.getElementById('gozcuAd').value = '';
+            document.getElementById('gozcuTufek').value = ''; document.getElementById('gozcuTufekSeri').value = '';
+            document.getElementById('gozcuTabanca').value = ''; document.getElementById('gozcuTabancaSeri').value = '';
 
             birlikListele();
             etapSelectDoldur();
@@ -334,8 +349,10 @@
                         <button class="btn-danger" style="padding:2px 8px;" onclick="birlikSil(${index})">X</button>
                     </div>
                     <hr style="border:0.5px solid #444; margin:8px 0;">
-                    <p style="font-size:12px; margin:4px 0;">🎯 <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad} <br><span style="color:#bdc3c7;">(Silah: ${b.kn.silah})</span></p>
-                    <p style="font-size:12px; margin:4px 0;">👁️ <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad} <br><span style="color:#bdc3c7;">(Silah: ${b.gozcu.silah})</span></p>
+                    <p style="font-size:12px; margin:4px 0;">🎯 <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad}<br>
+                    <span style="color:#bdc3c7; font-size:11px;">Tüfek: ${b.kn.tufek} (S/N: ${b.kn.tufekSeri}) | Tabanca: ${b.kn.tabanca} (S/N: ${b.kn.tabancaSeri})</span></p>
+                    <p style="font-size:12px; margin:4px 0;">👁️ <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad}<br>
+                    <span style="color:#bdc3c7; font-size:11px;">Tüfek: ${b.gozcu.tufek} (S/N: ${b.gozcu.tufekSeri}) | Tabanca: ${b.gozcu.tabanca} (S/N: ${b.gozcu.tabancaSeri})</span></p>
                 </div>
             `;
         });
@@ -366,14 +383,14 @@
                     if (cols[0]) {
                         birlikler.push({
                             ad: cols[0].trim(),
-                            kn: { rutbe: cols[1]?.trim()||'—', ad: cols[2]?.trim()||'—', silah: cols[3]?.trim()||'—' },
-                            gozcu: { rutbe: cols[4]?.trim()||'—', ad: cols[5]?.trim()||'—', silah: cols[6]?.trim()||'—' }
+                            kn: { rutbe: cols[1]?.trim()||'—', ad: cols[2]?.trim()||'—', tufek: cols[3]?.trim()||'—', tufekSeri: cols[4]?.trim()||'—', tabanca: cols[5]?.trim()||'—', tabancaSeri: cols[6]?.trim()||'—' },
+                            gozcu: { rutbe: cols[7]?.trim()||'—', ad: cols[8]?.trim()||'—', tufek: cols[9]?.trim()||'—', tufekSeri: cols[10]?.trim()||'—', tabanca: cols[11]?.trim()||'—', tabancaSeri: cols[12]?.trim()||'—' }
                         });
                         yuklenenSayi++;
                     }
                 }
             }
-            alert(`${yuklenenSayi} adet Unsur ve personel bilgisi Excel/CSV'den başarıyla yüklendi!`);
+            alert(`${yuklenenSayi} adet Unsur ve Silah Bilgisi Excel/CSV'den başarıyla yüklendi!`);
             birlikListele();
             etapSelectDoldur();
         };
@@ -381,14 +398,14 @@
     }
 
     function ornekCsvIndir() {
-        let csvContent = "data:text/csv;charset=utf-8,Unsur Adı;KN Rütbe;KN Ad Soyad;KN Silah;Gözcü Rütbe;Gözcü Ad Soyad;Gözcü Silah\n" +
-            "Ankara Tugayı 1. Unsur;J.Üçvş.;Ahmet YILMAZ;KSR-11;J.Uzmand Çvş.;Mehmet KAYA;MPT-76\n" +
-            "Bursa Tugayı 1. Unsur;J.Kd.Çvş.;Ali DEMİR;Bora 12;J.Uzmand Çvş.;Caner ŞAHİN;KCR-556";
+        let csvContent = "data:text/csv;charset=utf-8,Unsur Adı;KN Rütbe;KN Ad;KN Tüfek;KN Tüfek S/N;KN Tabanca;KN Tabanca S/N;Gözcü Rütbe;Gözcü Ad;Gözcü Tüfek;Gözcü Tüfek S/N;Gözcü Tabanca;Gözcü Tabanca S/N\n" +
+            "Ankara Tugayı 1. Unsur;J.Üçvş.;Ahmet YILMAZ;KSR-11;1036835;Canik TP9;BHBF 829;J.Uzmand Çvş.;Mehmet KAYA;MPT-76;BSUL 103;Sarsılmaz K12;AAB0348\n" +
+            "Bursa Tugayı 1. Unsur;J.Kd.Çvş.;Ali DEMİR;Bora 12;1055563;Canik TP9;BSUL 120;J.Uzmand Çvş.;Caner ŞAHİN;KCR-556;9823411;Glock 17;GL10982";
         
         let encodedUri = encodeURI(csvContent);
         let link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "birlik_yukleme_sablonu.csv");
+        link.setAttribute("download", "birlik_ve_silah_yukleme_sablonu.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -465,6 +482,15 @@
         });
     }
 
+    /* SİLAH BİLGİSİ YAZDIRMA FORMATÇISI */
+    function getSilahHtmlInfo(b) {
+        if(!b) return '';
+        return `
+            <span class="silah-badge"><b>KN Tüfek:</b> ${b.kn.tufek} (S/N: ${b.kn.tufekSeri}) | <b>KN Tab.:</b> ${b.kn.tabanca} (S/N: ${b.kn.tabancaSeri})</span>
+            <span class="silah-badge"><b>GZ Tüfek:</b> ${b.gozcu.tufek} (S/N: ${b.gozcu.tufekSeri}) | <b>GZ Tab.:</b> ${b.gozcu.tabanca} (S/N: ${b.gozcu.tabancaSeri})</span>
+        `;
+    }
+
     /* KURA VE HAKEM ÇIKTILARI OLUŞTURMA */
     function ciktilariOlustur() {
         let div = document.getElementById('ciktiAlanlari');
@@ -483,19 +509,19 @@
             card.className = 'print-list-card';
 
             let headerHtml = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f39c12; padding-bottom:8px; margin-bottom:12px;">
-                <h3 style="margin:0; color:#f39c12; text-align:left;">📋 ${etap.ad} — HAKEM ATIŞ & CEZA ÇİZELGESİ</h3>
+                <h3 style="margin:0; color:#f39c12; text-align:left;">📋 ${etap.ad} — HAKEM ATIŞ, SİLAH & CEZA ÇİZELGESİ</h3>
                 <button class="btn-print no-print" onclick="tekSayıfayiYazdir(this)">🖨️ Bu Etabı Yazdır</button>
             </div>`;
 
             let tableHtml = '';
 
             if(etap.senaryo) {
-                // Senaryo Atışı Kapsamlı Çizelge
+                // Senaryo Atışı Çizelgesi
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:30px;">Sıra</th>
-                            <th>Unsur / Birlik Adı</th>
+                            <th style="width:25px;">Sıra</th>
+                            <th>Unsur / Birlik & Silah / Seri No Bilgileri</th>
                             <th>1. Çatı<br><small>600m</small></th>
                             <th>2. Platf.<br><small>200m</small></th>
                             <th>3a. Anht.<br><small>200m</small></th>
@@ -504,7 +530,7 @@
                             <th>5. Har.H.<br><small>300m</small></th>
                             <th>6. Tab.<br><small>8m</small></th>
                             <th>Atış Süresi</th>
-                            <th style="color:#ff7675;">Ceza Puanı</th>
+                            <th style="color:#ff7675;">Ceza Pn</th>
                             <th>Ceza Nedeni</th>
                             <th>İmza</th>
                         </tr>
@@ -513,11 +539,15 @@
 
                 kuraData.forEach((bAd, idx) => {
                     let b = birlikler.find(x => x.ad === bAd);
-                    let knInfo = b ? `${b.kn.rutbe} ${b.kn.ad}` : '';
-                    let gozcuInfo = b ? `${b.gozcu.rutbe} ${b.gozcu.ad}` : '';
+                    let silahDetay = getSilahHtmlInfo(b);
+
                     tableHtml += `<tr>
                         <td><b>${idx + 1}</b></td>
-                        <td style="text-align:left;"><b>${bAd}</b><br><small style="color:#aaa;">KN: ${knInfo}<br>GZ: ${gozcuInfo}</small></td>
+                        <td style="text-align:left;">
+                            <b>${bAd}</b><br>
+                            <small style="color:#aaa;">KN: ${b?.kn.rutbe} ${b?.kn.ad} | GZ: ${b?.gozcu.rutbe} ${b?.gozcu.ad}</small>
+                            ${silahDetay}
+                        </td>
                         <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>`;
                 });
@@ -528,23 +558,32 @@
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:40px;">Grup</th>
-                            <th>YOL 1 Unsur Adı</th>
+                            <th style="width:35px;">Grup</th>
+                            <th>YOL 1 Unsur & Silah / S/N Bilgisi</th>
                             <th>Vuruş / Derece</th>
-                            <th>YOL 2 Unsur Adı</th>
+                            <th>YOL 2 Unsur & Silah / S/N Bilgisi</th>
                             <th>Vuruş / Derece</th>
-                            <th style="color:#ff7675;">Ceza Puanı</th>
-                            <th>Ceza Nedeni / Açıklama</th>
-                            <th style="width:80px;">İmza</th>
+                            <th style="color:#ff7675;">Ceza Pn</th>
+                            <th>Ceza Nedeni</th>
+                            <th style="width:70px;">İmza</th>
                         </tr>
                     </thead>
                     <tbody>`;
                 kuraData.forEach((pair, idx) => {
+                    let b1 = birlikler.find(x => x.ad === pair[0]);
+                    let b2 = birlikler.find(x => x.ad === pair[1]);
+
                     tableHtml += `<tr>
                         <td><b>${idx + 1}</b></td>
-                        <td style="text-align:left;"><b>${pair[0]}</b></td>
+                        <td style="text-align:left;">
+                            <b>${pair[0]}</b>
+                            ${getSilahHtmlInfo(b1)}
+                        </td>
                         <td></td>
-                        <td style="text-align:left;"><b>${pair[1]}</b></td>
+                        <td style="text-align:left;">
+                            <b>${pair[1]}</b>
+                            ${getSilahHtmlInfo(b2)}
+                        </td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -558,14 +597,14 @@
                 tableHtml = `<table>
                     <thead>
                         <tr>
-                            <th style="width:40px;">Sıra</th>
+                            <th style="width:30px;">Sıra</th>
                             <th>Unsur / Birlik Adı</th>
-                            <th>Keskin Nişancı</th>
-                            <th>Gözcü</th>
+                            <th>Keskin Nişancı & Silah S/N</th>
+                            <th>Gözcü & Silah S/N</th>
                             <th>Atış Vuruş / Puan</th>
-                            <th style="color:#ff7675;">Ceza Puanı</th>
+                            <th style="color:#ff7675;">Ceza Pn</th>
                             <th>Ceza Nedeni / İhlal</th>
-                            <th style="width:90px;">Hakem İmza</th>
+                            <th style="width:80px;">Hakem İmza</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -574,8 +613,16 @@
                     tableHtml += `<tr>
                         <td><b>${idx + 1}</b></td>
                         <td style="text-align:left; font-weight:bold;">${bAd}</td>
-                        <td style="text-align:left;">${b ? b.kn.rutbe + ' ' + b.kn.ad : '—'}</td>
-                        <td style="text-align:left;">${b ? b.gozcu.rutbe + ' ' + b.gozcu.ad : '—'}</td>
+                        <td style="text-align:left;">
+                            ${b ? b.kn.rutbe + ' ' + b.kn.ad : '—'}<br>
+                            <span class="silah-badge">Tüfek: ${b?.kn.tufek} (S/N: ${b?.kn.tufekSeri})</span>
+                            <span class="silah-badge">Tabanca: ${b?.kn.tabanca} (S/N: ${b?.kn.tabancaSeri})</span>
+                        </td>
+                        <td style="text-align:left;">
+                            ${b ? b.gozcu.rutbe + ' ' + b.gozcu.ad : '—'}<br>
+                            <span class="silah-badge">Tüfek: ${b?.gozcu.tufek} (S/N: ${b?.gozcu.tufekSeri})</span>
+                            <span class="silah-badge">Tabanca: ${b?.gozcu.tabanca} (S/N: ${b?.gozcu.tabancaSeri})</span>
+                        </td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -595,11 +642,12 @@
         let printWindow = window.open('', '_blank');
         printWindow.document.write(`<html><head><title>Hakem Atış Çizelgesi</title>
         <style>
-            body { font-family: sans-serif; padding: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-            th, td { border: 1px solid #000; padding: 8px 5px; text-align: center; font-size: 11px; }
+            body { font-family: sans-serif; padding: 15px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #000; padding: 6px 4px; text-align: center; font-size: 10px; }
             th { background-color: #eee; }
             h3 { text-align: center; margin-bottom: 5px; }
+            .silah-badge { font-size: 8px; color: #333; display: block; text-align: left; }
             .no-print { display: none; }
         </style>
         </head><body>`);
@@ -858,8 +906,8 @@
             let html = `<div class="card" style="margin-bottom:20px;">
                 <h3 style="color:#f39c12; text-align:left; border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:5px;">🎯 ${b.ad}</h3>
                 <p style="font-size:12px; margin-bottom:10px; color:#bdc3c7;">
-                    <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad} (${b.kn.silah}) | 
-                    <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad} (${b.gozcu.silah})
+                    <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad} (Tüfek S/N: ${b.kn.tufekSeri} | Tabanca S/N: ${b.kn.tabancaSeri}) | 
+                    <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad} (Tüfek S/N: ${b.gozcu.tufekSeri} | Tabanca S/N: ${b.gozcu.tabancaSeri})
                 </p>
                 <table>
                     <thead>
