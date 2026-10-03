@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Atış Şampiyonası Yönetim Sistemi</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 20px; }
+        h1, h2, h3 { color: #f39c12; text-align: center; }
+        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 12px 20px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; background: #333; color: #fff; border-radius: 5px; }
+        .tab-btn.active { background: #f39c12; color: #000; }
+        .tab-content { display: none; background: #2b2b36; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .tab-content.active { display: block; }
+        
+        input, select, button { padding: 8px 12px; margin: 5px; border-radius: 4px; border: 1px solid #444; background: #1e1e24; color: #fff; }
+        button { background: #27ae60; color: white; cursor: pointer; font-weight: bold; border: none; }
+        button:hover { background: #2ecc71; }
+        .btn-danger { background: #c0392b; }
+        .btn-danger:hover { background: #e74c3c; }
+        .btn-print { background: #2980b9; font-size: 16px; padding: 10px 20px; }
+        .btn-print:hover { background: #3498db; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #444; padding: 8px; text-align: center; font-size: 14px; }
+        th { background: #333; color: #f39c12; }
+        tr:nth-child(even) { background-color: #24242f; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; }
+        .two-lane { background: #2c3e50; border: 1px solid #3498db; }
+        .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 14px; text-align: left; }
+        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .input-group label { font-size: 14px; }
+        .input-group input { width: 80px; text-align: center; }
+
+        @media print {
+            body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 10px; }
+            .tab-buttons, button, input, select, .btn-danger { display: none !important; }
+            .tab-content { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; page-break-after: always; }
+            h1, h2, h3 { color: #000 !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; }
+            th { background-color: #eee !important; }
+            .card, .lane-box { background: none !important; border: 1px solid #000 !important; color: #000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎯 ATIŞ ŞAMPİYONASI YÖNETİM SİSTEMİ</h1>
+
+    <div class="tab-buttons">
+        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik / Unsur Kaydı</button>
+        <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Listesi</button>
+        <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Girişi & Otomatik Puanlama</button>
+        <button class="tab-btn" onclick="openTab('detayTab')">4. Detaylı Atış Karnesi</button>
+        <button class="tab-btn" onclick="openTab('skorTab')">5. Genel Klasman / Liderlik Tablosu</button>
+    </div>
+
+    <!-- 1. BİRLİK KAYIT TABI -->
+    <div id="birliklerTab" class="tab-content active">
+        <h2>Katılımcı Birlik ve Unsur Ekleme</h2>
+        <div style="text-align: center;">
+            <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 250px;">
+            <button onclick="birlikEkle()">Unsur Ekle</button>
+        </div>
+        <p style="text-align:center; font-size:13px; color:#bdc3c7;">
+            * Aynı birliğin unsurlarını eklerken ana adını aynı tutun (Örn: <i>İzmir Tugayı 1. Unsur</i> ve <i>İzmir Tugayı 2. Unsur</i>)
+        </p>
+        <ul id="birlikListesi" style="max-width: 450px; margin: 20px auto; background: #1e1e24; padding: 20px; border-radius: 5px;"></ul>
+    </div>
+
+    <!-- 2. KURA TABI -->
+    <div id="kuraTab" class="tab-content">
+        <h2>🎲 Her Atış İçin Ayrı Birlik Kura Sıralaması</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="kuraCek()" style="font-size: 16px; padding: 10px 20px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN KURA ÇEK</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Kura Listesini Yazdır / PDF</button>
+        </div>
+        <div id="kuraSonuclari" class="grid-container"></div>
+    </div>
+
+    <!-- 3. PUAN VERİ GİRİŞ TABI -->
+    <div id="puanTab" class="tab-content">
+        <h2>📝 Etap Veri Girişi ve Otomatik Hesaplama</h2>
+        <div style="display:flex; justify-content:center; gap:15px; margin-bottom: 20px;">
+            <div>
+                <label>Unsur Seçin:</label>
+                <select id="puanBirlikSelect"></select>
+            </div>
+            <div>
+                <label>Etap Seçin:</label>
+                <select id="puanEtapSelect" onchange="etapFormuGuncelle()"></select>
+            </div>
+        </div>
+        
+        <div id="etapFormAlani" class="card" style="max-width: 650px; margin: 0 auto;"></div>
+    </div>
+
+    <!-- 4. DETAYLI ATIŞ KARNESİ -->
+    <div id="detayTab" class="tab-content">
+        <h2>📋 Unsur/Birlik Detaylı Atış Karnesi</h2>
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button onclick="detayTablosuGuncelle()">🔄 Yenile</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Atış Karnesini Yazdır / PDF</button>
+        </div>
+        <div id="detayIcerik"></div>
+    </div>
+
+    <!-- 5. LİDERLİK TABLOSU -->
+    <div id="skorTab" class="tab-content">
+        <h2>🏆 GENEL KLASMAN VE ŞAMPİYONLUK TABLOSU</h2>
+        <p style="text-align:center; font-size:12px; color:#bdc3c7;">
+            * Eşitlik bozma sırası: 1- Toplam Puan | 2- Senaryo Puanı | 3- Gece Yaklaşıyor Puanı | 4- Er Meydanı Puanı | 5- Senaryo Süresi (Az Olan)
+        </p>
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button onclick="tabloGuncelle()">🔄 Yenile</button>
+            <button onclick="window.print()" class="btn-print">🖨️ Genel Klasman Raporunu Yazdır / PDF</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sıra</th>
+                    <th>Unsur / Birlik Adı</th>
+                    <th>Er Meydanı (2.250)</th>
+                    <th>Gece Yaklaşıyor (1.250)</th>
+                    <th>Büyük Kapışma (Senaryo)</th>
+                    <th>Senaryo Süresi</th>
+                    <th>TOPLAM PUAN</th>
+                </tr>
+            </thead>
+            <tbody id="skorBody"></tbody>
+        </table>
+    </div>
+
+<script>
+    const etaplar = [
+        { id: 1, ad: "1. Algı Atışı (1) [Er Meydanı]" },
+        { id: 2, ad: "2. Algı Atışı (2) [Er Meydanı]" },
+        { id: 3, ad: "3. Rehine Atışı (1) [Er Meydanı]" },
+        { id: 4, ad: "4. Rehine Atışı (2) [Er Meydanı]" },
+        { id: 5, ad: "5. Tabanca - Güç Kazandırma [Er Meydanı]" },
+        { id: 6, ad: "6. Tabanca - Düello Atışı [Er Meydanı]" },
+        { id: 7, ad: "7. Kademeli Mesafe Atışı [Er Meydanı]", ciftYol: true },
+        { id: 8, ad: "8. Sızma Faaliyet Atışı [Gece Yaklaşıyor]" },
+        { id: 9, ad: "9. Gece Atışı (1 & 2) [Gece Yaklaşıyor]" },
+        { id: 10, ad: "10. Senaryo Atışı [Büyük Kapışma]", senaryo: true }
+    ];
+
+    let birlikler = [
+        "İzmir Tugayı 1. Unsur", 
+        "İzmir Tugayı 2. Unsur", 
+        "Ankara Tugayı 1. Unsur", 
+        "Ankara Tugayı 2. Unsur",
+        "Bursa Tugayı 1. Unsur",
+        "Bursa Tugayı 2. Unsur"
+    ];
+    let kuralar = {}; 
+    let detayPuanlar = {}; 
+
+    function init() {
+        birlikListele();
+        etapSelectDoldur();
+        etapFormuGuncelle();
+    }
+
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+        if(tabId === 'skorTab') tabloGuncelle();
+        if(tabId === 'detayTab') detayTablosuGuncelle();
+    }
+
+    function birlikEkle() {
+        let input = document.getElementById('birlikAdi');
+        let ad = input.value.trim();
+        if (ad && !birlikler.includes(ad)) {
+            birlikler.push(ad);
+            input.value = '';
+            birlikListele();
+            etapSelectDoldur();
+        }
+    }
+
+    function birlikListele() {
+        let ul = document.getElementById('birlikListesi');
+        ul.innerHTML = '';
+        birlikler.forEach((b, index) => {
+            ul.innerHTML += `<li>${b} <button class="btn-danger" style="padding:2px 6px;" onclick="birlikSil(${index})">X</button></li>`;
+        });
+    }
+
+    function birlikSil(index) {
+        birlikler.splice(index, 1);
+        birlikListele();
+        etapSelectDoldur();
+    }
+
+    function etapSelectDoldur() {
+        let bSelect = document.getElementById('puanBirlikSelect');
+        let eSelect = document.getElementById('puanEtapSelect');
+        bSelect.innerHTML = birlikler.map(b => `<option value="${b}">${b}</option>`).join('');
+        eSelect.innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad}</option>`).join('');
+    }
+
+    function kuraCek() {
+        if(birlikler.length === 0) { alert("Lütfen önce unsur ekleyin!"); return; }
+        let container = document.getElementById('kuraSonuclari');
+        container.innerHTML = '';
+        kuralar = {};
+
+        etaplar.forEach(etap => {
+            if (etap.ciftYol) {
+                let gruplanmisPairs = [];
+                let kopyalansin = [...birlikler];
+                let birlikGruplari = {};
+                
+                kopyalansin.forEach(u => {
+                    let anaAd = u.replace(/( \d+\. Unsur|\d+\.Unsur| Unsur \d+| Unsur)/gi, '').trim();
+                    if(!birlikGruplari[anaAd]) birlikGruplari[anaAd] = [];
+                    birlikGruplari[anaAd].push(u);
+                });
+
+                let eslesmeyenTekler = [];
+
+                Object.keys(birlikGruplari).forEach(anaKey => {
+                    let grup = birlikGruplari[anaKey];
+                    grup.sort(() => Math.random() - 0.5);
+                    while(grup.length >= 2) {
+                        gruplanmisPairs.push([grup.pop(), grup.pop()]);
+                    }
+                    if(grup.length === 1) {
+                        eslesmeyenTekler.push(grup.pop());
+                    }
+                });
+
+                eslesmeyenTekler.sort(() => Math.random() - 0.5);
+                while(eslesmeyenTekler.length >= 2) {
+                    gruplanmisPairs.push([eslesmeyenTekler.pop(), eslesmeyenTekler.pop()]);
+                }
+                if(eslesmeyenTekler.length === 1) {
+                    gruplanmisPairs.push([eslesmeyenTekler.pop(), '— (Tek Katılım)']);
+                }
+
+                gruplanmisPairs.sort(() => Math.random() - 0.5);
+
+                let html = `<div class="card two-lane">
+                    <h3 style="color:#3498db;">${etap.ad}</h3>
+                    <p style="font-size:12px; text-align:center; color:#bdc3c7;">(Aynı Birlik Unsurları İkili Yolda Eş Zamanlı Atış Yapar)</p>`;
+                
+                gruplanmisPairs.forEach((pair, idx) => {
+                    html += `<div class="lane-box"><b>${idx + 1}. ATIŞ GRUBU:</b><br>🎯 <b>YOL 1:</b> ${pair[0]}<br>🎯 <b>YOL 2:</b> ${pair[1]}</div>`;
+                });
+                html += `</div>`;
+                container.innerHTML += html;
+
+            } else {
+                let karisik = [...birlikler].sort(() => Math.random() - 0.5);
+                let html = `<div class="card"><h3 style="color:#f1c40f;">${etap.ad}</h3><ol>`;
+                karisik.forEach(b => html += `<li><b>${b}</b></li>`);
+                html += `</ol></div>`;
+                container.innerHTML += html;
+            }
+        });
+    }
+
+    function etapFormuGuncelle() {
+        let etapId = parseInt(document.getElementById('puanEtapSelect').value);
+        let alan = document.getElementById('etapFormAlani');
+        
+        if (etapId === 1) {
+            alan.innerHTML = `
+                <h3>1. Algı Atışı (Kolay - Max 300 Puan)</h3>
+                <div class="input-group"><label>Vurulan Doğru Hedef Sayısı (0-3):</label><input type="number" id="algi1_vurus" min="0" max="3" value="0"></div>
+                <button onclick="kaydetAlgi1()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 2) {
+            alan.innerHTML = `
+                <h3>2. Algı Atışı (Zor - Max 200 Puan)</h3>
+                <div class="input-group"><label>Vurulan Doğru Hedef Sayısı (0-1):</label><input type="number" id="algi2_vurus" min="0" max="1" value="0"></div>
+                <button onclick="kaydetAlgi2()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 3) {
+            alan.innerHTML = `
+                <h3>3. Rehine Atışı (1) (Max 200 Puan)</h3>
+                <div class="input-group"><label>Kırmızı Bölge Vuruş Sayısı (0-1):</label><input type="number" id="rehine1_vurus" min="0" max="1" value="0"></div>
+                <button onclick="kaydetRehine1()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 4) {
+            alan.innerHTML = `
+                <h3>4. Rehine Atışı (2) (Max 300 Puan)</h3>
+                <div class="input-group"><label>Yeşil Bölge Vuruş (120 Pn):</label><input type="number" id="r2_yesil" min="0" max="4" value="0"></div>
+                <div class="input-group"><label>Beyaz Bölge Vuruş (80 Pn):</label><input type="number" id="r2_beyaz" min="0" max="4" value="0"></div>
+                <div class="input-group"><label>Mavi Bölge Vuruş (60 Pn):</label><input type="number" id="r2_mavi" min="0" max="4" value="0"></div>
+                <div class="input-group"><label>Sarı Bölge Vuruş (40 Pn):</label><input type="number" id="r2_sari" min="0" max="4" value="0"></div>
+                <button onclick="kaydetRehine2()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 5) {
+            alan.innerHTML = `
+                <h3>5. Tabanca Güç Kazandırma Atışı (Max 300 Puan)</h3>
+                <h4 style="color:#f39c12;">8 Metre Vuruşları:</h4>
+                <div class="input-group"><label>A Bölgesi (20 Pn):</label><input type="number" id="t8_a" value="0"></div>
+                <div class="input-group"><label>B Bölgesi (15 Pn):</label><input type="number" id="t8_b" value="0"></div>
+                <div class="input-group"><label>C Bölgesi (10 Pn):</label><input type="number" id="t8_c" value="0"></div>
+                <div class="input-group"><label>D Bölgesi (5 Pn):</label><input type="number" id="t8_d" value="0"></div>
+                <div class="input-group"><label>E Bölgesi (1 Pn):</label><input type="number" id="t8_e" value="0"></div>
+                <h4 style="color:#f39c12;">15 Metre Vuruşları:</h4>
+                <div class="input-group"><label>A Bölgesi (40 Pn):</label><input type="number" id="t15_a" value="0"></div>
+                <div class="input-group"><label>B Bölgesi (30 Pn):</label><input type="number" id="t15_b" value="0"></div>
+                <div class="input-group"><label>C Bölgesi (20 Pn):</label><input type="number" id="t15_c" value="0"></div>
+                <div class="input-group"><label>D Bölgesi (10 Pn):</label><input type="number" id="t15_d" value="0"></div>
+                <div class="input-group"><label>E Bölgesi (2 Pn):</label><input type="number" id="t15_e" value="0"></div>
+                <button onclick="kaydetTabancaGuc()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 6) {
+            alan.innerHTML = `
+                <h3>6. Tabanca Düello Atışı (Max 200 Puan)</h3>
+                <div class="input-group"><label>Materyal Hedef Vuruş Sayısı (Her biri 40 Pn, Max 5):</label><input type="number" id="duello_vurus" min="0" max="5" value="0"></div>
+                <button onclick="kaydetTabancaDuello()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 7) {
+            alan.innerHTML = `
+                <h3>7. Kademeli Mesafe Atışı (Max 750 Puan)</h3>
+                <select id="kademeliSecim" style="width:100%; padding:10px;">
+                    <option value="0">0 Hedef Vuruşu (0 Puan)</option>
+                    <option value="50">1 Hedef Vuruşu (50 Puan)</option>
+                    <option value="150">2 Hedef Vuruşu (150 Puan)</option>
+                    <option value="350">3 Hedef Vuruşu (350 Puan)</option>
+                    <option value="550">4 Hedef - 8 Fişekte Vuruş (550 Puan)</option>
+                    <option value="600">4 Hedef - 7 Fişekte Vuruş (600 Puan)</option>
+                    <option value="650">4 Hedef - 6 Fişekte Vuruş (650 Puan)</option>
+                    <option value="700">4 Hedef - 5 Fişekte Vuruş (700 Puan)</option>
+                    <option value="750">4 Hedef - 4 Fişekte Vuruş (750 Puan)</option>
+                </select><br><br>
+                <button onclick="kaydetKademeli()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 8) {
+            alan.innerHTML = `
+                <h3>8. Sızma Faaliyet Atışı (Max 500 Puan)</h3>
+                <div class="input-group"><label>Süre (Dakika Cinsinden):</label><input type="number" id="sizma_saniye" placeholder="Örn: 85"></div>
+                <button onclick="kaydetSizma()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 9) {
+            alan.innerHTML = `
+                <h3>9. Gece Atışı (1 & 2) (Max 750 Puan)</h3>
+                <div class="input-group"><label>Gece Atışı (1) Vuruş Sayısı (0-3):</label><input type="number" id="gece1_vurus" min="0" max="3" value="0"></div>
+                <div class="input-group"><label>Gece Atışı (2) Vuruş Sayısı (0-1):</label><input type="number" id="gece2_vurus" min="0" max="1" value="0"></div>
+                <button onclick="kaydetGece()">Hesapla ve Kaydet</button>`;
+        } else if (etapId === 10) {
+            alan.innerHTML = `
+                <h3>10. Senaryo Atışı (Max 1500 Puan + Süre Primi)</h3>
+                <div class="input-group"><label>Vuruş Puanı (Max 1500):</label><input type="number" id="senaryo_vurus" min="0" max="1500" value="0"></div>
+                <div class="input-group"><label>Tamamlama Süresi (Saniye Cinsinden):</label><input type="number" id="senaryo_sure" placeholder="480 (8 dk)"></div>
+                <button onclick="kaydetSenaryo()">Hesapla ve Kaydet</button>`;
+        }
+    }
+
+    function veriKaydet(etapId, detayMetni, puan, extraData = {}) {
+        let birlik = document.getElementById('puanBirlikSelect').value;
+        if(!detayPuanlar[birlik]) detayPuanlar[birlik] = {};
+        detayPuanlar[birlik][etapId] = { detay: detayMetni, puan: puan, ...extraData };
+        alert(`${birlik} - ${etaplar.find(e => e.id === etapId).ad}\nPuan: ${puan}\nDetay: ${detayMetni}`);
+    }
+
+    function kaydetAlgi1() {
+        let v = parseInt(document.getElementById('algi1_vurus').value) || 0;
+        let p = v === 3 ? 300 : v === 2 ? 200 : v === 1 ? 100 : 0;
+        veriKaydet(1, `${v} Vuruş`, p);
+    }
+
+    function kaydetAlgi2() {
+        let v = parseInt(document.getElementById('algi2_vurus').value) || 0;
+        let p = v === 1 ? 200 : 0;
+        veriKaydet(2, `${v} Vuruş`, p);
+    }
+
+    function kaydetRehine1() {
+        let v = parseInt(document.getElementById('rehine1_vurus').value) || 0;
+        let p = v === 1 ? 200 : 0;
+        veriKaydet(3, `${v} Kırmızı Bölge Vuruşu`, p);
+    }
+
+    function kaydetRehine2() {
+        let y = parseInt(document.getElementById('r2_yesil').value) || 0;
+        let b = parseInt(document.getElementById('r2_beyaz').value) || 0;
+        let m = parseInt(document.getElementById('r2_mavi').value) || 0;
+        let s = parseInt(document.getElementById('r2_sari').value) || 0;
+        let p = (y*120) + (b*80) + (m*60) + (s*40);
+        veriKaydet(4, `Yeşil:${y}, Beyaz:${b}, Mavi:${m}, Sarı:${s}`, p);
+    }
+
+    function kaydetTabancaGuc() {
+        let t8a = parseInt(document.getElementById('t8_a').value)||0;
+        let t8b = parseInt(document.getElementById('t8_b').value)||0;
+        let t8c = parseInt(document.getElementById('t8_c').value)||0;
+        let t8d = parseInt(document.getElementById('t8_d').value)||0;
+        let t8e = parseInt(document.getElementById('t8_e').value)||0;
+        let t15a = parseInt(document.getElementById('t15_a').value)||0;
+        let t15b = parseInt(document.getElementById('t15_b').value)||0;
+        let t15c = parseInt(document.getElementById('t15_c').value)||0;
+        let t15d = parseInt(document.getElementById('t15_d').value)||0;
+        let t15e = parseInt(document.getElementById('t15_e').value)||0;
+        
+        let p8 = (t8a*20)+(t8b*15)+(t8c*10)+(t8d*5)+(t8e*1);
+        let p15 = (t15a*40)+(t15b*30)+(t15c*20)+(t15d*10)+(t15e*2);
+        let toplam = p8 + p15;
+        if(toplam > 300) toplam = 300;
+        veriKaydet(5, `8m: ${p8} Pn, 15m: ${p15} Pn`, toplam);
+    }
+
+    function kaydetTabancaDuello() {
+        let v = parseInt(document.getElementById('duello_vurus').value) || 0;
+        let p = v * 40;
+        if(p > 200) p = 200;
+        veriKaydet(6, `${v} Materyal Hedef Vuruşu`, p);
+    }
+
+    function kaydetKademeli() {
+        let p = parseInt(document.getElementById('kademeliSecim').value) || 0;
+        let txt = document.getElementById('kademeliSecim').options[document.getElementById('kademeliSecim').selectedIndex].text;
+        veriKaydet(7, txt, p);
+    }
+
+    function kaydetSizma() {
+        let dk = parseInt(document.getElementById('sizma_saniye').value) || 999;
+        let p = dk <= 90 ? 500 : dk <= 120 ? 400 : dk <= 150 ? 300 : dk <= 165 ? 200 : dk <= 180 ? 100 : 0;
+        veriKaydet(8, `Süre: ${dk} Dakika`, p);
+    }
+
+    function kaydetGece() {
+        let v1 = parseInt(document.getElementById('gece1_vurus').value) || 0;
+        let v2 = parseInt(document.getElementById('gece2_vurus').value) || 0;
+        let p1 = v1 === 3 ? 450 : v1 === 2 ? 300 : v1 === 1 ? 150 : 0;
+        let p2 = v2 === 1 ? 300 : 0;
+        veriKaydet(9, `Gece-1: ${v1} Vuruş, Gece-2: ${v2} Vuruş`, p1 + p2);
+    }
+
+    function kaydetSenaryo() {
+        let vp = parseFloat(document.getElementById('senaryo_vurus').value) || 0;
+        let sure = parseInt(document.getElementById('senaryo_sure').value) || 480;
+        let fark = 480 - sure;
+        let bonus = fark > 0 ? fark * 1 : fark * 5;
+        let net = vp + bonus;
+        veriKaydet(10, `Vuruş: ${vp}, Süre: ${sure}sn (Bonus/Ceza: ${bonus >= 0 ? '+' : ''}${bonus})`, net, { sure: sure });
+    }
+
+    function detayTablosuGuncelle() {
+        let div = document.getElementById('detayIcerik');
+        div.innerHTML = '';
+
+        birlikler.forEach(b => {
+            let userPuanlar = detayPuanlar[b] || {};
+            let html = `<div class="card" style="margin-bottom:20px;">
+                <h3 style="color:#f39c12; text-align:left; border-bottom:1px solid #444; padding-bottom:5px;">🎯 ${b} - Atış Karnesi</h3>
+                <table>
+                    <thead>
+                        <tr><th>Etap No</th><th>Etap Adı</th><th>Atış Detayı / Vuruş Sayısı</th><th>Kazanılan Puan</th></tr>
+                    </thead>
+                    <tbody>`;
+            
+            let toplam = 0;
+            etaplar.forEach(e => {
+                let rec = userPuanlar[e.id] || { detay: 'Henüz Girilmedi', puan: 0 };
+                toplam += rec.puan;
+                html += `<tr>
+                    <td><b>${e.id}</b></td>
+                    <td style="text-align:left;">${e.ad}</td>
+                    <td>${rec.detay}</td>
+                    <td style="color:#2ecc71; font-weight:bold;">${rec.puan}</td>
+                </tr>`;
+            });
+
+            html += `</tbody></table>
+            <div style="text-align:right; font-size:16px; font-weight:bold; margin-top:10px; color:#f39c12;">GÜNCEL TOPLAM: ${toplam} PUAN</div>
+            </div>`;
+            div.innerHTML += html;
+        });
+    }
+
+    // TIE-BREAKER (EŞİTLİK BOZMA) SIRALAMA ALGORİTMASI
+    function tabloGuncelle() {
+        let tbody = document.getElementById('skorBody');
+        tbody.innerHTML = '';
+
+        let sonuclar = birlikler.map(b => {
+            let p = detayPuanlar[b] || {};
+            
+            let erMeydani = (p[1]?.puan||0) + (p[2]?.puan||0) + (p[3]?.puan||0) + (p[4]?.puan||0) + (p[5]?.puan||0) + (p[6]?.puan||0) + (p[7]?.puan||0);
+            let gece = (p[8]?.puan||0) + (p[9]?.puan||0);
+            let kapisma = (p[10]?.puan||0);
+            let senaryoSure = (p[10]?.sure !== undefined) ? p[10].sure : 99999;
+
+            let toplam = erMeydani + gece + kapisma;
+
+            return { birlik: b, erMeydani, gece, kapisma, senaryoSure, toplam };
+        });
+
+        // GELİŞMİŞ EŞİTLİK BOZMA SIRALAMASI
+        sonuclar.sort((a, b) => {
+            if (b.toplam !== a.toplam) return b.toplam - a.toplam;                   // 1. Genel Puan
+            if (b.kapisma !== a.kapisma) return b.kapisma - a.kapisma;               // 2. Senaryo Puanı
+            if (b.gece !== a.gece) return b.gece - a.gece;                           // 3. Gece Yaklaşıyor Puanı
+            if (b.erMeydani !== a.erMeydani) return b.erMeydani - a.erMeydani;       // 4. Er Meydanı Puanı
+            return a.senaryoSure - b.senaryoSure;                                    // 5. Senaryo Süresi (Daha az olan öne geçer)
+        });
+
+        sonuclar.forEach((s, index) => {
+            let sureText = s.senaryoSure !== 99999 ? `${s.senaryoSure} sn` : '—';
+            tbody.innerHTML += `
+                <tr>
+                    <td><b>${index + 1}</b></td>
+                    <td style="text-align:left; font-weight:bold;">${s.birlik}</td>
+                    <td>${s.erMeydani} / 2.250</td>
+                    <td>${s.gece} / 1.250</td>
+                    <td style="color:#e74c3c; font-weight:bold;">${s.kapisma} Puan</td>
+                    <td style="color:#f39c12;">${sureText}</td>
+                    <td style="color:#2ecc71; font-weight:bold; font-size:18px;">${s.toplam} Puan</td>
+                </tr>
+            `;
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
+
