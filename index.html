@@ -320,7 +320,6 @@
         }
     }
 
-    // EXCEL DOSYASI OKUMA / TOPLU İÇE AKTARMA
     function excelYukle(e) {
         let file = e.target.files[0];
         if(!file) return;
@@ -382,15 +381,47 @@
         document.getElementById('puanEtapSelect').innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad} (Max: ${e.maxPuan} Pn)</option>`).join('');
     }
 
+    // AYNI BİRLİK İKİLİ EŞLEŞTİRME ALGORİTMASI (7. ETAP KADEMELİ İÇİN)
+    function birlikKokAdi(ad) {
+        return ad.replace(/(\d+)\s*\.?\s*Unsur/i, '').trim();
+    }
+
     function kuraCek() {
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         kuralar = {};
         etaplar.forEach(etap => {
             if (etap.ciftYol) {
-                let list = [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
+                let gruplar = {};
+                let tumAdlar = birlikler.map(b => b.ad).sort(() => Math.random() - 0.5);
+                
+                tumAdlar.forEach(ad => {
+                    let kok = birlikKokAdi(ad);
+                    if(!gruplar[kok]) gruplar[kok] = [];
+                    gruplar[kok].push(ad);
+                });
+
                 let pairs = [];
-                while(list.length >= 2) pairs.push([list.pop(), list.pop()]);
-                if(list.length === 1) pairs.push([list.pop(), '— (Tek)']);
+                let tekKalanlar = [];
+
+                Object.keys(gruplar).forEach(kok => {
+                    let uList = gruplar[kok];
+                    while(uList.length >= 2) {
+                        pairs.push([uList.pop(), uList.pop()]);
+                    }
+                    if(uList.length === 1) {
+                        tekKalanlar.push(uList.pop());
+                    }
+                });
+
+                tekKalanlar.sort(() => Math.random() - 0.5);
+                while(tekKalanlar.length >= 2) {
+                    pairs.push([tekKalanlar.pop(), tekKalanlar.pop()]);
+                }
+                if(tekKalanlar.length === 1) {
+                    pairs.push([tekKalanlar.pop(), '— (Tek)']);
+                }
+
+                pairs.sort(() => Math.random() - 0.5);
                 kuralar[etap.id] = pairs;
             } else {
                 kuralar[etap.id] = [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
@@ -416,7 +447,6 @@
         });
     }
 
-    // DINAMIK FORM ÇİZELGESİ
     function etapCizelgesiOlustur() {
         let etapId = parseInt(document.getElementById('puanEtapSelect').value) || 1;
         let etapObj = etaplar.find(e => e.id === etapId);
@@ -564,7 +594,6 @@
         <div style="text-align:center; margin-top:15px;"><button onclick="cizelgeKaydet(${etapId})">💾 Verileri Kaydet</button></div>`;
     }
 
-    // HESAPLAMA MOTORU
     function hesaplaRow(el, etapId) {
         let tr = el.closest('tr');
         let etapObj = etaplar.find(e => e.id === etapId);
@@ -741,7 +770,6 @@
         verileriKaydet(); alert("Girişler başarıyla kaydedildi.");
     }
 
-    // ŞAMPİYONLUK MATRİSİ
     function matrisGuncelle() {
         let tbody = document.getElementById('matrisBody');
         tbody.innerHTML = '';
@@ -822,7 +850,6 @@
         });
     }
 
-    // HAKEM ÇIKTILARI (SİLAH BİLGİLERİ EKLENMİŞ VE YAZDIRILABİLİR)
     function ciktilariOlustur() {
         let div = document.getElementById('ciktiAlanlari');
         div.innerHTML = '';
