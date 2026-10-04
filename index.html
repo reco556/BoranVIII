@@ -26,10 +26,19 @@
         .btn-warning { background: #d35400; color: #fff; }
         .btn-print { background: #2980b9; font-size: 14px; padding: 8px 16px; }
         
-        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
+        .table-responsive { width: 100%; overflow-x: auto; max-height: 80vh; overflow-y: auto; margin-top: 10px; position: relative; }
         table { width: 100%; border-collapse: collapse; min-width: 1200px; margin-bottom: 15px; }
         th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 10px; }
-        th { background: #1a1a20; color: #f39c12; }
+        
+        /* Sabit Tablo Başlığı (Sticky Header) */
+        th { 
+            background: #1a1a20; 
+            color: #f39c12; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+        }
         
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; position: relative; margin-bottom: 15px; }
@@ -63,9 +72,10 @@
             .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
             table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; }
-            th { background: #eee !important; color: #000 !important; }
+            th { background: #eee !important; color: #000 !important; position: static !important; }
             .silah-info { color: #333 !important; }
             .card { border: none !important; padding: 0 !important; page-break-after: always; }
+            .table-responsive { max-height: none !important; overflow: visible !important; }
         }
     </style>
 </head>
@@ -174,7 +184,7 @@
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
             <button onclick="bolumYazdir('GENEL KLASMAN', 'ozetSkorAlani')" class="btn-print">🖨️ Yazdır / PDF</button>
         </div>
-        <div id="ozetSkorAlani">
+        <div id="ozetSkorAlani" class="table-responsive">
             <table>
                 <thead>
                     <tr>
@@ -416,7 +426,6 @@
         return ad.replace(/(\d+)\s*\.?\s*Unsur/i, '').trim();
     }
 
-    // 1 İLE TOPLAM UNSUR SAYISI (N) ARASINDA RASTGELE BENZERSİZ NUMARA ATAMA
     function unsurNumaralariniOlustur() {
         unsurNumaralari = {};
         let toplamUnsur = birlikler.length;
@@ -434,7 +443,6 @@
         });
     }
 
-    // EŞLEŞTİRİLMİŞ KURA ÇEKİM MANTIĞI & UNSUR NUMARASI ATAMA
     function kuraCek() {
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         
@@ -442,33 +450,27 @@
         
         kuralar = {};
 
-        // 0. 1 ile N arasında rastgele ve benzersiz unsur numarası ata
         unsurNumaralariniOlustur();
 
         const rastgeleSira = () => [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
 
-        // 1. (Algı-1 ile 1. Rehine) aynı kura
         let kuraAlgi1 = rastgeleSira();
         kuralar[1] = kuraAlgi1; 
         kuralar[3] = [...kuraAlgi1]; 
 
-        // 2. (Algı-2 ile 2. Rehine) aynı kura
         let kuraAlgi2 = rastgeleSira();
         kuralar[2] = kuraAlgi2; 
         kuralar[4] = [...kuraAlgi2]; 
 
-        // 3. (Tabanca Güç ile Tabanca Düello) aynı kura
         let kuraTabGuc = rastgeleSira();
         kuralar[5] = kuraTabGuc; 
         kuralar[6] = [...kuraTabGuc]; 
 
-        // 4. (Sızma, Gece-1 ve Gece-2) aynı kura
         let kuraSizma = rastgeleSira();
         kuralar[8] = kuraSizma; 
         kuralar[9] = [...kuraSizma]; 
         kuralar[10] = [...kuraSizma]; 
 
-        // 5. Kademeli (7) - Çift yollu özel eşleştirme
         let gruplar = {};
         let tumAdlar = birlikler.map(b => b.ad).sort(() => Math.random() - 0.5);
         
@@ -502,15 +504,13 @@
         pairs.sort(() => Math.random() - 0.5);
         kuralar[7] = pairs; 
 
-        // 6. Senaryo (11) - Bağımsız Kura
         kuralar[11] = rastgeleSira();
 
         verileriKaydet(); 
-        kuralariEkranaBas(true); // True parametresi ile animasyonlu bas
+        kuralariEkranaBas(true);
         etapCizelgesiOlustur();
     }
 
-    // TEK KURA ÇİZELGESİ (ANIMASYONLU YARIM SANİYE ARALIKLI)
     function kuralariEkranaBas(animasyonlu = false) {
         let container = document.getElementById('kuraSonuclari');
         if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
@@ -595,13 +595,22 @@
                     let tr = tempDiv.firstElementChild;
                     tr.classList.add('animated-row');
                     tbody.appendChild(tr);
+                    
+                    // Otomatik Aşağı Kaydırma (Scroll Into View)
+                    tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
                     currentIdx++;
                 } else {
                     clearInterval(kuraAnimasyonTimer);
                     kuraAnimasyonTimer = null;
                     if(btnKura) btnKura.disabled = false;
+                    
+                    // Kura Bitim Mesajı
+                    setTimeout(() => {
+                        alert("Kura çekimi Başarılı Bir Şekilde Gerçekleşti");
+                    }, 200);
                 }
-            }, 500); // Yarım saniye (500ms) aralıklarla ekleme
+            }, 500); 
         }
     }
 
@@ -1014,7 +1023,6 @@
             };
         });
 
-        // Eşitlik Bozma Sıralama Algoritması (Genel Toplam -> 3. Etap -> 2. Etap -> 1. Etap)
         matrisVerileri.sort((a, b) => {
             if (b.genelToplam !== a.genelToplam) return b.genelToplam - a.genelToplam;
             if (b.etap3Top !== a.etap3Top) return b.etap3Top - a.etap3Top;
