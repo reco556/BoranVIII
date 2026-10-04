@@ -190,7 +190,7 @@
         <h2>📊 TÜM ETAPLAR ŞAMPİYONLUK MATRİSİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨️ Matrisi Yazdır / PDF</button>
+            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨️️ Matrisi Yazdır / PDF</button>
         </div>
         
         <div id="matrisAlani" class="table-responsive">
@@ -203,8 +203,8 @@
                         <th class="head-etap1">2. Algı (200)</th>
                         <th class="head-etap1">1. Rehine (200)</th>
                         <th class="head-etap1">2. Rehine (300)</th>
-                        <th class="head-etap1">Tab. Güç (300)</th>
-                        <th class="head-etap1">Tab. Düello (200)</th>
+                        <th class="head-etap1">Tab. Güç (Ort.)</th>
+                        <th class="head-etap1">Tab. Düello (Ort.)</th>
                         <th class="head-etap1">Kademeli (750)</th>
                         <th class="head-etap1">1. ETAP TOPLAM</th>
                         <th class="head-etap2">Sızma (500)</th>
@@ -482,8 +482,8 @@
         } else if(etapObj.tip === "tabanca_guc_bolgeli") {
             tableHeader = `<tr>
                 <th rowspan="2">Kura</th><th rowspan="2">Unsur Adı</th>
-                <th colspan="5">KN 8m Vuruşlar</th><th colspan="5">KN 15m Vuruşlar</th>
-                <th colspan="5">GZ 8m Vuruşlar</th><th colspan="5">GZ 15m Vuruşlar</th>
+                <th colspan="5">KN 8m Vuruşlar (20/15/10/5/1 Pn)</th><th colspan="5">KN 15m Vuruşlar (40/30/20/10/2 Pn)</th>
+                <th colspan="5">GZ 8m Vuruşlar (20/15/10/5/1 Pn)</th><th colspan="5">GZ 15m Vuruşlar (40/30/20/10/2 Pn)</th>
                 <th rowspan="2">KN+GZ Ort. Net</th>
             </tr>
             <tr>
@@ -497,7 +497,7 @@
         } else if(etapObj.tip === "sizma_sure_ozel") {
             tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Tamamlanma Süresi (Dakika)</th><th>Kategori Aralığı</th><th>Net Puan (Max 500)</th></tr>`;
         } else if(etapObj.tip === "tabanca_duello") {
-            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>KN Vuruş (0-5)</th><th>GZ Vuruş (0-5)</th><th>KN+GZ Ort. Net</th></tr>`;
+            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>KN Vuruş (0-5 x 40 Pn)</th><th>GZ Vuruş (0-5 x 40 Pn)</th><th>KN+GZ Ort. Net</th></tr>`;
         } else if(etapObj.tip === "senaryo_yeni") {
             tableHeader = `<tr>
                 <th rowspan="2">Kura</th><th rowspan="2">Unsur Adı</th>
@@ -645,23 +645,28 @@
             let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
             netTd.innerText = Math.max(0, (sari + mavi + beyaz + yesil) - ceza);
         } else if(etapObj.tip === "tabanca_guc_bolgeli") {
-            const calcBolge = (a, b, c, d, e) => (a*50) + (b*40) + (c*30) + (d*20) + (e*10);
-            let kn8 = calcBolge(
+            // YENİ PUANLAMA MANTIĞI:
+            // 8 metre: A=20, B=15, C=10, D=5, E=1
+            // 15 metre: A=40, B=30, C=20, D=10, E=2
+            const calc8m = (a, b, c, d, e) => (a*20) + (b*15) + (c*10) + (d*5) + (e*1);
+            const calc15m = (a, b, c, d, e) => (a*40) + (b*30) + (c*20) + (d*10) + (e*2);
+
+            let kn8 = calc8m(
                 parseInt(tr.querySelector('.kn8_a').value)||0, parseInt(tr.querySelector('.kn8_b').value)||0,
                 parseInt(tr.querySelector('.kn8_c').value)||0, parseInt(tr.querySelector('.kn8_d').value)||0,
                 parseInt(tr.querySelector('.kn8_e').value)||0
             );
-            let kn15 = calcBolge(
+            let kn15 = calc15m(
                 parseInt(tr.querySelector('.kn15_a').value)||0, parseInt(tr.querySelector('.kn15_b').value)||0,
                 parseInt(tr.querySelector('.kn15_c').value)||0, parseInt(tr.querySelector('.kn15_d').value)||0,
                 parseInt(tr.querySelector('.kn15_e').value)||0
             );
-            let gz8 = calcBolge(
+            let gz8 = calc8m(
                 parseInt(tr.querySelector('.gz8_a').value)||0, parseInt(tr.querySelector('.gz8_b').value)||0,
                 parseInt(tr.querySelector('.gz8_c').value)||0, parseInt(tr.querySelector('.gz8_d').value)||0,
                 parseInt(tr.querySelector('.gz8_e').value)||0
             );
-            let gz15 = calcBolge(
+            let gz15 = calc15m(
                 parseInt(tr.querySelector('.gz15_a').value)||0, parseInt(tr.querySelector('.gz15_b').value)||0,
                 parseInt(tr.querySelector('.gz15_c').value)||0, parseInt(tr.querySelector('.gz15_d').value)||0,
                 parseInt(tr.querySelector('.gz15_e').value)||0
@@ -669,7 +674,7 @@
 
             let knTop = kn8 + kn15;
             let gzTop = gz8 + gz15;
-            netTd.innerText = (knTop + gzTop) / 2;
+            netTd.innerText = (knTop + gzTop) / 2; // KN ve GZ Toplamının Ortalaması
         } else if(etapObj.tip === "kademeli_ozel") {
             let vurus = parseInt(tr.querySelector('.kad_vurus').value)||0;
             let fisek = parseInt(tr.querySelector('.kad_fisek').value)||8;
@@ -703,6 +708,8 @@
 
             netTd.innerText = p;
         } else if(etapObj.tip === "tabanca_duello") {
+            // YENİ PUANLAMA MANTIĞI:
+            // 5 atım üzerinden her vuruş 40 puan. Ortalaması alınır.
             let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
             let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
             netTd.innerText = ((kv * 40) + (gv * 40)) / 2;
@@ -758,8 +765,8 @@
                 let gz8_a = getV('gz8_a'), gz8_b = getV('gz8_b'), gz8_c = getV('gz8_c'), gz8_d = getV('gz8_d'), gz8_e = getV('gz8_e');
                 let gz15_a = getV('gz15_a'), gz15_b = getV('gz15_b'), gz15_c = getV('gz15_c'), gz15_d = getV('gz15_d'), gz15_e = getV('gz15_e');
 
-                let knPuan = (kn8_a*50+kn8_b*40+kn8_c*30+kn8_d*20+kn8_e*10) + (kn15_a*50+kn15_b*40+kn15_c*30+kn15_d*20+kn15_e*10);
-                let gzPuan = (gz8_a*50+gz8_b*40+gz8_c*30+gz8_d*20+gz8_e*10) + (gz15_a*50+gz15_b*40+gz15_c*30+gz15_d*20+gz15_e*10);
+                let knPuan = (kn8_a*20+kn8_b*15+kn8_c*10+kn8_d*5+kn8_e*1) + (kn15_a*40+kn15_b*30+kn15_c*20+kn15_d*10+kn15_e*2);
+                let gzPuan = (gz8_a*20+gz8_b*15+gz8_c*10+gz8_d*5+gz8_e*1) + (gz15_a*40+gz15_b*30+gz15_c*20+gz15_d*10+gz15_e*2);
                 let ort = (knPuan + gzPuan) / 2;
 
                 detayPuanlar[bAd][etapId] = { kn8_a, kn8_b, kn8_c, kn8_d, kn8_e, kn15_a, kn15_b, kn15_c, kn15_d, kn15_e, gz8_a, gz8_b, gz8_c, gz8_d, gz8_e, gz15_a, gz15_b, gz15_c, gz15_d, gz15_e, puan: ort };
@@ -837,8 +844,8 @@
             let e2 = p[2]?.puan || 0;
             let e3 = p[3]?.puan || 0;
             let e4 = p[4]?.puan || 0;
-            let e5 = p[5]?.puan || 0;
-            let e6 = p[6]?.puan || 0;
+            let e5 = p[5]?.puan || 0; // Tabanca Güç (Ort)
+            let e6 = p[6]?.puan || 0; // Tabanca Düello (Ort)
             let e7 = p[7]?.puan || 0;
             let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
 
@@ -898,7 +905,7 @@
             let html = `<div class="card">
                 <h3>${b.ad} Karnesi</h3>
                 <p style="font-size:11px; margin-bottom:10px;">
-                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁️ <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
+                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁️️ <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
                 </p>
                 <table><thead><tr><th>Etap</th><th>Puan</th></tr></thead><tbody>`;
             let top = 0;
