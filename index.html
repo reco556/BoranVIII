@@ -937,46 +937,72 @@
     }
 
     function matrisGuncelle() {
-        let tbody = document.getElementById('matrisBody');
-        tbody.innerHTML = '';
+    let tbody = document.getElementById('matrisBody');
+    tbody.innerHTML = '';
 
-        birlikler.forEach((b, idx) => {
-            let p = detayPuanlar[b.ad] || {};
-            
-            let e1 = p[1]?.puan || 0;
-            let e2 = p[2]?.puan || 0;
-            let e3 = p[3]?.puan || 0;
-            let e4 = p[4]?.puan || 0;
-            let e5 = p[5]?.puan || 0;
-            let e6 = p[6]?.puan || 0;
-            let e7 = p[7]?.puan || 0;
-            let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
+    // 1. Verileri hazırla ve etap toplamlarını hesapla
+    let matrisVerileri = birlikler.map(b => {
+        let p = detayPuanlar[b.ad] || {};
 
-            let e8 = p[8]?.puan || 0;
-            let e9 = p[9]?.puan || 0;
-            let e10 = p[10]?.puan || 0;
-            let etap2Top = e8 + e9 + e10;
+        let e1 = p[1]?.puan || 0;
+        let e2 = p[2]?.puan || 0;
+        let e3 = p[3]?.puan || 0;
+        let e4 = p[4]?.puan || 0;
+        let e5 = p[5]?.puan || 0;
+        let e6 = p[6]?.puan || 0;
+        let e7 = p[7]?.puan || 0;
+        let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
 
-            let senTufek = p[11]?.tufekPuan || 0;
-            let senTab = p[11]?.tabancaPuan || 0;
-            let senSureFark = p[11]?.sureFark || 0;
-            let etap3Top = p[11]?.puan || 0;
+        let e8 = p[8]?.puan || 0;
+        let e9 = p[9]?.puan || 0;
+        let e10 = p[10]?.puan || 0;
+        let etap2Top = e8 + e9 + e10;
 
-            let genelToplam = etap1Top + etap2Top + etap3Top;
+        let senTufek = p[11]?.tufekPuan || 0;
+        let senTab = p[11]?.tabancaPuan || 0;
+        let senSureFark = p[11]?.sureFark || 0;
+        let etap3Top = p[11]?.puan || 0;
 
-            tbody.innerHTML += `<tr>
-                <td><b>${idx + 1}</b></td>
-                <td style="text-align:left; font-weight:bold;">${b.ad}</td>
-                <td>${e1}</td><td>${e2}</td><td>${e3}</td><td>${e4}</td><td>${e5}</td><td>${e6}</td><td>${e7}</td>
-                <td style="background:#274e2a; color:#2ecc71; font-weight:bold;">${etap1Top}</td>
-                <td>${e8}</td><td>${e9}</td><td>${e10}</td>
-                <td style="background:#3f4346; color:#bdc3c7; font-weight:bold;">${etap2Top}</td>
-                <td>${senTufek}</td><td>${senTab}</td><td>${senSureFark >= 0 ? '+'+senSureFark : senSureFark}</td>
-                <td style="background:#53301a; color:#e67e22; font-weight:bold;">${etap3Top}</td>
-                <td style="background:#4a235a; color:#f1c40f; font-weight:bold; font-size:12px;">${genelToplam}</td>
-            </tr>`;
-        });
-    }
+        let genelToplam = etap1Top + etap2Top + etap3Top;
+
+        return {
+            birlik: b,
+            e1, e2, e3, e4, e5, e6, e7, etap1Top,
+            e8, e9, e10, etap2Top,
+            senTufek, senTab, senSureFark, etap3Top,
+            genelToplam
+        };
+    });
+
+    // 2. Sıralama Algoritması (Genel Toplam -> 3. Etap -> 2. Etap -> 1. Etap)
+    matrisVerileri.sort((a, b) => {
+        if (b.genelToplam !== a.genelToplam) {
+            return b.genelToplam - a.genelToplam; // Genel Toplam yüksek olan
+        }
+        if (b.etap3Top !== a.etap3Top) {
+            return b.etap3Top - a.etap3Top; // 3. Etap yüksek olan
+        }
+        if (b.etap2Top !== a.etap2Top) {
+            return b.etap2Top - a.etap2Top; // 2. Etap yüksek olan
+        }
+        return b.etap1Top - a.etap1Top; // 1. Etap yüksek olan
+    });
+
+    // 3. Sıralanmış verileri tabloya yazdır
+    matrisVerileri.forEach((item, idx) => {
+        tbody.innerHTML += `<tr>
+            <td><b>${idx + 1}</b></td>
+            <td style="text-align:left; font-weight:bold;">${item.birlik.ad}</td>
+            <td>${item.e1}</td><td>${item.e2}</td><td>${item.e3}</td><td>${item.e4}</td><td>${item.e5}</td><td>${item.e6}</td><td>${item.e7}</td>
+            <td style="background:#274e2a; color:#2ecc71; font-weight:bold;">${item.etap1Top}</td>
+            <td>${item.e8}</td><td>${item.e9}</td><td>${item.e10}</td>
+            <td style="background:#3f4346; color:#bdc3c7; font-weight:bold;">${item.etap2Top}</td>
+            <td>${item.senTufek}</td><td>${item.senTab}</td><td>${item.senSureFark >= 0 ? '+'+item.senSureFark : item.senSureFark}</td>
+            <td style="background:#53301a; color:#e67e22; font-weight:bold;">${item.etap3Top}</td>
+            <td style="background:#4a235a; color:#f1c40f; font-weight:bold; font-size:12px;">${item.genelToplam}</td>
+        </tr>`;
+    });
+}
 
     function tabloGuncelle() {
         let tbody = document.getElementById('skorBody');
