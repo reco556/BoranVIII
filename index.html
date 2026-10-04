@@ -91,8 +91,8 @@
         <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
         <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Giriş Çizelgesi</button>
         <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
-        <button class="tab-btn" onclick="openTab('skorTab')">5. Özet Liderlik</button>
-        <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Şampiyonluk Matrisi</button>
+        <button class="tab-btn" onclick="openTab('skorTab')">5. Unsur Sıralaması</button>
+        <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Detaylı Puan Durumu</button>
         <button class="tab-btn" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Hakem Çıktıları</button>
     </div>
 
@@ -109,7 +109,8 @@
         <div class="excel-box" style="max-width: 850px; margin: 0 auto 15px auto;">
             <h3 style="color:#2ecc71; margin-top:0;">📊 Excel / CSV Dosyasından Toplu Unsur İçe Aktar</h3>
             <p style="font-size:12px; color:#ccc; margin-bottom:10px;">
-                Excel dosyanızda şu sütun başlıkları olmalıdır: <b>Unsur Adı, KN Rütbe/Ad, KN Tufek, KN Tabanca, GZ Rütbe/Ad, GZ Tufek, GZ Tabanca</b>
+                Excel dosyanızda şu sütun başlıkları olmalıdır: <b>Unsur Adı, KN Rütbe/Ad, KN Tufek, KN Tabanca, GZ Rütbe/Ad, GZ Tufek, GZ Tabanca</b><br>
+                <i>(Not: Unsur Adı kısmına bayrak emojisi ekleyebilirsiniz veya "Türkiye", "Azerbaycan" gibi ülke adını yazabilirsiniz.)</i>
             </p>
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;" onchange="excelYukle(event)">
             <button onclick="document.getElementById('excelFileInput').click()" style="background:#27ae60; font-size:14px; padding:8px 16px;">📂 Excel Dosyası Seç ve Yükle</button>
@@ -118,8 +119,8 @@
         <div class="card" style="max-width: 850px; margin: 0 auto;">
             <h3>Tekil Unsur Ekle</h3>
             <div style="margin-bottom:15px; text-align:center;">
-                <label><b>Unsur Adı:</b> </label>
-                <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 300px;">
+                <label><b>Unsur Adı / Ülke:</b> </label>
+                <input type="text" id="birlikAdi" placeholder="Örn: 🇹🇷 Türkiye 1. Unsur veya 🇦🇿 Azerbaycan 2. Unsur" style="width: 320px;">
             </div>
 
             <div class="form-grid">
@@ -177,12 +178,12 @@
         <div id="detayIcerik"></div>
     </div>
 
-    <!-- 5. ÖZET LİDERLİK TABLOSU -->
+    <!-- 5. UNSUR SIRALAMASI TABLOSU -->
     <div id="skorTab" class="tab-content">
-        <h2>🏆 GENEL KLASMAN LİDERLİK TABLOSU</h2>
+        <h2>🏆 UNSUR SIRALAMASI</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
-            <button onclick="bolumYazdir('GENEL KLASMAN', 'ozetSkorAlani')" class="btn-print">🖨️ Yazdır / PDF</button>
+            <button onclick="bolumYazdir('UNSUR SIRALAMASI', 'ozetSkorAlani')" class="btn-print">🖨️️ Yazdır / PDF</button>
         </div>
         <div id="ozetSkorAlani" class="table-responsive">
             <table>
@@ -203,12 +204,12 @@
         </div>
     </div>
 
-    <!-- 6. GENEL ŞAMPİYONLUK MATRİSİ -->
+    <!-- 6. DETAYLI PUAN DURUMU -->
     <div id="matrisTab" class="tab-content">
-        <h2>📊 TÜM ETAPLAR ŞAMPİYONLUK MATRİSİ</h2>
+        <h2>📊 DETAYLI PUAN DURUMU</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨 Matrisi Yazdır / PDF</button>
+            <button onclick="bolumYazdir('DETAYLI PUAN DURUMU', 'matrisAlani')" class="btn-print">🖨 Matrisi Yazdır / PDF</button>
         </div>
         
         <div id="matrisAlani" class="table-responsive">
@@ -254,6 +255,39 @@
 <script>
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
+    // Otomatik Ülke Bayrağı Eşleştirici
+    const ulkeBayraklari = {
+        "turkiye": "🇹🇷", "türkiye": "🇹🇷", "tr": "🇹🇷",
+        "azerbaycan": "🇦🇿", "az": "🇦🇿",
+        "pakistan": "🇵🇰", "pk": "🇵🇰",
+        "katar": "🇶🇦", "qa": "🇶🇦",
+        "ozbekistan": "🇺🇿", "özbekistan": "🇺🇿",
+        "kazakistan": "🇰🇿",
+        "kırgızistan": "🇰🇬", "kirgizistan": "🇰🇬",
+        "kktc": "🇹🇷",
+        "abd": "🇺🇸", "usa": "🇺🇸",
+        "ingiltere": "🇬🇧",
+        "almanya": "🇩🇪",
+        "italya": "🇮🇹",
+        "ispanya": "🇪🇸",
+        "suudi arabistan": "🇸🇦",
+        "bae": "🇦🇪", "üae": "🇦🇪"
+    };
+
+    function otomatikBayrakEkle(metin) {
+        if (!metin) return metin;
+        // Eğer zaten bayrak emojisi içeriyorsa dokunma
+        if (/[\uD83C][\uDDE6-\uDDFF]{2}/.test(metin)) return metin;
+
+        let kucuk = metin.toLowerCase();
+        for (let ulke in ulkeBayraklari) {
+            if (kucuk.includes(ulke)) {
+                return ulkeBayraklari[ulke] + " " + metin;
+            }
+        }
+        return metin;
+    }
+
     const etaplar = [
         { id: 1, ad: "1. Algı", maxPuan: 300, tip: "standart", hedefAdet: 3, hedefPuan: 100 },
         { id: 2, ad: "2. Algı", maxPuan: 200, tip: "standart", hedefAdet: 1, hedefPuan: 200 },
@@ -275,8 +309,8 @@
     let kuraAnimasyonTimer = null;
 
     const varsayilanBirlikler = [
-        { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "J.Üçvş. Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "J.Uzm.Çvş. Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
-        { ad: "İzmir Tugayı 2. Unsur", kn: { ad: "J.Bçvş. Ali DEMİR", tufek: "KSR-11 / 104", tabanca: "Canik / 830" }, gozcu: { ad: "J.Uzm.Çvş. Caner ŞAHİN", tufek: "MPT-76 / 104", tabanca: "Sarsılmaz / 349" } }
+        { ad: "🇹🇷 Türkiye 1. Unsur", kn: { ad: "J.Üçvş. Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "J.Uzm.Çvş. Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
+        { ad: "🇦🇿 Azerbaycan 1. Unsur", kn: { ad: "J.Bçvş. Ali DEMİR", tufek: "KSR-11 / 104", tabanca: "Canik / 830" }, gozcu: { ad: "J.Uzm.Çvş. Caner ŞAHİN", tufek: "MPT-76 / 104", tabanca: "Sarsılmaz / 349" } }
     ];
 
     function verileriKaydet() {
@@ -352,12 +386,14 @@
     function birlikEkle() {
         let ad = document.getElementById('birlikAdi').value.trim();
         if (ad) {
+            ad = otomatikBayrakEkle(ad);
             birlikler.push({
                 ad: ad,
                 kn: { ad: document.getElementById('knAd').value || '—', tufek: document.getElementById('knTufek').value || '—', tabanca: document.getElementById('knTabanca').value || '—' },
                 gozcu: { ad: document.getElementById('gozcuAd').value || '—', tufek: document.getElementById('gozcuTufek').value || '—', tabanca: document.getElementById('gozcuTabanca').value || '—' }
             });
             verileriKaydet(); birlikListele(); etapSelectDoldur();
+            document.getElementById('birlikAdi').value = '';
         }
     }
 
@@ -377,8 +413,9 @@
             rows.forEach(r => {
                 let uAd = r["Unsur Adı"] || r["Unsur Adi"] || r["UNSUR ADI"];
                 if(uAd) {
+                    uAd = otomatikBayrakEkle(uAd.toString().trim());
                     birlikler.push({
-                        ad: uAd.toString().trim(),
+                        ad: uAd,
                         kn: {
                             ad: (r["KN Rütbe/Ad"] || r["KN Ad"] || r["KN ADI"] || "—").toString(),
                             tufek: (r["KN Tufek"] || r["KN TUFEK"] || "—").toString(),
@@ -596,7 +633,6 @@
                     tr.classList.add('animated-row');
                     tbody.appendChild(tr);
                     
-                    // Otomatik Aşağı Kaydırma (Scroll Into View)
                     tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
                     currentIdx++;
@@ -605,7 +641,6 @@
                     kuraAnimasyonTimer = null;
                     if(btnKura) btnKura.disabled = false;
                     
-                    // Kura Bitim Mesajı
                     setTimeout(() => {
                         alert("Kura çekimi Başarılı Bir Şekilde Gerçekleşti");
                     }, 200);
