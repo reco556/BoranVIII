@@ -244,7 +244,7 @@
         { id: 5, ad: "5. Tabanca - Güç Kazandırma", maxPuan: 300, tip: "tabanca_guc_bolgeli" },
         { id: 6, ad: "6. Tabanca - Düello Atışı", maxPuan: 200, tip: "tabanca_duello" },
         { id: 7, ad: "7. Kademeli Mesafe Atışı", maxPuan: 750, tip: "kademeli_ozel", ciftYol: true },
-        { id: 8, ad: "8. Sızma Faaliyet Atışı", maxPuan: 500, tip: "standart", hedefAdet: 5, hedefPuan: 100 },
+        { id: 8, ad: "8. Sızma Faaliyet Atışı", maxPuan: 500, tip: "sizma_sure_ozel" },
         { id: 9, ad: "9. Gece Atışı - 1 (3 Atım)", maxPuan: 450, tip: "standart", hedefAdet: 3, hedefPuan: 150 },
         { id: 10, ad: "10. Gece Atışı - 2 (Tek Atım)", maxPuan: 300, tip: "standart", hedefAdet: 1, hedefPuan: 300 },
         { id: 11, ad: "11. Senaryo Atışı (Büyük Kapışma)", maxPuan: 1500, tip: "senaryo_yeni" }
@@ -381,7 +381,6 @@
         document.getElementById('puanEtapSelect').innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad} (Max: ${e.maxPuan} Pn)</option>`).join('');
     }
 
-    // AYNI BİRLİK İKİLİ EŞLEŞTİRME ALGORİTMASI (7. ETAP KADEMELİ İÇİN)
     function birlikKokAdi(ad) {
         return ad.replace(/(\d+)\s*\.?\s*Unsur/i, '').trim();
     }
@@ -447,6 +446,17 @@
         });
     }
 
+    // SIZMA SÜRE PUANI HESAPLAMA MOTORU
+    function sizmaPuanHesapla(dakika) {
+        if (dakika <= 0) return 0;
+        if (dakika <= 90) return 500;
+        if (dakika <= 120) return 400;
+        if (dakika <= 150) return 300;
+        if (dakika <= 165) return 200;
+        if (dakika <= 180) return 100;
+        return 0; // 180 dk üzeri
+    }
+
     function etapCizelgesiOlustur() {
         let etapId = parseInt(document.getElementById('puanEtapSelect').value) || 1;
         let etapObj = etaplar.find(e => e.id === etapId);
@@ -474,6 +484,8 @@
             </tr>`;
         } else if(etapObj.tip === "kademeli_ozel") {
             tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Başarılı Vuruş Adedi (0-4)</th><th>Atılan Fişek Sayısı (4-8)</th><th>Ceza Pn</th><th>Net Puan</th></tr>`;
+        } else if(etapObj.tip === "sizma_sure_ozel") {
+            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Tamamlanma Süresi (Dakika)</th><th>Kategori Aralığı</th><th>Net Puan (Max 500)</th></tr>`;
         } else if(etapObj.tip === "tabanca_duello") {
             tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>KN Vuruş (0-5)</th><th>GZ Vuruş (0-5)</th><th>KN+GZ Ort. Net</th></tr>`;
         } else if(etapObj.tip === "senaryo_yeni") {
@@ -552,6 +564,22 @@
                         </select>
                     </td>
                     <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan||0}" onchange="hesaplaRow(this, 7)"></td>
+                    <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
+                </tr>`;
+            } else if(etapObj.tip === "sizma_sure_ozel") {
+                let dk = p.dakika || 0;
+                let katText = "—";
+                if(dk > 0 && dk <= 90) katText = "0-90 Dk";
+                else if(dk > 90 && dk <= 120) katText = "90-120 Dk";
+                else if(dk > 120 && dk <= 150) katText = "120-150 Dk";
+                else if(dk > 150 && dk <= 165) katText = "150-165 Dk";
+                else if(dk > 165 && dk <= 180) katText = "165-180 Dk";
+                else if(dk > 180) katText = "180 Dk üzeri";
+
+                tableRows += `<tr data-birlik="${bAd}">
+                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><input type="number" class="sizma_dk input-mini" style="width:70px !important;" value="${dk}" onchange="hesaplaRow(this, 8)"> dk</td>
+                    <td class="sizma_kat" style="color:#f1c40f; font-weight:bold;">${katText}</td>
                     <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
                 </tr>`;
             } else if(etapObj.tip === "tabanca_duello") {
@@ -650,6 +678,20 @@
             }
 
             netTd.innerText = Math.max(0, bazPuan - ceza);
+        } else if(etapObj.tip === "sizma_sure_ozel") {
+            let dk = parseInt(tr.querySelector('.sizma_dk').value)||0;
+            let katTd = tr.querySelector('.sizma_kat');
+            let p = sizmaPuanHesapla(dk);
+            
+            if(dk > 0 && dk <= 90) katTd.innerText = "0-90 Dk";
+            else if(dk > 90 && dk <= 120) katTd.innerText = "90-120 Dk";
+            else if(dk > 120 && dk <= 150) katTd.innerText = "120-150 Dk";
+            else if(dk > 150 && dk <= 165) katTd.innerText = "150-165 Dk";
+            else if(dk > 165 && dk <= 180) katTd.innerText = "165-180 Dk";
+            else if(dk > 180) katTd.innerText = "180 Dk üzeri";
+            else katTd.innerText = "—";
+
+            netTd.innerText = p;
         } else if(etapObj.tip === "tabanca_duello") {
             let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
             let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
@@ -729,6 +771,10 @@
                 }
 
                 detayPuanlar[bAd][etapId] = { vurus, fisek, cezaPuan: ceza, puan: Math.max(0, bazPuan - ceza) };
+            } else if(etapObj.tip === "sizma_sure_ozel") {
+                let dk = parseInt(tr.querySelector('.sizma_dk').value)||0;
+                let p = sizmaPuanHesapla(dk);
+                detayPuanlar[bAd][etapId] = { dakika: dk, puan: p };
             } else if(etapObj.tip === "tabanca_duello") {
                 let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
                 let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
