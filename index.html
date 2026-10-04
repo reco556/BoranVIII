@@ -394,47 +394,72 @@
         return ad.replace(/(\d+)\s*\.?\s*Unsur/i, '').trim();
     }
 
+    // EŞLEŞTİRİLMİŞ KURA ÇEKİM MANTIĞI
     function kuraCek() {
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         kuralar = {};
-        etaplar.forEach(etap => {
-            if (etap.ciftYol) {
-                let gruplar = {};
-                let tumAdlar = birlikler.map(b => b.ad).sort(() => Math.random() - 0.5);
-                
-                tumAdlar.forEach(ad => {
-                    let kok = birlikKokAdi(ad);
-                    if(!gruplar[kok]) gruplar[kok] = [];
-                    gruplar[kok].push(ad);
-                });
 
-                let pairs = [];
-                let tekKalanlar = [];
+        // Yardımcı Fonksiyon: Standart Karıştırma
+        const rastgeleSira = () => [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
 
-                Object.keys(gruplar).forEach(kok => {
-                    let uList = gruplar[kok];
-                    while(uList.length >= 2) {
-                        pairs.push([uList.pop(), uList.pop()]);
-                    }
-                    if(uList.length === 1) {
-                        tekKalanlar.push(uList.pop());
-                    }
-                });
+        // 1. (Algı-1 ile 1. Rehine) aynı kura
+        let kuraAlgi1 = rastgeleSira();
+        kuralar[1] = kuraAlgi1; // 1. Algı
+        kuralar[3] = [...kuraAlgi1]; // 1. Rehine
 
-                tekKalanlar.sort(() => Math.random() - 0.5);
-                while(tekKalanlar.length >= 2) {
-                    pairs.push([tekKalanlar.pop(), tekKalanlar.pop()]);
-                }
-                if(tekKalanlar.length === 1) {
-                    pairs.push([tekKalanlar.pop(), '— (Tek)']);
-                }
+        // 2. (Algı-2 ile 2. Rehine) aynı kura
+        let kuraAlgi2 = rastgeleSira();
+        kuralar[2] = kuraAlgi2; // 2. Algı
+        kuralar[4] = [...kuraAlgi2]; // 2. Rehine
 
-                pairs.sort(() => Math.random() - 0.5);
-                kuralar[etap.id] = pairs;
-            } else {
-                kuralar[etap.id] = [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
+        // 3. (Tabanca Güç ile Tabanca Düello) aynı kura
+        let kuraTabGuc = rastgeleSira();
+        kuralar[5] = kuraTabGuc; // Tab. Güç
+        kuralar[6] = [...kuraTabGuc]; // Tab. Düello
+
+        // 4. (Sızma, Gece-1 ve Gece-2) aynı kura
+        let kuraSizma = rastgeleSira();
+        kuralar[8] = kuraSizma; // Sızma
+        kuralar[9] = [...kuraSizma]; // Gece-1
+        kuralar[10] = [...kuraSizma]; // Gece-2
+
+        // 5. Kademeli (7) - Çift yollu özel eşleştirme
+        let gruplar = {};
+        let tumAdlar = birlikler.map(b => b.ad).sort(() => Math.random() - 0.5);
+        
+        tumAdlar.forEach(ad => {
+            let kok = birlikKokAdi(ad);
+            if(!gruplar[kok]) gruplar[kok] = [];
+            gruplar[kok].push(ad);
+        });
+
+        let pairs = [];
+        let tekKalanlar = [];
+
+        Object.keys(gruplar).forEach(kok => {
+            let uList = gruplar[kok];
+            while(uList.length >= 2) {
+                pairs.push([uList.pop(), uList.pop()]);
+            }
+            if(uList.length === 1) {
+                tekKalanlar.push(uList.pop());
             }
         });
+
+        tekKalanlar.sort(() => Math.random() - 0.5);
+        while(tekKalanlar.length >= 2) {
+            pairs.push([tekKalanlar.pop(), tekKalanlar.pop()]);
+        }
+        if(tekKalanlar.length === 1) {
+            pairs.push([tekKalanlar.pop(), '— (Tek)']);
+        }
+
+        pairs.sort(() => Math.random() - 0.5);
+        kuralar[7] = pairs; // Kademeli
+
+        // 6. Senaryo (11) - Bağımsız Kura
+        kuralar[11] = rastgeleSira();
+
         verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
     }
 
@@ -485,7 +510,7 @@
 
                 if (kuraData) {
                     if (etap.ciftYol) {
-                        // Çift yollu atışlarda (Kademeli vb.) yol ve sıra bilgisi
+                        // Çift yollu atışlarda (Kademeli vb.) yol ve sıra bilgi eşleşmesi
                         let pairIdx = kuraData.findIndex(p => p[0] === u.ad || p[1] === u.ad);
                         if (pairIdx !== -1) {
                             let pair = kuraData[pairIdx];
