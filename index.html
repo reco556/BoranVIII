@@ -127,11 +127,11 @@
         <div id="birlikKartlari" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:15px; margin-top:15px;"></div>
     </div>
 
-    <!-- 2. KURA TABI (TEK ÇİZELGE/TABLO FORMATI) -->
+    <!-- 2. KURA TABI -->
     <div id="kuraTab" class="tab-content">
         <h2>🎲 Genel Kura Atış Sıralaması Çizelgesi</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK</button>
+            <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK &amp; NUMARA ATA</button>
             <button onclick="bolumYazdir('BORAN VIII - GENEL KURA ATIŞ ÇİZELGESİ', 'kuraSonuclari')" class="btn-print">🖨️ Kura Çizelgesini Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="table-responsive"></div>
@@ -153,7 +153,7 @@
         <h2>📋 Unsur Atış Karneleri</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="detayTablosuGuncelle()">🔄 Yenile</button>
-            <button onclick="bolumYazdir('ATIŞ KARNELERİ', 'detayIcerik')" class="btn-print">🖨️ Karneleri Yazdır / PDF</button>
+            <button onclick="bolumYazdir('ATIŞ KARNELERİ', 'detayIcerik')" class="btn-print">🖨 Karneleri Yazdır / PDF</button>
         </div>
         <div id="detayIcerik"></div>
     </div>
@@ -252,6 +252,7 @@
     let birlikler = [];
     let kuralar = {}; 
     let detayPuanlar = {}; 
+    let unsurNumaralari = {}; 
 
     const varsayilanBirlikler = [
         { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "J.Üçvş. Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "J.Uzm.Çvş. Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
@@ -262,25 +263,28 @@
         localStorage.setItem('atis_birlikler', JSON.stringify(birlikler));
         localStorage.setItem('atis_kuralar', JSON.stringify(kuralar));
         localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar));
+        localStorage.setItem('atis_unsurNumaralari', JSON.stringify(unsurNumaralari));
     }
 
     function verileriYukle() {
         let kb = localStorage.getItem('atis_birlikler');
         let kk = localStorage.getItem('atis_kuralar');
         let kp = localStorage.getItem('atis_detayPuanlar');
+        let kn = localStorage.getItem('atis_unsurNumaralari');
         if (kb) birlikler = JSON.parse(kb); else birlikler = [...varsayilanBirlikler];
         if (kk) kuralar = JSON.parse(kk);
         if (kp) detayPuanlar = JSON.parse(kp);
+        if (kn) unsurNumaralari = JSON.parse(kn);
     }
 
     function tumVerileriSifirla() {
         if(confirm("Tüm kayıtlar silinecek. Onaylıyor musunuz?")) {
-            localStorage.clear(); birlikler = []; kuralar = {}; detayPuanlar = {};
+            localStorage.clear(); birlikler = []; kuralar = {}; detayPuanlar = {}; unsurNumaralari = {};
             init(); alert("Temizlendi.");
         }
     }
 
-    function sadeceKuraSifirla() { kuralar = {}; localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); kuralariEkranaBas(); etapCizelgesiOlustur(); }
+    function sadeceKuraSifirla() { kuralar = {}; unsurNumaralari = {}; localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); localStorage.setItem('atis_unsurNumaralari', JSON.stringify(unsurNumaralari)); kuralariEkranaBas(); etapCizelgesiOlustur(); }
     function sadecePuanSifirla() { detayPuanlar = {}; localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar)); etapCizelgesiOlustur(); }
 
     function init() {
@@ -394,10 +398,34 @@
         return ad.replace(/(\d+)\s*\.?\s*Unsur/i, '').trim();
     }
 
-    // EŞLEŞTİRİLMİŞ KURA ÇEKİM MANTIĞI
+    // 1 İLE TOPLAM UNSUR SAYISI (N) ARASINDA RASTGELE BENZERSİZ NUMARA ATAMA
+    function unsurNumaralariniOlustur() {
+        unsurNumaralari = {};
+        let toplamUnsur = birlikler.length;
+        if(toplamUnsur === 0) return;
+
+        // 1'den N'e kadar sayı dizisi oluştur
+        let numaralar = Array.from({length: toplamUnsur}, (_, i) => i + 1);
+        
+        // Sayıları karıştır (Fisher-Yates Shuffle)
+        for (let i = numaralar.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [numaralar[i], numaralar[j]] = [numaralar[j], numaralar[i]];
+        }
+
+        // Karıştırılmış numaraları sırayla unsurlara ata
+        birlikler.forEach((b, idx) => {
+            unsurNumaralari[b.ad] = numaralar[idx];
+        });
+    }
+
+    // EŞLEŞTİRİLMİŞ KURA ÇEKİM MANTIĞI & UNSUR NUMARASI ATAMA
     function kuraCek() {
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         kuralar = {};
+
+        // 0. 1 ile N arasında rastgele ve benzersiz unsur numarası ata
+        unsurNumaralariniOlustur();
 
         // Yardımcı Fonksiyon: Standart Karıştırma
         const rastgeleSira = () => [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
@@ -463,7 +491,7 @@
         verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
     }
 
-    // 11 ATIŞ CİNSİNİ YAN YANA GÖSTEREN TEK KURA ÇİZELGESİ
+    // 11 ATIŞ CİNSİNİ YAN YANA GÖSTEREN VE UNSUR NUMARALI TEK KURA ÇİZELGESİ
     function kuralariEkranaBas() {
         let container = document.getElementById('kuraSonuclari');
         if(birlikler.length === 0) {
@@ -475,7 +503,8 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width:40px;">Sıra</th>
+                    <th style="width:35px;">Sıra</th>
+                    <th style="width:75px;">Unsur No</th>
                     <th style="width:160px;">Birlik / Unsur Adı</th>
                     <th style="width:180px;">Keskin Nişancı (Rütbe / Ad / Silahlar)</th>
                     <th style="width:180px;">Gözcü (Rütbe / Ad / Silahlar)</th>`;
@@ -485,14 +514,17 @@
             html += `<th style="min-width:55px;">${e.ad}</th>`;
         });
 
-        html += `<th style="width:100px;">İmza</th>
+        html += `<th style="width:90px;">İmza</th>
                 </tr>
             </thead>
             <tbody>`;
 
         birlikler.forEach((u, idx) => {
+            let uNo = unsurNumaralari[u.ad] ? `#${unsurNumaralari[u.ad]}` : '—';
+
             html += `<tr>
                 <td><b>${idx + 1}</b></td>
+                <td style="font-weight:bold; color:#2ecc71; font-size:11px;">${uNo}</td>
                 <td style="text-align:left;"><b>${u.ad}</b></td>
                 <td style="text-align:left;">
                     <b>${u.kn.ad}</b>
@@ -510,7 +542,6 @@
 
                 if (kuraData) {
                     if (etap.ciftYol) {
-                        // Çift yollu atışlarda (Kademeli vb.) yol ve sıra bilgi eşleşmesi
                         let pairIdx = kuraData.findIndex(p => p[0] === u.ad || p[1] === u.ad);
                         if (pairIdx !== -1) {
                             let pair = kuraData[pairIdx];
@@ -591,10 +622,12 @@
         let tableRows = '';
         birlikSırası.forEach((bAd, idx) => {
             let p = detayPuanlar[bAd]?.[etapId] || {};
+            let uNo = unsurNumaralari[bAd] ? ` (#${unsurNumaralari[bAd]})` : '';
+            let gosterimAdi = `${bAd}${uNo}`;
             
             if(etapObj.tip === "rehine2_renkli") {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="r_sari input-mini" value="${p.sari||0}" onchange="hesaplaRow(this, 4)"></td>
                     <td><input type="number" class="r_mavi input-mini" value="${p.mavi||0}" onchange="hesaplaRow(this, 4)"></td>
                     <td><input type="number" class="r_beyaz input-mini" value="${p.beyaz||0}" onchange="hesaplaRow(this, 4)"></td>
@@ -604,7 +637,7 @@
                 </tr>`;
             } else if(etapObj.tip === "tabanca_guc_bolgeli") {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="kn8_a input-mini" value="${p.kn8_a||0}" onchange="hesaplaRow(this, 5)"></td>
                     <td><input type="number" class="kn8_b input-mini" value="${p.kn8_b||0}" onchange="hesaplaRow(this, 5)"></td>
                     <td><input type="number" class="kn8_c input-mini" value="${p.kn8_c||0}" onchange="hesaplaRow(this, 5)"></td>
@@ -629,7 +662,7 @@
                 </tr>`;
             } else if(etapObj.tip === "kademeli_ozel") {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td>
                         <select class="kad_vurus" style="width:70px !important;" onchange="hesaplaRow(this, 7)">
                             <option value="0" ${p.vurus==0?'selected':''}>0 Hedef</option>
@@ -662,21 +695,21 @@
                 else if(dk > 180) katText = "180 Dk üzeri";
 
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="sizma_dk input-mini" style="width:70px !important;" value="${dk}" onchange="hesaplaRow(this, 8)"> dk</td>
                     <td class="sizma_kat" style="color:#f1c40f; font-weight:bold;">${katText}</td>
                     <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
                 </tr>`;
             } else if(etapObj.tip === "tabanca_duello") {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="kn_vurus input-mini" max="5" value="${p.kn_vurus||0}" onchange="hesaplaRow(this, 6)"> / 5</td>
                     <td><input type="number" class="gz_vurus input-mini" max="5" value="${p.gz_vurus||0}" onchange="hesaplaRow(this, 6)"> / 5</td>
                     <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
                 </tr>`;
             } else if(etapObj.tip === "senaryo_yeni") {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="s_cati input-mini" max="1" value="${p.s_cati||0}" onchange="hesaplaRow(this, 11)"> /1</td>
                     <td><input type="number" class="s_plat input-mini" max="3" value="${p.s_plat||0}" onchange="hesaplaRow(this, 11)"> /3</td>
                     <td><input type="number" class="s_besik_kn input-mini" max="1" value="${p.s_besik_kn||0}" onchange="hesaplaRow(this, 11)"> /1</td>
@@ -694,7 +727,7 @@
                 </tr>`;
             } else {
                 tableRows += `<tr data-birlik="${bAd}">
-                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><b>${idx + 1}</b></td><td><b>${gosterimAdi}</b></td>
                     <td><input type="number" class="vurus_cnt input-mini" max="${etapObj.hedefAdet}" value="${p.vurus||0}" onchange="hesaplaRow(this, ${etapId})"> / ${etapObj.hedefAdet}</td>
                     <td><b>${etapObj.hedefPuan} Pn</b></td>
                     <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan||0}" onchange="hesaplaRow(this, ${etapId})"></td>
@@ -972,8 +1005,9 @@
         div.innerHTML = '';
         birlikler.forEach(b => {
             let p = detayPuanlar[b.ad] || {};
+            let uNo = unsurNumaralari[b.ad] ? ` (#${unsurNumaralari[b.ad]})` : '';
             let html = `<div class="card">
-                <h3>${b.ad} Karnesi</h3>
+                <h3>${b.ad}${uNo} Karnesi</h3>
                 <p style="font-size:11px; margin-bottom:10px;">
                     🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁 <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
                 </p>
@@ -1004,7 +1038,7 @@
                 <thead>
                     <tr>
                         <th style="width:40px;">Sıra</th>
-                        <th>Unsur Adı ve Personel Rütbe/Ad / Silah Bilgileri</th>
+                        <th>Unsur Adı, Numara ve Personel Rütbe/Ad / Silah Bilgileri</th>
                         <th style="width:90px;">Vuruş Sayısı</th>
                         <th style="width:90px;">Ceza Puanı</th>
                         <th style="width:90px;">Puan</th>
@@ -1016,13 +1050,14 @@
             let list = etap.ciftYol ? data.flat().filter(x=>x!=='— (Tek)') : data;
             list.forEach((bAd, i) => {
                 let bObj = birlikler.find(b => b.ad === bAd) || {};
+                let uNo = unsurNumaralari[bAd] ? `[Unsur No: #${unsurNumaralari[bAd]}]` : '';
                 let knInfo = bObj.kn ? `KN Rütbe/Ad: ${bObj.kn.ad} [Tüfek S/N: ${bObj.kn.tufek} | Tabanca S/N: ${bObj.kn.tabanca}]` : '';
                 let gzInfo = bObj.gozcu ? `GZ Rütbe/Ad: ${bObj.gozcu.ad} [Tüfek S/N: ${bObj.gozcu.tufek} | Tabanca S/N: ${bObj.gozcu.tabanca}]` : '';
 
                 html += `<tr>
                     <td><b>${i+1}</b></td>
                     <td style="text-align:left; padding:6px;">
-                        <b>${bAd}</b>
+                        <b>${bAd}</b> <span style="color:#f39c12; font-weight:bold;">${uNo}</span>
                         <div class="silah-info">🎯 ${knInfo}</div>
                         <div class="silah-info">👁️ ${gzInfo}</div>
                     </td>
