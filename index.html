@@ -47,6 +47,15 @@
 
         .silah-info { font-size: 9px; color: #aaa; margin-top: 2px; }
 
+        /* Animasyonlu Satır Efekti */
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateY(-10px); background-color: #f39c12; }
+            to { opacity: 1; transform: translateY(0); background-color: transparent; }
+        }
+        .animated-row {
+            animation: fadeInRow 0.6s ease-out forwards;
+        }
+
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
             .main-header, .tab-buttons, button, input, select, .no-print, .reset-box, .excel-box { display: none !important; }
@@ -131,7 +140,7 @@
     <div id="kuraTab" class="tab-content">
         <h2>🎲 Genel Kura Atış Sıralaması Çizelgesi</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK &amp; NUMARA ATA</button>
+            <button id="btnKuraCek" onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK &amp; NUMARA ATA</button>
             <button onclick="bolumYazdir('BORAN VIII - GENEL KURA ATIŞ ÇİZELGESİ', 'kuraSonuclari')" class="btn-print">🖨️ Kura Çizelgesini Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="table-responsive"></div>
@@ -253,6 +262,7 @@
     let kuralar = {}; 
     let detayPuanlar = {}; 
     let unsurNumaralari = {}; 
+    let kuraAnimasyonTimer = null;
 
     const varsayilanBirlikler = [
         { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "J.Üçvş. Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "J.Uzm.Çvş. Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
@@ -279,12 +289,20 @@
 
     function tumVerileriSifirla() {
         if(confirm("Tüm kayıtlar silinecek. Onaylıyor musunuz?")) {
+            if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
             localStorage.clear(); birlikler = []; kuralar = {}; detayPuanlar = {}; unsurNumaralari = {};
             init(); alert("Temizlendi.");
         }
     }
 
-    function sadeceKuraSifirla() { kuralar = {}; unsurNumaralari = {}; localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); localStorage.setItem('atis_unsurNumaralari', JSON.stringify(unsurNumaralari)); kuralariEkranaBas(); etapCizelgesiOlustur(); }
+    function sadeceKuraSifirla() { 
+        if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
+        kuralar = {}; unsurNumaralari = {}; 
+        localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); 
+        localStorage.setItem('atis_unsurNumaralari', JSON.stringify(unsurNumaralari)); 
+        kuralariEkranaBas(); etapCizelgesiOlustur(); 
+    }
+
     function sadecePuanSifirla() { detayPuanlar = {}; localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar)); etapCizelgesiOlustur(); }
 
     function init() {
@@ -404,16 +422,13 @@
         let toplamUnsur = birlikler.length;
         if(toplamUnsur === 0) return;
 
-        // 1'den N'e kadar sayı dizisi oluştur
         let numaralar = Array.from({length: toplamUnsur}, (_, i) => i + 1);
         
-        // Sayıları karıştır (Fisher-Yates Shuffle)
         for (let i = numaralar.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
             [numaralar[i], numaralar[j]] = [numaralar[j], numaralar[i]];
         }
 
-        // Karıştırılmış numaraları sırayla unsurlara ata
         birlikler.forEach((b, idx) => {
             unsurNumaralari[b.ad] = numaralar[idx];
         });
@@ -422,34 +437,36 @@
     // EŞLEŞTİRİLMİŞ KURA ÇEKİM MANTIĞI & UNSUR NUMARASI ATAMA
     function kuraCek() {
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
+        
+        if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
+        
         kuralar = {};
 
         // 0. 1 ile N arasında rastgele ve benzersiz unsur numarası ata
         unsurNumaralariniOlustur();
 
-        // Yardımcı Fonksiyon: Standart Karıştırma
         const rastgeleSira = () => [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
 
         // 1. (Algı-1 ile 1. Rehine) aynı kura
         let kuraAlgi1 = rastgeleSira();
-        kuralar[1] = kuraAlgi1; // 1. Algı
-        kuralar[3] = [...kuraAlgi1]; // 1. Rehine
+        kuralar[1] = kuraAlgi1; 
+        kuralar[3] = [...kuraAlgi1]; 
 
         // 2. (Algı-2 ile 2. Rehine) aynı kura
         let kuraAlgi2 = rastgeleSira();
-        kuralar[2] = kuraAlgi2; // 2. Algı
-        kuralar[4] = [...kuraAlgi2]; // 2. Rehine
+        kuralar[2] = kuraAlgi2; 
+        kuralar[4] = [...kuraAlgi2]; 
 
         // 3. (Tabanca Güç ile Tabanca Düello) aynı kura
         let kuraTabGuc = rastgeleSira();
-        kuralar[5] = kuraTabGuc; // Tab. Güç
-        kuralar[6] = [...kuraTabGuc]; // Tab. Düello
+        kuralar[5] = kuraTabGuc; 
+        kuralar[6] = [...kuraTabGuc]; 
 
         // 4. (Sızma, Gece-1 ve Gece-2) aynı kura
         let kuraSizma = rastgeleSira();
-        kuralar[8] = kuraSizma; // Sızma
-        kuralar[9] = [...kuraSizma]; // Gece-1
-        kuralar[10] = [...kuraSizma]; // Gece-2
+        kuralar[8] = kuraSizma; 
+        kuralar[9] = [...kuraSizma]; 
+        kuralar[10] = [...kuraSizma]; 
 
         // 5. Kademeli (7) - Çift yollu özel eşleştirme
         let gruplar = {};
@@ -483,23 +500,27 @@
         }
 
         pairs.sort(() => Math.random() - 0.5);
-        kuralar[7] = pairs; // Kademeli
+        kuralar[7] = pairs; 
 
         // 6. Senaryo (11) - Bağımsız Kura
         kuralar[11] = rastgeleSira();
 
-        verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
+        verileriKaydet(); 
+        kuralariEkranaBas(true); // True parametresi ile animasyonlu bas
+        etapCizelgesiOlustur();
     }
 
-    // 11 ATIŞ CİNSİNİ YAN YANA GÖSTEREN VE UNSUR NUMARALI TEK KURA ÇİZELGESİ
-    function kuralariEkranaBas() {
+    // TEK KURA ÇİZELGESİ (ANIMASYONLU YARIM SANİYE ARALIKLI)
+    function kuralariEkranaBas(animasyonlu = false) {
         let container = document.getElementById('kuraSonuclari');
+        if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
+
         if(birlikler.length === 0) {
             container.innerHTML = '<p style="text-align:center;">Henüz birlik eklenmedi.</p>';
             return;
         }
 
-        let html = `
+        let tableHeaderHtml = `
         <table>
             <thead>
                 <tr>
@@ -509,20 +530,19 @@
                     <th style="width:180px;">Keskin Nişancı (Rütbe / Ad / Silahlar)</th>
                     <th style="width:180px;">Gözcü (Rütbe / Ad / Silahlar)</th>`;
         
-        // 11 Atış Cinsini başlığa ekle
         etaplar.forEach(e => {
-            html += `<th style="min-width:55px;">${e.ad}</th>`;
+            tableHeaderHtml += `<th style="min-width:55px;">${e.ad}</th>`;
         });
 
-        html += `<th style="width:90px;">İmza</th>
+        tableHeaderHtml += `<th style="width:90px;">İmza</th>
                 </tr>
             </thead>
-            <tbody>`;
+            <tbody id="kuraTbody">`;
 
-        birlikler.forEach((u, idx) => {
+        let rowsHtmlArray = birlikler.map((u, idx) => {
             let uNo = unsurNumaralari[u.ad] ? `#${unsurNumaralari[u.ad]}` : '—';
 
-            html += `<tr>
+            let rowHtml = `<tr>
                 <td><b>${idx + 1}</b></td>
                 <td style="font-weight:bold; color:#2ecc71; font-size:11px;">${uNo}</td>
                 <td style="text-align:left;"><b>${u.ad}</b></td>
@@ -535,7 +555,6 @@
                     <div class="silah-info">T: ${u.gozcu.tufek} | Tab: ${u.gozcu.tabanca}</div>
                 </td>`;
 
-            // Her etap için kura sıra numarasını yazdır
             etaplar.forEach(etap => {
                 let kuraData = kuralar[etap.id];
                 let siraVal = "—";
@@ -553,14 +572,37 @@
                         if (pos !== -1) siraVal = pos + 1;
                     }
                 }
-                html += `<td style="font-weight:bold; color:#f39c12;">${siraVal}</td>`;
+                rowHtml += `<td style="font-weight:bold; color:#f39c12;">${siraVal}</td>`;
             });
 
-            html += `<td></td></tr>`;
+            rowHtml += `<td></td></tr>`;
+            return rowHtml;
         });
 
-        html += `</tbody></table>`;
-        container.innerHTML = html;
+        if (!animasyonlu) {
+            container.innerHTML = tableHeaderHtml + rowsHtmlArray.join('') + `</tbody></table>`;
+        } else {
+            container.innerHTML = tableHeaderHtml + `</tbody></table>`;
+            let tbody = document.getElementById('kuraTbody');
+            let btnKura = document.getElementById('btnKuraCek');
+            if(btnKura) btnKura.disabled = true;
+
+            let currentIdx = 0;
+            kuraAnimasyonTimer = setInterval(() => {
+                if (currentIdx < rowsHtmlArray.length) {
+                    let tempDiv = document.createElement('tbody');
+                    tempDiv.innerHTML = rowsHtmlArray[currentIdx];
+                    let tr = tempDiv.firstElementChild;
+                    tr.classList.add('animated-row');
+                    tbody.appendChild(tr);
+                    currentIdx++;
+                } else {
+                    clearInterval(kuraAnimasyonTimer);
+                    kuraAnimasyonTimer = null;
+                    if(btnKura) btnKura.disabled = false;
+                }
+            }, 500); // Yarım saniye (500ms) aralıklarla ekleme
+        }
     }
 
     function sizmaPuanHesapla(dakika) {
@@ -937,72 +979,63 @@
     }
 
     function matrisGuncelle() {
-    let tbody = document.getElementById('matrisBody');
-    tbody.innerHTML = '';
+        let tbody = document.getElementById('matrisBody');
+        tbody.innerHTML = '';
 
-    // 1. Verileri hazırla ve etap toplamlarını hesapla
-    let matrisVerileri = birlikler.map(b => {
-        let p = detayPuanlar[b.ad] || {};
+        let matrisVerileri = birlikler.map(b => {
+            let p = detayPuanlar[b.ad] || {};
+            let e1 = p[1]?.puan || 0;
+            let e2 = p[2]?.puan || 0;
+            let e3 = p[3]?.puan || 0;
+            let e4 = p[4]?.puan || 0;
+            let e5 = p[5]?.puan || 0;
+            let e6 = p[6]?.puan || 0;
+            let e7 = p[7]?.puan || 0;
+            let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
 
-        let e1 = p[1]?.puan || 0;
-        let e2 = p[2]?.puan || 0;
-        let e3 = p[3]?.puan || 0;
-        let e4 = p[4]?.puan || 0;
-        let e5 = p[5]?.puan || 0;
-        let e6 = p[6]?.puan || 0;
-        let e7 = p[7]?.puan || 0;
-        let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
+            let e8 = p[8]?.puan || 0;
+            let e9 = p[9]?.puan || 0;
+            let e10 = p[10]?.puan || 0;
+            let etap2Top = e8 + e9 + e10;
 
-        let e8 = p[8]?.puan || 0;
-        let e9 = p[9]?.puan || 0;
-        let e10 = p[10]?.puan || 0;
-        let etap2Top = e8 + e9 + e10;
+            let senTufek = p[11]?.tufekPuan || 0;
+            let senTab = p[11]?.tabancaPuan || 0;
+            let senSureFark = p[11]?.sureFark || 0;
+            let etap3Top = p[11]?.puan || 0;
 
-        let senTufek = p[11]?.tufekPuan || 0;
-        let senTab = p[11]?.tabancaPuan || 0;
-        let senSureFark = p[11]?.sureFark || 0;
-        let etap3Top = p[11]?.puan || 0;
+            let genelToplam = etap1Top + etap2Top + etap3Top;
 
-        let genelToplam = etap1Top + etap2Top + etap3Top;
+            return {
+                birlik: b,
+                e1, e2, e3, e4, e5, e6, e7, etap1Top,
+                e8, e9, e10, etap2Top,
+                senTufek, senTab, senSureFark, etap3Top,
+                genelToplam
+            };
+        });
 
-        return {
-            birlik: b,
-            e1, e2, e3, e4, e5, e6, e7, etap1Top,
-            e8, e9, e10, etap2Top,
-            senTufek, senTab, senSureFark, etap3Top,
-            genelToplam
-        };
-    });
+        // Eşitlik Bozma Sıralama Algoritması (Genel Toplam -> 3. Etap -> 2. Etap -> 1. Etap)
+        matrisVerileri.sort((a, b) => {
+            if (b.genelToplam !== a.genelToplam) return b.genelToplam - a.genelToplam;
+            if (b.etap3Top !== a.etap3Top) return b.etap3Top - a.etap3Top;
+            if (b.etap2Top !== a.etap2Top) return b.etap2Top - a.etap2Top;
+            return b.etap1Top - a.etap1Top;
+        });
 
-    // 2. Sıralama Algoritması (Genel Toplam -> 3. Etap -> 2. Etap -> 1. Etap)
-    matrisVerileri.sort((a, b) => {
-        if (b.genelToplam !== a.genelToplam) {
-            return b.genelToplam - a.genelToplam; // Genel Toplam yüksek olan
-        }
-        if (b.etap3Top !== a.etap3Top) {
-            return b.etap3Top - a.etap3Top; // 3. Etap yüksek olan
-        }
-        if (b.etap2Top !== a.etap2Top) {
-            return b.etap2Top - a.etap2Top; // 2. Etap yüksek olan
-        }
-        return b.etap1Top - a.etap1Top; // 1. Etap yüksek olan
-    });
-
-    // 3. Sıralanmış verileri tabloya yazdır
-    matrisVerileri.forEach((item, idx) => {
-        tbody.innerHTML += `<tr>
-            <td><b>${idx + 1}</b></td>
-            <td style="text-align:left; font-weight:bold;">${item.birlik.ad}</td>
-            <td>${item.e1}</td><td>${item.e2}</td><td>${item.e3}</td><td>${item.e4}</td><td>${item.e5}</td><td>${item.e6}</td><td>${item.e7}</td>
-            <td style="background:#274e2a; color:#2ecc71; font-weight:bold;">${item.etap1Top}</td>
-            <td>${item.e8}</td><td>${item.e9}</td><td>${item.e10}</td>
-            <td style="background:#3f4346; color:#bdc3c7; font-weight:bold;">${item.etap2Top}</td>
-            <td>${item.senTufek}</td><td>${item.senTab}</td><td>${item.senSureFark >= 0 ? '+'+item.senSureFark : item.senSureFark}</td>
-            <td style="background:#53301a; color:#e67e22; font-weight:bold;">${item.etap3Top}</td>
-            <td style="background:#4a235a; color:#f1c40f; font-weight:bold; font-size:12px;">${item.genelToplam}</td>
-        </tr>`;
-    });
-}
+        matrisVerileri.forEach((item, idx) => {
+            tbody.innerHTML += `<tr>
+                <td><b>${idx + 1}</b></td>
+                <td style="text-align:left; font-weight:bold;">${item.birlik.ad}</td>
+                <td>${item.e1}</td><td>${item.e2}</td><td>${item.e3}</td><td>${item.e4}</td><td>${item.e5}</td><td>${item.e6}</td><td>${item.e7}</td>
+                <td style="background:#274e2a; color:#2ecc71; font-weight:bold;">${item.etap1Top}</td>
+                <td>${item.e8}</td><td>${item.e9}</td><td>${item.e10}</td>
+                <td style="background:#3f4346; color:#bdc3c7; font-weight:bold;">${item.etap2Top}</td>
+                <td>${item.senTufek}</td><td>${item.senTab}</td><td>${item.senSureFark >= 0 ? '+'+item.senSureFark : item.senSureFark}</td>
+                <td style="background:#53301a; color:#e67e22; font-weight:bold;">${item.etap3Top}</td>
+                <td style="background:#4a235a; color:#f1c40f; font-weight:bold; font-size:12px;">${item.genelToplam}</td>
+            </tr>`;
+        });
+    }
 
     function tabloGuncelle() {
         let tbody = document.getElementById('skorBody');
