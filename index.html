@@ -90,7 +90,7 @@
         <div class="excel-box" style="max-width: 850px; margin: 0 auto 15px auto;">
             <h3 style="color:#2ecc71; margin-top:0;">📊 Excel / CSV Dosyasından Toplu Unsur İçe Aktar</h3>
             <p style="font-size:12px; color:#ccc; margin-bottom:10px;">
-                Excel dosyanızda şu sütun başlıkları olmalıdır: <b>Unsur Adı, KN Ad, KN Tufek, KN Tabanca, GZ Ad, GZ Tufek, GZ Tabanca</b>
+                Excel dosyanızda şu sütun başlıkları olmalıdır: <b>Unsur Adı, KN Rütbe/Ad, KN Tufek, KN Tabanca, GZ Rütbe/Ad, GZ Tufek, GZ Tabanca</b>
             </p>
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;" onchange="excelYukle(event)">
             <button onclick="document.getElementById('excelFileInput').click()" style="background:#27ae60; font-size:14px; padding:8px 16px;">📂 Excel Dosyası Seç ve Yükle</button>
@@ -107,14 +107,14 @@
             <div class="form-grid">
                 <div class="personel-box">
                     <h4 style="color:#e67e22; margin-top:0;">🎯 Keskin Nişancı (KN)</h4>
-                    <div><label>Rütbe/Ad:</label><input type="text" id="knAd" placeholder="J.Üçvş. Ahmet YILMAZ"></div>
+                    <div><label>Rütbe ve Adı:</label><input type="text" id="knAd" placeholder="J.Üçvş. Ahmet YILMAZ"></div>
                     <div><label>Tüfek / S/N:</label><input type="text" id="knTufek" placeholder="KSR-11 / 1036835"></div>
                     <div><label>Tabanca / S/N:</label><input type="text" id="knTabanca" placeholder="Canik / BHBF829"></div>
                 </div>
 
                 <div class="personel-box">
                     <h4 style="color:#3498db; margin-top:0;">👁️ Gözcü (GZ)</h4>
-                    <div><label>Rütbe/Ad:</label><input type="text" id="gozcuAd" placeholder="J.Uzm.Çvş. Mehmet KAYA"></div>
+                    <div><label>Rütbe ve Adı:</label><input type="text" id="gozcuAd" placeholder="J.Uzm.Çvş. Mehmet KAYA"></div>
                     <div><label>Tüfek / S/N:</label><input type="text" id="gozcuTufek" placeholder="MPT-76 / BSUL103"></div>
                     <div><label>Tabanca / S/N:</label><input type="text" id="gozcuTabanca" placeholder="Sarsılmaz / AAB0348"></div>
                 </div>
@@ -172,8 +172,8 @@
                     <tr>
                         <th>Sıra</th>
                         <th>Unsur / Birlik Adı</th>
-                        <th>Keskin Nişancı</th>
-                        <th>Gözcü</th>
+                        <th>Keskin Nişancı (Rütbe / Ad)</th>
+                        <th>Gözcü (Rütbe / Ad)</th>
                         <th>1. Etap (2.250)</th>
                         <th>2. Etap (1.250)</th>
                         <th>3. Etap (1.500)</th>
@@ -255,8 +255,8 @@
     let detayPuanlar = {}; 
 
     const varsayilanBirlikler = [
-        { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
-        { ad: "İzmir Tugayı 2. Unsur", kn: { ad: "Ali DEMİR", tufek: "KSR-11 / 104", tabanca: "Canik / 830" }, gozcu: { ad: "Caner ŞAHİN", tufek: "MPT-76 / 104", tabanca: "Sarsılmaz / 349" } }
+        { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "J.Üçvş. Ahmet YILMAZ", tufek: "KSR-11 / 103", tabanca: "Canik / 829" }, gozcu: { ad: "J.Uzm.Çvş. Mehmet KAYA", tufek: "MPT-76 / 103", tabanca: "Sarsılmaz / 348" } },
+        { ad: "İzmir Tugayı 2. Unsur", kn: { ad: "J.Bçvş. Ali DEMİR", tufek: "KSR-11 / 104", tabanca: "Canik / 830" }, gozcu: { ad: "J.Uzm.Çvş. Caner ŞAHİN", tufek: "MPT-76 / 104", tabanca: "Sarsılmaz / 349" } }
     ];
 
     function verileriKaydet() {
@@ -349,12 +349,12 @@
                     birlikler.push({
                         ad: uAd.toString().trim(),
                         kn: {
-                            ad: (r["KN Ad"] || r["KN ADI"] || "—").toString(),
+                            ad: (r["KN Rütbe/Ad"] || r["KN Ad"] || r["KN ADI"] || "—").toString(),
                             tufek: (r["KN Tufek"] || r["KN TUFEK"] || "—").toString(),
                             tabanca: (r["KN Tabanca"] || r["KN TABANCA"] || "—").toString()
                         },
                         gozcu: {
-                            ad: (r["GZ Ad"] || r["GZ ADI"] || "—").toString(),
+                            ad: (r["GZ Rütbe/Ad"] || r["GZ Ad"] || r["GZ ADI"] || "—").toString(),
                             tufek: (r["GZ Tufek"] || r["GZ TUFEK"] || "—").toString(),
                             tabanca: (r["GZ Tabanca"] || r["GZ TABANCA"] || "—").toString()
                         }
@@ -377,8 +377,8 @@
             div.innerHTML += `<div class="card">
                 <h3 style="color:#f39c12; margin:0;">${b.ad}</h3>
                 <p style="font-size:11px;">
-                    🎯 <b>KN:</b> ${b.kn.ad} (T: ${b.kn.tufek} / Tab: ${b.kn.tabanca})<br>
-                    👁️ <b>GZ:</b> ${b.gozcu.ad} (T: ${b.gozcu.tufek} / Tab: ${b.gozcu.tabanca})
+                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} (T: ${b.kn.tufek} / Tab: ${b.kn.tabanca})<br>
+                    👁️ <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad} (T: ${b.gozcu.tufek} / Tab: ${b.gozcu.tabanca})
                 </p>
                 <button class="btn-danger" onclick="birlikSil(${index})">Sil</button>
             </div>`;
@@ -895,7 +895,12 @@
         div.innerHTML = '';
         birlikler.forEach(b => {
             let p = detayPuanlar[b.ad] || {};
-            let html = `<div class="card"><h3>${b.ad} Karnesi</h3><table><thead><tr><th>Etap</th><th>Puan</th></tr></thead><tbody>`;
+            let html = `<div class="card">
+                <h3>${b.ad} Karnesi</h3>
+                <p style="font-size:11px; margin-bottom:10px;">
+                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁️ <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
+                </p>
+                <table><thead><tr><th>Etap</th><th>Puan</th></tr></thead><tbody>`;
             let top = 0;
             etaplar.forEach(e => {
                 let val = p[e.id]?.puan || 0; top += val;
@@ -922,7 +927,7 @@
                 <thead>
                     <tr>
                         <th style="width:40px;">Sıra</th>
-                        <th>Unsur Adı ve Personel / Silah Bilgileri</th>
+                        <th>Unsur Adı ve Personel Rütbe/Ad / Silah Bilgileri</th>
                         <th style="width:90px;">Vuruş Sayısı</th>
                         <th style="width:90px;">Ceza Puanı</th>
                         <th style="width:90px;">Puan</th>
@@ -934,8 +939,8 @@
             let list = etap.ciftYol ? data.flat().filter(x=>x!=='— (Tek)') : data;
             list.forEach((bAd, i) => {
                 let bObj = birlikler.find(b => b.ad === bAd) || {};
-                let knInfo = bObj.kn ? `KN: ${bObj.kn.ad} [Tüfek S/N: ${bObj.kn.tufek} | Tabanca S/N: ${bObj.kn.tabanca}]` : '';
-                let gzInfo = bObj.gozcu ? `GZ: ${bObj.gozcu.ad} [Tüfek S/N: ${bObj.gozcu.tufek} | Tabanca S/N: ${bObj.gozcu.tabanca}]` : '';
+                let knInfo = bObj.kn ? `KN Rütbe/Ad: ${bObj.kn.ad} [Tüfek S/N: ${bObj.kn.tufek} | Tabanca S/N: ${bObj.kn.tabanca}]` : '';
+                let gzInfo = bObj.gozcu ? `GZ Rütbe/Ad: ${bObj.gozcu.ad} [Tüfek S/N: ${bObj.gozcu.tufek} | Tabanca S/N: ${bObj.gozcu.tabanca}]` : '';
 
                 html += `<tr>
                     <td><b>${i+1}</b></td>
