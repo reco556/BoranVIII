@@ -27,11 +27,11 @@
         .btn-print { background: #2980b9; font-size: 14px; padding: 8px 16px; }
         
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; margin-bottom: 15px; }
-        th, td { border: 1px solid #444; padding: 4px 2px; text-align: center; font-size: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; margin-bottom: 15px; }
+        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 11px; }
         th { background: #1a1a20; color: #f39c12; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; position: relative; margin-bottom: 15px; }
         
         .input-mini { width: 45px !important; text-align: center; padding: 2px !important; }
@@ -45,7 +45,7 @@
         .head-etap3 { background: #5c3214; color: #e67e22; }
         .head-total { background: #8e44ad; color: #fff; }
 
-        .silah-info { font-size: 9px; color: #aaa; margin-top: 2px; }
+        .silah-info { font-size: 10px; color: #aaa; margin-top: 2px; }
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
@@ -53,9 +53,10 @@
             .tab-content { display: none !important; }
             .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
-            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9px !important; }
             th { background: #eee !important; color: #000 !important; }
             .silah-info { color: #333 !important; }
+            .card { border: none !important; padding: 0 !important; page-break-after: always; }
         }
     </style>
 </head>
@@ -113,7 +114,7 @@
                 </div>
 
                 <div class="personel-box">
-                    <h4 style="color:#3498db; margin-top:0;">👁️ Gözcü (GZ)</h4>
+                    <h4 style="color:#3498db; margin-top:0;">👁️️ Gözcü (GZ)</h4>
                     <div><label>Rütbe ve Adı:</label><input type="text" id="gozcuAd" placeholder="J.Uzm.Çvş. Mehmet KAYA"></div>
                     <div><label>Tüfek / S/N:</label><input type="text" id="gozcuTufek" placeholder="MPT-76 / BSUL103"></div>
                     <div><label>Tabanca / S/N:</label><input type="text" id="gozcuTabanca" placeholder="Sarsılmaz / AAB0348"></div>
@@ -125,15 +126,15 @@
             </div>
         </div>
 
-        <div id="birlikKartlari" class="grid-container" style="margin-top:15px;"></div>
+        <div id="birlikKartlari" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:15px; margin-top:15px;"></div>
     </div>
 
-    <!-- 2. KURA TABI -->
+    <!-- 2. KURA TABI (ÇİZELGE/TABLO FORMATI) -->
     <div id="kuraTab" class="tab-content">
-        <h2>🎲 Kura Sıralamaları</h2>
+        <h2>🎲 Kura Sıralamaları Çizelgesi</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK</button>
-            <button onclick="bolumYazdir('KURA SONUÇLARI', 'kuraSonuclari')" class="btn-print">🖨️ Kura Sıralamasını Yazdır / PDF</button>
+            <button onclick="bolumYazdir('KURA ATIŞ SIRA ÇİZELGESİ', 'kuraSonuclari')" class="btn-print">🖨️ Kura Çizelgesini Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="grid-container"></div>
     </div>
@@ -190,7 +191,7 @@
         <h2>📊 TÜM ETAPLAR ŞAMPİYONLUK MATRİSİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨️️ Matrisi Yazdır / PDF</button>
+            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨 Matrisi Yazdır / PDF</button>
         </div>
         
         <div id="matrisAlani" class="table-responsive">
@@ -228,7 +229,7 @@
         <h2>📄 Hakem Atış Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="ciktilariOlustur()" style="background:#e67e22;">🔄 Çıktıları Yenile</button>
-            <button onclick="bolumYazdir('TÜM HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨️ Tüm Çizelgeleri Yazdır / PDF</button>
+            <button onclick="bolumYazdir('TÜM HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨️️ Tüm Çizelgeleri Yazdır / PDF</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
@@ -303,7 +304,7 @@
     function bolumYazdir(baslik, elementId) {
         let icerik = document.getElementById(elementId).innerHTML;
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:4px;text-align:center;font-size:9px;} .silah-info{font-size:8px; color:#333;} .btn-print{display:none!important;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
+        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px 4px;text-align:center;font-size:10px;} .silah-info{font-size:9px; color:#333;} .btn-print{display:none!important;} .card{border:none!important; margin-bottom:20px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
@@ -313,7 +314,7 @@
         if(!cardObj) return;
         let etapObj = etaplar.find(e => e.id === etapId);
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>${etapObj.ad} - Hakem Çizelgesi</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;text-align:center;font-size:10px;} .silah-info{font-size:8px; color:#333;} button{display:none!important;}</style></head><body>${cardObj.innerHTML}</body></html>`);
+        win.document.write(`<html><head><title>${etapObj.ad} - Hakem Çizelgesi</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;text-align:center;font-size:10px;} .silah-info{font-size:9px; color:#333;} button{display:none!important;}</style></head><body>${cardObj.innerHTML}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
@@ -439,24 +440,80 @@
         verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
     }
 
+    // YENİ ÇİZELGE/TABLO FORMATINDA KURA BASTIRMA
     function kuralariEkranaBas() {
         let container = document.getElementById('kuraSonuclari');
         container.innerHTML = '';
         etaplar.forEach(etap => {
             let data = kuralar[etap.id];
             if(!data) return;
-            let html = `<div class="card"><h3>${etap.ad}</h3><ol>`;
+            
+            let html = `<div class="card">
+                <h3 style="margin-top:0;">${etap.ad} Kura Çizelgesi</h3>
+                <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Sıra</th>
+                            <th style="width:200px;">Birlik / Unsur Adı</th>
+                            <th>Keskin Nişancı (Rütbe / Ad / Silahlar)</th>
+                            <th>Gözcü (Rütbe / Ad / Silahlar)</th>
+                            <th style="width:140px;">İmza</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
             if(etap.ciftYol) {
-                data.forEach(p => html += `<li>Yol 1: ${p[0]} | Yol 2: ${p[1]}</li>`);
+                let sNo = 1;
+                data.forEach(p => {
+                    let u1 = birlikler.find(b => b.ad === p[0]);
+                    let u2 = birlikler.find(b => b.ad === p[1]);
+
+                    if(u1) {
+                        html += `<tr>
+                            <td><b>${sNo} (Yol 1)</b></td>
+                            <td style="text-align:left;"><b>${u1.ad}</b></td>
+                            <td style="text-align:left;"><b>${u1.kn.ad}</b><div class="silah-info">T: ${u1.kn.tufek} | Tab: ${u1.kn.tabanca}</div></td>
+                            <td style="text-align:left;"><b>${u1.gozcu.ad}</b><div class="silah-info">T: ${u1.gozcu.tufek} | Tab: ${u1.gozcu.tabanca}</div></td>
+                            <td></td>
+                        </tr>`;
+                    }
+                    if(u2) {
+                        html += `<tr>
+                            <td><b>${sNo} (Yol 2)</b></td>
+                            <td style="text-align:left;"><b>${u2.ad}</b></td>
+                            <td style="text-align:left;"><b>${u2.kn.ad}</b><div class="silah-info">T: ${u2.kn.tufek} | Tab: ${u2.kn.tabanca}</div></td>
+                            <td style="text-align:left;"><b>${u2.gozcu.ad}</b><div class="silah-info">T: ${u2.gozcu.tufek} | Tab: ${u2.gozcu.tabanca}</div></td>
+                            <td></td>
+                        </tr>`;
+                    } else if(p[1] === '— (Tek)') {
+                        html += `<tr>
+                            <td><b>${sNo} (Yol 2)</b></td>
+                            <td style="text-align:center;" colspan="4"><i>— TEK BAY geşildi —</i></td>
+                        </tr>`;
+                    }
+                    sNo++;
+                });
             } else {
-                data.forEach(bAd => html += `<li><b>${bAd}</b></li>`);
+                data.forEach((bAd, idx) => {
+                    let u = birlikler.find(b => b.ad === bAd);
+                    if(u) {
+                        html += `<tr>
+                            <td><b>${idx + 1}</b></td>
+                            <td style="text-align:left;"><b>${u.ad}</b></td>
+                            <td style="text-align:left;"><b>${u.kn.ad}</b><div class="silah-info">T: ${u.kn.tufek} | Tab: ${u.kn.tabanca}</div></td>
+                            <td style="text-align:left;"><b>${u.gozcu.ad}</b><div class="silah-info">T: ${u.gozcu.tufek} | Tab: ${u.gozcu.tabanca}</div></td>
+                            <td></td>
+                        </tr>`;
+                    }
+                });
             }
-            html += `</ol></div>`;
+
+            html += `</tbody></table></div></div>`;
             container.innerHTML += html;
         });
     }
 
-    // SIZMA SÜRE PUANI HESAPLAMA MOTORU
     function sizmaPuanHesapla(dakika) {
         if (dakika <= 0) return 0;
         if (dakika <= 90) return 500;
@@ -464,7 +521,7 @@
         if (dakika <= 150) return 300;
         if (dakika <= 165) return 200;
         if (dakika <= 180) return 100;
-        return 0; // 180 dk üzeri
+        return 0;
     }
 
     function etapCizelgesiOlustur() {
@@ -645,9 +702,6 @@
             let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
             netTd.innerText = Math.max(0, (sari + mavi + beyaz + yesil) - ceza);
         } else if(etapObj.tip === "tabanca_guc_bolgeli") {
-            // YENİ PUANLAMA MANTIĞI:
-            // 8 metre: A=20, B=15, C=10, D=5, E=1
-            // 15 metre: A=40, B=30, C=20, D=10, E=2
             const calc8m = (a, b, c, d, e) => (a*20) + (b*15) + (c*10) + (d*5) + (e*1);
             const calc15m = (a, b, c, d, e) => (a*40) + (b*30) + (c*20) + (d*10) + (e*2);
 
@@ -674,7 +728,7 @@
 
             let knTop = kn8 + kn15;
             let gzTop = gz8 + gz15;
-            netTd.innerText = (knTop + gzTop) / 2; // KN ve GZ Toplamının Ortalaması
+            netTd.innerText = (knTop + gzTop) / 2;
         } else if(etapObj.tip === "kademeli_ozel") {
             let vurus = parseInt(tr.querySelector('.kad_vurus').value)||0;
             let fisek = parseInt(tr.querySelector('.kad_fisek').value)||8;
@@ -708,8 +762,6 @@
 
             netTd.innerText = p;
         } else if(etapObj.tip === "tabanca_duello") {
-            // YENİ PUANLAMA MANTIĞI:
-            // 5 atım üzerinden her vuruş 40 puan. Ortalaması alınır.
             let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
             let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
             netTd.innerText = ((kv * 40) + (gv * 40)) / 2;
@@ -844,8 +896,8 @@
             let e2 = p[2]?.puan || 0;
             let e3 = p[3]?.puan || 0;
             let e4 = p[4]?.puan || 0;
-            let e5 = p[5]?.puan || 0; // Tabanca Güç (Ort)
-            let e6 = p[6]?.puan || 0; // Tabanca Düello (Ort)
+            let e5 = p[5]?.puan || 0;
+            let e6 = p[6]?.puan || 0;
             let e7 = p[7]?.puan || 0;
             let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
 
@@ -905,7 +957,7 @@
             let html = `<div class="card">
                 <h3>${b.ad} Karnesi</h3>
                 <p style="font-size:11px; margin-bottom:10px;">
-                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁️️ <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
+                    🎯 <b>KN Rütbe / Ad:</b> ${b.kn.ad} | 👁 <b>GZ Rütbe / Ad:</b> ${b.gozcu.ad}
                 </p>
                 <table><thead><tr><th>Etap</th><th>Puan</th></tr></thead><tbody>`;
             let top = 0;
