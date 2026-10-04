@@ -7,8 +7,8 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 15px; }
         
         .main-header { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; text-align: center; }
-        .main-header img { width: 90px; height: 90px; border-radius: 50%; border: 2px solid #f39c12; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5); object-fit: cover; }
-        .main-header h1 { color: #f39c12; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .main-header img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #f39c12; object-fit: cover; }
+        .main-header h1 { color: #f39c12; margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
 
         h2, h3 { color: #f39c12; text-align: center; margin-bottom: 10px; }
         .tab-buttons { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
@@ -17,37 +17,40 @@
         .tab-content { display: none; background: #2b2b36; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .tab-content.active { display: block; }
         
-        input, select, button { padding: 8px 12px; margin: 5px; border-radius: 4px; border: 1px solid #444; background: #1e1e24; color: #fff; }
+        input, select, button { padding: 6px 10px; margin: 3px; border-radius: 4px; border: 1px solid #444; background: #1e1e24; color: #fff; }
         button { background: #27ae60; color: white; cursor: pointer; font-weight: bold; border: none; }
         button:hover { background: #2ecc71; }
         .btn-danger { background: #c0392b; }
-        .btn-danger:hover { background: #e74c3c; }
         .btn-warning { background: #d35400; color: #fff; }
-        .btn-warning:hover { background: #e67e22; }
         .btn-print { background: #2980b9; font-size: 14px; padding: 8px 16px; }
-        .btn-print:hover { background: #3498db; }
         
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; margin-bottom: 15px; position: relative; z-index: 2; }
-        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; margin-bottom: 15px; }
+        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 11px; }
+        th { background: #1a1a20; color: #f39c12; }
         
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; }
         .two-lane { background: #2c3e50; border: 1px solid #3498db; }
         .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 13px; text-align: left; }
         
-        .input-mini { width: 42px !important; text-align: center; padding: 3px !important; margin: 1px !important; }
-        .input-text-mini { width: 110px !important; padding: 4px !important; margin: 2px !important; }
-        .reset-box { background: #2c2222; border: 1px dashed #e74c3c; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .input-mini { width: 50px !important; text-align: center; padding: 3px !important; }
+        .input-text-mini { width: 100px !important; padding: 3px !important; }
+        .reset-box { background: #2c2222; border: 1px dashed #e74c3c; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .personel-box { background: #242430; padding: 10px; border-radius: 5px; border: 1px solid #333; }
-        .print-list-card { background: #242430; padding: 20px; border-radius: 6px; margin-bottom: 25px; border: 1px solid #555; position: relative; overflow: hidden; }
+
+        /* MATRİS RENKLENDİRMELERİ */
+        .head-etap1 { background: #1e4620; color: #2ecc71; }
+        .head-etap2 { background: #4a4e51; color: #bdc3c7; }
+        .head-etap3 { background: #5c3214; color: #e67e22; }
+        .head-total { background: #8e44ad; color: #fff; }
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
-            .main-header, .tab-buttons, button, input, select, .no-print, .reset-box, .excel-import-area { display: none !important; }
+            .main-header, .tab-buttons, button, input, select, .no-print, .reset-box { display: none !important; }
             .tab-content { display: none !important; }
-            .tab-content.active { display: block !important; background: none !important; box-shadow: none !important; padding: 0 !important; }
+            .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
             table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 10px !important; }
             th { background: #eee !important; color: #000 !important; }
@@ -63,101 +66,93 @@
     </div>
 
     <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik & Personel Kaydı</button>
+        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik Kaydı</button>
         <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
-        <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Girişi (Çizelge)</button>
+        <button class="tab-btn" onclick="openTab('puanTab')">3. Dinamik Veri Girişi</button>
         <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
         <button class="tab-btn" onclick="openTab('skorTab')">5. Özet Liderlik</button>
         <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Genel Şampiyonluk Matrisi</button>
-        <button class="tab-btn" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Kura & Hakem Atış Çıktıları</button>
+        <button class="tab-btn" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Hakem Çıktıları</button>
     </div>
 
-    <!-- 1. BİRLİK VE PERSONEL KAYIT TABI -->
+    <!-- 1. BİRLİK KAYDI -->
     <div id="birliklerTab" class="tab-content active">
-        <h2>Unsur, Nişancı / Gözcü ve Silah & Seri No Kaydı</h2>
+        <h2>Unsur ve Personel Kaydı</h2>
 
         <div class="reset-box">
-            <h4 style="margin:0 0 10px 0; color:#e74c3c;">⚙️ VERİ TEMİZLEME VE YENİDEN BAŞLATMA SEÇENEKLERİ</h4>
-            <button onclick="tumVerileriSifirla()" class="btn-danger">🗑️ Tüm Verileri Sıfırla (Sistemi Temizle)</button>
-            <button onclick="sadeceKuraSifirla()" class="btn-warning">🎲 Sadece Kura Sıralamasını Sil</button>
-            <button onclick="sadecePuanSifirla()" class="btn-warning">📝 Sadece Girilen Puan/Vuruş Verilerini Sil</button>
+            <button onclick="tumVerileriSifirla()" class="btn-danger">🗑️ Tüm Verileri Sıfırla</button>
+            <button onclick="sadeceKuraSifirla()" class="btn-warning">🎲 Kurayı Sıfırla</button>
+            <button onclick="sadecePuanSifirla()" class="btn-warning">📝 Puanları Sıfırla</button>
         </div>
 
         <div class="card" style="max-width: 850px; margin: 0 auto;">
-            <h3>Manuel Unsur & Silah Ekleme</h3>
+            <h3>Unsur Ekle</h3>
             <div style="margin-bottom:15px; text-align:center;">
-                <label><b>Unsur / Birlik Adı:</b> </label>
+                <label><b>Unsur Adı:</b> </label>
                 <input type="text" id="birlikAdi" placeholder="Örn: İzmir Tugayı 1. Unsur" style="width: 300px;">
             </div>
 
             <div class="form-grid">
                 <div class="personel-box">
-                    <h4 style="color:#e67e22; margin-top:0;">🎯 1. Yarışmacı: Keskin Nişancı</h4>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Rütbesi:</label><input type="text" id="knRutbe" placeholder="Örn: J.Üçvş."></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Adı Soyadı:</label><input type="text" id="knAd" placeholder="Örn: Ahmet YILMAZ"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tüfek Modeli:</label><input type="text" id="knTufek" placeholder="Örn: KSR-11"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tüfek Seri No:</label><input type="text" id="knTufekSeri" placeholder="Örn: 1036835"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tabanca Modeli:</label><input type="text" id="knTabanca" placeholder="Örn: Canik TP9"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tabanca Seri No:</label><input type="text" id="knTabancaSeri" placeholder="Örn: BHBF 829"></div>
+                    <h4 style="color:#e67e22; margin-top:0;">🎯 Keskin Nişancı</h4>
+                    <div><label>Rütbe/Ad:</label><input type="text" id="knAd" placeholder="J.Üçvş. Ahmet YILMAZ"></div>
+                    <div><label>Tüfek / S/N:</label><input type="text" id="knTufek" placeholder="KSR-11 / 1036835"></div>
+                    <div><label>Tabanca / S/N:</label><input type="text" id="knTabanca" placeholder="Canik / BHBF829"></div>
                 </div>
 
                 <div class="personel-box">
-                    <h4 style="color:#3498db; margin-top:0;">👁️ 2. Yarışmacı: Gözcü</h4>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Rütbesi:</label><input type="text" id="gozcuRutbe" placeholder="Örn: J.Uzmand Çvş."></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Adı Soyadı:</label><input type="text" id="gozcuAd" placeholder="Örn: Mehmet KAYA"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tüfek Modeli:</label><input type="text" id="gozcuTufek" placeholder="Örn: MPT-76"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tüfek Seri No:</label><input type="text" id="gozcuTufekSeri" placeholder="Örn: BSUL 103"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tabanca Modeli:</label><input type="text" id="gozcuTabanca" placeholder="Örn: Sarsılmaz K12"></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><label>Tabanca Seri No:</label><input type="text" id="gozcuTabancaSeri" placeholder="Örn: AAB0348"></div>
+                    <h4 style="color:#3498db; margin-top:0;">👁️ Gözcü</h4>
+                    <div><label>Rütbe/Ad:</label><input type="text" id="gozcuAd" placeholder="J.Uzm.Çvş. Mehmet KAYA"></div>
+                    <div><label>Tüfek / S/N:</label><input type="text" id="gozcuTufek" placeholder="MPT-76 / BSUL103"></div>
+                    <div><label>Tabanca / S/N:</label><input type="text" id="gozcuTabanca" placeholder="Sarsılmaz / AAB0348"></div>
                 </div>
             </div>
 
             <div style="text-align:center; margin-top:15px;">
-                <button onclick="birlikEkle()" style="font-size:15px; padding:10px 25px;">➕ Unsuru Sisteme Kaydet</button>
+                <button onclick="birlikEkle()">➕ Unsuru Kaydet</button>
             </div>
         </div>
 
-        <h3 style="margin-top:25px;">Kayıtlı Unsur Listesi</h3>
         <div id="birlikKartlari" class="grid-container" style="margin-top:15px;"></div>
     </div>
 
     <!-- 2. KURA TABI -->
     <div id="kuraTab" class="tab-content">
-        <h2>🎲 Her Atış İçin Ayrı Birlik Kura Sıralaması</h2>
+        <h2>🎲 Kura Sıralamaları</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="kuraCek()" style="font-size: 15px; padding: 8px 16px; background: #e67e22;">🎲 TÜM ETAPLAR İÇİN YENİ KURA ÇEK</button>
-            <button onclick="sadeceKuraSifirla()" class="btn-warning">🗑️ Kurayı Sil</button>
-            <button onclick="bolumYazdir('SADECE KURA SONUÇLARI', 'kuraSonuclari')" class="btn-print">🖨️ Sadece Kura Sıralamasını Yazdır / PDF</button>
+            <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK</button>
+            <button onclick="bolumYazdir('KURA SONUÇLARI', 'kuraSonuclari')" class="btn-print">🖨️ Kura Sıralamasını Yazdır / PDF</button>
         </div>
         <div id="kuraSonuclari" class="grid-container"></div>
     </div>
 
-    <!-- 3. PUAN VERİ GİRİŞ TABI -->
+    <!-- 3. PUAN VERİ GİRİŞİ -->
     <div id="puanTab" class="tab-content">
-        <h2>📝 Kura Sırasına Göre Etap Veri Giriş Çizelgesi</h2>
-        <div style="text-align:center; margin-bottom: 20px;">
+        <h2>📝 Dinamik Etap Veri Girişi</h2>
+        <div style="text-align:center; margin-bottom: 15px;">
             <label style="font-size:16px; font-weight:bold;">Etap Seçiniz: </label>
-            <select id="puanEtapSelect" style="font-size:15px; padding:8px 15px;" onchange="etapCizelgesiOlustur()"></select>
+            <select id="puanEtapSelect" style="font-size:14px; padding:6px 12px;" onchange="etapCizelgesiOlustur()"></select>
         </div>
+        <div id="etapBilgiNotu" style="text-align:center; color:#f39c12; margin-bottom:10px; font-weight:bold;"></div>
         <div id="cizelgeAlani" class="table-responsive"></div>
     </div>
 
     <!-- 4. DETAYLI ATIŞ KARNESİ -->
     <div id="detayTab" class="tab-content">
-        <h2>📋 Unsur/Birlik Detaylı Atış Karnesi</h2>
+        <h2>📋 Unsur Atış Karneleri</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="detayTablosuGuncelle()">🔄 Yenile</button>
-            <button onclick="bolumYazdir('UNSUR ATIŞ KARNELERİ', 'detayIcerik')" class="btn-print">🖨️ Sadece Atış Karnelerini Yazdır / PDF</button>
+            <button onclick="bolumYazdir('ATIŞ KARNELERİ', 'detayIcerik')" class="btn-print">🖨️ Karneleri Yazdır / PDF</button>
         </div>
         <div id="detayIcerik"></div>
     </div>
 
     <!-- 5. ÖZET LİDERLİK TABLOSU -->
     <div id="skorTab" class="tab-content">
-        <h2>🏆 GENEL KLASMAN VE ŞAMPİYONLUK ÖZETİ</h2>
+        <h2>🏆 GENEL KLASMAN LİDERLİK TABLOSU</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
-            <button onclick="bolumYazdir('GENEL SKOR VE LİDERLİK TABLOSU', 'ozetSkorAlani')" class="btn-print">🖨️️ Sadece Genel Sonuç Raporunu Yazdır / PDF</button>
+            <button onclick="bolumYazdir('GENEL KLASMAN', 'ozetSkorAlani')" class="btn-print">🖨️ Yazdır / PDF</button>
         </div>
         <div id="ozetSkorAlani">
             <table>
@@ -167,10 +162,9 @@
                         <th>Unsur / Birlik Adı</th>
                         <th>Keskin Nişancı</th>
                         <th>Gözcü</th>
-                        <th>Er Meydanı (2.250)</th>
-                        <th>Gece Yaklaşıyor (1.250)</th>
-                        <th>Büyük Kapışma (1.500)</th>
-                        <th>Senaryo Süresi</th>
+                        <th>1. Etap (2.250)</th>
+                        <th>2. Etap (1.250)</th>
+                        <th>3. Etap (1.500)</th>
                         <th>TOPLAM PUAN</th>
                     </tr>
                 </thead>
@@ -181,36 +175,33 @@
 
     <!-- 6. GENEL ŞAMPİYONLUK MATRİSİ -->
     <div id="matrisTab" class="tab-content">
-        <h2>📊 TÜM BİRLİKLER DETAYLI ŞAMPİYONLUK MATRİSİ</h2>
+        <h2>📊 TÜM ETAPLAR ŞAMPİYONLUK MATRİSİ</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
-            <button onclick="bolumYazdir('DETAYLI ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨️ Sadece Şampiyonluk Matrisini Yazdır / PDF</button>
+            <button onclick="bolumYazdir('ŞAMPİYONLUK MATRİSİ', 'matrisAlani')" class="btn-print">🖨️ Matrisi Yazdır / PDF</button>
         </div>
         
         <div id="matrisAlani" class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>S. No</th>
-                        <th>Unsur No</th>
-                        <th>Birliği</th>
-                        <th>Keskin Nişancı</th>
-                        <th>Gözcü</th>
-                        <th>Algı-1 (300)</th>
-                        <th>Algı-2 (200)</th>
-                        <th>Rehine-1 (200)</th>
-                        <th>Rehine-2 (300)</th>
-                        <th>Tabanca Güç (300)</th>
-                        <th>Tabanca Düello (200)</th>
-                        <th>Kademeli (750)</th>
-                        <th>1. Etap (2250)</th>
-                        <th>Sızma (500)</th>
-                        <th>Gece (750)</th>
-                        <th>2. Etap (1250)</th>
-                        <th>Senaryo (1300)</th>
-                        <th>Senaryo Tab. (200)</th>
-                        <th>3. Etap (1500)</th>
-                        <th>Genel Puan (5000)</th>
+                        <th class="head-info">Sıra</th>
+                        <th class="head-info">Unsur Adı</th>
+                        <th class="head-etap1">1. Algı (300)</th>
+                        <th class="head-etap1">2. Algı (200)</th>
+                        <th class="head-etap1">1. Rehine (200)</th>
+                        <th class="head-etap1">2. Rehine (300)</th>
+                        <th class="head-etap1">Tab. Güç (300)</th>
+                        <th class="head-etap1">Tab. Düello (200)</th>
+                        <th class="head-etap1">Kademeli (750)</th>
+                        <th class="head-etap1">1. ETAP TOPLAM</th>
+                        <th class="head-etap2">Sızma (500)</th>
+                        <th class="head-etap2">Gece (750)</th>
+                        <th class="head-etap2">2. ETAP TOPLAM</th>
+                        <th class="head-etap3">Senaryo Tüfek (1300)</th>
+                        <th class="head-etap3">Senaryo Tab. (200)</th>
+                        <th class="head-etap3">3. ETAP TOPLAM</th>
+                        <th class="head-total">GENEL TOPLAM (5000)</th>
                     </tr>
                 </thead>
                 <tbody id="matrisBody"></tbody>
@@ -218,30 +209,30 @@
         </div>
     </div>
 
-    <!-- 7. KURA & HAKEM ATIŞ ÇIKTILARI TABI -->
+    <!-- 7. HAKEM ÇIKTILARI -->
     <div id="ciktiTab" class="tab-content">
-        <h2>📄 Kura Sıralı Hakem Atış & Vuruş Çizelgeleri</h2>
-        <div style="text-align: center; margin-bottom: 20px;" class="no-print">
-            <button onclick="ciktilariOlustur()" style="background:#e67e22; padding:8px 16px;">🔄 Çıktı Listelerini Yenile</button>
+        <h2>📄 Hakem Atış Çizelgeleri</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="ciktilariOlustur()" style="background:#e67e22;">🔄 Çıktıları Yenile</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
 
 <script>
-    // RESMİN DOĞRUDAN GÖMÜLÜ BASE64 FORMATI (KIRILMAZ)
-    const boranLogoBase64 = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='170' fill='%23ffffff' font-size='14' text-anchor='middle'>ULUSLARARASI KESKİN NİŞANCI</text><text x='250' y='190' fill='%23ffffff' font-size='14' text-anchor='middle'>YARIŞMASI</text><path d='M150 300 L350 300 L320 270 L180 270 Z' fill='%23f39c12'/><circle cx='250' cy='250' r='30' stroke='%23e74c3c' stroke-width='4' fill='none'/><line x1='250' y1='210' x2='250' y2='290' stroke='%23e74c3c' stroke-width='2'/><line x1='210' y1='250' x2='290' y2='250' stroke='%23e74c3c' stroke-width='2'/><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text><text x='250' y='410' fill='%23ffffff' font-size='60' text-anchor='middle'>∞</text></svg>";
+    const boranLogoBase64 = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
+    // DİNAMİK ETAP YAPILARI VE MAX PUANLAR
     const etaplar = [
-        { id: 1, ad: "1. Algı Atışı (1) [Er Meydanı]" },
-        { id: 2, ad: "2. Algı Atışı (2) [Er Meydanı]" },
-        { id: 3, ad: "3. Rehine Atışı (1) [Er Meydanı]" },
-        { id: 4, ad: "4. Rehine Atışı (2) [Er Meydanı]" },
-        { id: 5, ad: "5. Tabanca - Güç Kazandırma [Er Meydanı]" },
-        { id: 6, ad: "6. Tabanca - Düello Atışı [Er Meydanı]" },
-        { id: 7, ad: "7. Kademeli Mesafe Atışı [Er Meydanı]", ciftYol: true },
-        { id: 8, ad: "8. Sızma Faaliyet Atışı [Gece Yaklaşıyor]" },
-        { id: 9, ad: "9. Gece Atışı (1 & 2) [Gece Yaklaşıyor]" },
-        { id: 10, ad: "10. Senaryo Atışı [Büyük Kapışma]", senaryo: true }
+        { id: 1, ad: "1. Algı Atışı (1)", maxPuan: 300, tip: "vurus_sayisi", hedefAdet: 3, hedefPuan: 100 },
+        { id: 2, ad: "2. Algı Atışı (2)", maxPuan: 200, tip: "vurus_sayisi", hedefAdet: 2, hedefPuan: 100 },
+        { id: 3, ad: "3. Rehine Atışı (1)", maxPuan: 200, tip: "vurus_sayisi", hedefAdet: 2, hedefPuan: 100 },
+        { id: 4, ad: "4. Rehine Atışı (2)", maxPuan: 300, tip: "vurus_sayisi", hedefAdet: 3, hedefPuan: 100 },
+        { id: 5, ad: "5. Tabanca - Güç Kazandırma", maxPuan: 300, tip: "vurus_sayisi", hedefAdet: 6, hedefPuan: 50 },
+        { id: 6, ad: "6. Tabanca - Düello Atışı", maxPuan: 200, tip: "vurus_sayisi", hedefAdet: 4, hedefPuan: 50 },
+        { id: 7, ad: "7. Kademeli Mesafe Atışı", maxPuan: 750, tip: "vurus_sayisi", hedefAdet: 5, hedefPuan: 150, ciftYol: true },
+        { id: 8, ad: "8. Sızma Faaliyet Atışı", maxPuan: 500, tip: "vurus_sayisi", hedefAdet: 5, hedefPuan: 100 },
+        { id: 9, ad: "9. Gece Atışı (1 & 2)", maxPuan: 750, tip: "vurus_sayisi", hedefAdet: 5, hedefPuan: 150 },
+        { id: 10, ad: "10. Senaryo Atışı (Büyük Kapışma)", maxPuan: 1500, tip: "senaryo_ozel" }
     ];
 
     let birlikler = [];
@@ -249,16 +240,8 @@
     let detayPuanlar = {}; 
 
     const varsayilanBirlikler = [
-        {
-            ad: "İzmir Tugayı 1. Unsur",
-            kn: { rutbe: "J.Üçvş.", ad: "Ahmet YILMAZ", tufek: "KSR-11", tufekSeri: "1036835", tabanca: "Canik TP9", tabancaSeri: "BHBF 829" },
-            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Mehmet KAYA", tufek: "MPT-76", tufekSeri: "BSUL 103", tabanca: "Sarsılmaz K12", tabancaSeri: "AAB0348" }
-        },
-        {
-            ad: "İzmir Tugayı 2. Unsur",
-            kn: { rutbe: "J.Kd.Çvş.", ad: "Ali DEMİR", tufek: "Bora 12", tufekSeri: "1055563", tabanca: "Canik TP9", tabancaSeri: "BSUL 120" },
-            gozcu: { rutbe: "J.Uzmand Çvş.", ad: "Caner ŞAHİN", tufek: "KCR-556", tufekSeri: "9823411", tabanca: "Glock 17", tabancaSeri: "GL10982" }
-        }
+        { ad: "İzmir Tugayı 1. Unsur", kn: { ad: "Ahmet YILMAZ", tufek: "KSR-11", tabanca: "Canik TP9" }, gozcu: { ad: "Mehmet KAYA", tufek: "MPT-76", tabanca: "Sarsılmaz K12" } },
+        { ad: "İzmir Tugayı 2. Unsur", kn: { ad: "Ali DEMİR", tufek: "Bora 12", tabanca: "Canik TP9" }, gozcu: { ad: "Caner ŞAHİN", tufek: "KCR-556", tabanca: "Glock 17" } }
     ];
 
     function verileriKaydet() {
@@ -268,44 +251,23 @@
     }
 
     function verileriYukle() {
-        let kayitliBirlikler = localStorage.getItem('atis_birlikler');
-        let kayitliKuralar = localStorage.getItem('atis_kuralar');
-        let kayitliPuanlar = localStorage.getItem('atis_detayPuanlar');
-
-        if (kayitliBirlikler) birlikler = JSON.parse(kayitliBirlikler);
-        else birlikler = [...varsayilanBirlikler];
-
-        if (kayitliKuralar) kuralar = JSON.parse(kayitliKuralar);
-        if (kayitliPuanlar) detayPuanlar = JSON.parse(kayitliPuanlar);
+        let kb = localStorage.getItem('atis_birlikler');
+        let kk = localStorage.getItem('atis_kuralar');
+        let kp = localStorage.getItem('atis_detayPuanlar');
+        if (kb) birlikler = JSON.parse(kb); else birlikler = [...varsayilanBirlikler];
+        if (kk) kuralar = JSON.parse(kk);
+        if (kp) detayPuanlar = JSON.parse(kp);
     }
 
     function tumVerileriSifirla() {
-        if(confirm("DİKKAT! Tüm unsurlar, kura sonuçları ve girilen puanlar TAMAMEN SİLİNECEK. Onaylıyor musunuz?")) {
-            localStorage.clear();
-            birlikler = []; kuralar = {}; detayPuanlar = {};
-            verileriKaydet(); init();
-            alert("Sistem tamamen temizlendi.");
+        if(confirm("Tüm kayıtlar silinecek. Onaylıyor msunuz?")) {
+            localStorage.clear(); birlikler = []; kuralar = {}; detayPuanlar = {};
+            init(); alert("Temizlendi.");
         }
     }
 
-    function sadeceKuraSifirla() {
-        if(confirm("Çekilmiş olan tüm kuralar silinecek. Onaylıyor musunuz?")) {
-            kuralar = {};
-            localStorage.setItem('atis_kuralar', JSON.stringify(kuralar));
-            document.getElementById('kuraSonuclari').innerHTML = '';
-            etapCizelgesiOlustur(); ciktilariOlustur();
-            alert("Kura sonuçları sıfırlandı.");
-        }
-    }
-
-    function sadecePuanSifirla() {
-        if(confirm("Girilen tüm vuruş, zaman ve puan kayıtları silinecek. Onaylıyor musunuz?")) {
-            detayPuanlar = {};
-            localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar));
-            etapCizelgesiOlustur(); detayTablosuGuncelle(); tabloGuncelle(); matrisGuncelle();
-            alert("Atış ve puan kayıtları sıfırlandı.");
-        }
-    }
+    function sadeceKuraSifirla() { kuralar = {}; localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); kuralariEkranaBas(); etapCizelgesiOlustur(); }
+    function sadecePuanSifirla() { detayPuanlar = {}; localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar)); etapCizelgesiOlustur(); }
 
     function init() {
         document.getElementById('logoImg').src = boranLogoBase64;
@@ -324,86 +286,23 @@
         if(tabId === 'ciktiTab') ciktilariOlustur();
     }
 
-    /* MODÜLER BÖLÜM YAZDIRMA VE PDF ALMA İŞLEVİ */
     function bolumYazdir(baslik, elementId) {
         let icerik = document.getElementById(elementId).innerHTML;
         let win = window.open('', '_blank');
-        
-        win.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>${baslik} - BORAN VIII</title>
-                <style>
-                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #000; }
-                    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; position: relative; z-index: 2; }
-                    .header img { width: 70px; height: 70px; vertical-align: middle; margin-right: 15px; }
-                    .header h2 { display: inline-block; vertical-align: middle; margin: 0; font-size: 18px; }
-                    .watermark {
-                        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                        width: 400px; height: 400px; opacity: 0.10; z-index: 0; pointer-events: none;
-                    }
-                    .content-box { position: relative; z-index: 2; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-                    th, td { border: 1px solid #000; padding: 6px 8px; text-align: center; font-size: 11px; }
-                    th { background-color: #f2f2f2; }
-                    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
-                    .card { border: 1px solid #333; padding: 10px; border-radius: 5px; margin-bottom: 10px; page-break-inside: avoid; }
-                    .lane-box { border-bottom: 1px dashed #ccc; padding: 4px 0; }
-                    button, .no-print { display: none !important; }
-                </style>
-            </head>
-            <body>
-                <img src="${boranLogoBase64}" class="watermark">
-                <div class="header">
-                    <img src="${boranLogoBase64}">
-                    <h2>BORAN VIII ULUSLARARASI JANDARMA KESKİN NİŞANCI ATIŞ YARIŞMASI<br><small style="font-size:14px; font-weight:normal;">${baslik}</small></h2>
-                </div>
-                <div class="content-box">
-                    ${icerik}
-                </div>
-            </body>
-            </html>
-        `);
-
+        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:5px;text-align:center;font-size:11px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
 
     function birlikEkle() {
         let ad = document.getElementById('birlikAdi').value.trim();
-        let knRutbe = document.getElementById('knRutbe').value.trim();
-        let knAd = document.getElementById('knAd').value.trim();
-        let knTufek = document.getElementById('knTufek').value.trim();
-        let knTufekSeri = document.getElementById('knTufekSeri').value.trim();
-        let knTabanca = document.getElementById('knTabanca').value.trim();
-        let knTabancaSeri = document.getElementById('knTabancaSeri').value.trim();
-
-        let gozcuRutbe = document.getElementById('gozcuRutbe').value.trim();
-        let gozcuAd = document.getElementById('gozcuAd').value.trim();
-        let gozcuTufek = document.getElementById('gozcuTufek').value.trim();
-        let gozcuTufekSeri = document.getElementById('gozcuTufekSeri').value.trim();
-        let gozcuTabanca = document.getElementById('gozcuTabanca').value.trim();
-        let gozcuTabancaSeri = document.getElementById('gozcuTabancaSeri').value.trim();
-
         if (ad) {
             birlikler.push({
                 ad: ad,
-                kn: { rutbe: knRutbe || '—', ad: knAd || '—', tufek: knTufek || '—', tufekSeri: knTufekSeri || '—', tabanca: knTabanca || '—', tabancaSeri: knTabancaSeri || '—' },
-                gozcu: { rutbe: gozcuRutbe || '—', ad: gozcuAd || '—', tufek: gozcuTufek || '—', tufekSeri: gozcuTufekSeri || '—', tabanca: gozcuTabanca || '—', tabancaSeri: gozcuTabancaSeri || '—' }
+                kn: { ad: document.getElementById('knAd').value || '—', tufek: document.getElementById('knTufek').value || '—', tabanca: document.getElementById('knTabanca').value || '—' },
+                gozcu: { ad: document.getElementById('gozcuAd').value || '—', tufek: document.getElementById('gozcuTufek').value || '—', tabanca: document.getElementById('gozcuTabanca').value || '—' }
             });
-            
-            document.getElementById('birlikAdi').value = '';
-            document.getElementById('knRutbe').value = ''; document.getElementById('knAd').value = '';
-            document.getElementById('knTufek').value = ''; document.getElementById('knTufekSeri').value = '';
-            document.getElementById('knTabanca').value = ''; document.getElementById('knTabancaSeri').value = '';
-            document.getElementById('gozcuRutbe').value = ''; document.getElementById('gozcuAd').value = '';
-            document.getElementById('gozcuTufek').value = ''; document.getElementById('gozcuTufekSeri').value = '';
-            document.getElementById('gozcuTabanca').value = ''; document.getElementById('gozcuTabancaSeri').value = '';
-
             verileriKaydet(); birlikListele(); etapSelectDoldur();
-        } else {
-            alert("Lütfen Unsur Adı giriniz.");
         }
     }
 
@@ -411,210 +310,178 @@
         let div = document.getElementById('birlikKartlari');
         div.innerHTML = '';
         birlikler.forEach((b, index) => {
-            div.innerHTML += `
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="color:#f39c12; margin:0;">${b.ad}</h3>
-                        <button class="btn-danger" style="padding:2px 8px;" onclick="birlikSil(${index})">X</button>
-                    </div>
-                    <hr style="border:0.5px solid #444; margin:8px 0;">
-                    <p style="font-size:12px; margin:4px 0;">🎯 <b>Keskin Nişancı:</b> ${b.kn.rutbe} ${b.kn.ad}<br>
-                    <span style="color:#bdc3c7; font-size:11px;">Tüfek: ${b.kn.tufek} (S/N: ${b.kn.tufekSeri}) | Tabanca: ${b.kn.tabanca} (S/N: ${b.kn.tabancaSeri})</span></p>
-                    <p style="font-size:12px; margin:4px 0;">👁️ <b>Gözcü:</b> ${b.gozcu.rutbe} ${b.gozcu.ad}<br>
-                    <span style="color:#bdc3c7; font-size:11px;">Tüfek: ${b.gozcu.tufek} (S/N: ${b.gozcu.tufekSeri}) | Tabanca: ${b.gozcu.tabanca} (S/N: ${b.gozcu.tabancaSeri})</span></p>
-                </div>
-            `;
+            div.innerHTML += `<div class="card">
+                <h3 style="color:#f39c12; margin:0;">${b.ad}</h3>
+                <p style="font-size:12px;">🎯 <b>KN:</b> ${b.kn.ad} | 👁️ <b>Gözcü:</b> ${b.gozcu.ad}</p>
+                <button class="btn-danger" onclick="birlikSil(${index})">Sil</button>
+            </div>`;
         });
     }
 
-    function birlikSil(index) {
-        let silinen = birlikler[index];
-        birlikler.splice(index, 1);
-        if(detayPuanlar[silinen.ad]) delete detayPuanlar[silinen.ad];
-        verileriKaydet(); birlikListele(); etapSelectDoldur();
-    }
+    function birlikSil(index) { birlikler.splice(index, 1); verileriKaydet(); birlikListele(); etapSelectDoldur(); }
 
     function etapSelectDoldur() {
-        document.getElementById('puanEtapSelect').innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad}</option>`).join('');
+        document.getElementById('puanEtapSelect').innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad} (Max: ${e.maxPuan} Pn)</option>`).join('');
     }
 
     function kuraCek() {
-        if(birlikler.length === 0) { alert("Önce unsur ekleyin!"); return; }
+        if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         kuralar = {};
-
         etaplar.forEach(etap => {
             if (etap.ciftYol) {
-                let pairs = [], kopyalansin = [...birlikler], gruplar = {};
-                kopyalansin.forEach(u => {
-                    let ana = u.ad.replace(/( \d+\. Unsur|\d+\.Unsur| Unsur)/gi, '').trim();
-                    if(!gruplar[ana]) gruplar[ana] = [];
-                    gruplar[ana].push(u.ad);
-                });
-                let tekler = [];
-                Object.keys(gruplar).forEach(k => {
-                    let g = gruplar[k].sort(() => Math.random() - 0.5);
-                    while(g.length >= 2) pairs.push([g.pop(), g.pop()]);
-                    if(g.length === 1) tekler.push(g.pop());
-                });
-                tekler.sort(() => Math.random() - 0.5);
-                while(tekler.length >= 2) pairs.push([tekler.pop(), tekler.pop()]);
-                if(tekler.length === 1) pairs.push([tekler.pop(), '— (Tek Katılım)']);
-                pairs.sort(() => Math.random() - 0.5);
+                let list = [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
+                let pairs = [];
+                while(list.length >= 2) pairs.push([list.pop(), list.pop()]);
+                if(list.length === 1) pairs.push([list.pop(), '— (Tek)']);
                 kuralar[etap.id] = pairs;
             } else {
                 kuralar[etap.id] = [...birlikler].sort(() => Math.random() - 0.5).map(b => b.ad);
             }
         });
-
         verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
     }
 
     function kuralariEkranaBas() {
         let container = document.getElementById('kuraSonuclari');
         container.innerHTML = '';
-        if(Object.keys(kuralar).length === 0) return;
-
         etaplar.forEach(etap => {
             let data = kuralar[etap.id];
             if(!data) return;
-            if (etap.ciftYol) {
-                let html = `<div class="card two-lane"><h3 style="color:#3498db;">${etap.ad}</h3>`;
-                data.forEach((pair, idx) => {
-                    html += `<div class="lane-box"><b>${idx + 1}. ATIŞ GRUBU:</b><br>🎯 YOL 1: ${pair[0]}<br>🎯 YOL 2: ${pair[1]}</div>`;
-                });
-                html += `</div>`;
-                container.innerHTML += html;
+            let html = `<div class="card"><h3>${etap.ad}</h3><ol>`;
+            if(etap.ciftYol) {
+                data.forEach(p => html += `<li>Yol 1: ${p[0]} | Yol 2: ${p[1]}</li>`);
             } else {
-                let html = `<div class="card"><h3 style="color:#f1c40f;">${etap.ad}</h3><ol>`;
                 data.forEach(bAd => html += `<li><b>${bAd}</b></li>`);
-                html += `</ol></div>`;
-                container.innerHTML += html;
             }
+            html += `</ol></div>`;
+            container.innerHTML += html;
         });
     }
 
+    // ETAP VERİ GİRİŞ ÇİZELGESİ (DİNAMİK FORMLAR)
     function etapCizelgesiOlustur() {
         let etapId = parseInt(document.getElementById('puanEtapSelect').value) || 1;
+        let etapObj = etaplar.find(e => e.id === etapId);
         let cizelgeAlani = document.getElementById('cizelgeAlani');
-        cizelgeAlani.innerHTML = '';
+        
+        document.getElementById('etapBilgiNotu').innerText = `${etapObj.ad} - Puanlama Modu: ${etapObj.tip === 'senaryo_ozel' ? 'Tüfek + Tabanca Ayrı Giriş' : 'Vuruş İsabet Hesabı'}`;
 
-        let kuraData = kuralar[etapId];
-        let birlikSırası = [];
-        if (kuraData) {
-            if(etaplar.find(e=>e.id===etapId)?.ciftYol) {
-                kuraData.forEach(pair => {
-                    if(pair[0] && pair[0] !== '— (Tek Katılım)') birlikSırası.push(pair[0]);
-                    if(pair[1] && pair[1] !== '— (Tek Katılım)') birlikSırası.push(pair[1]);
-                });
-            } else { birlikSırası = [...kuraData]; }
-        } else { birlikSırası = birlikler.map(b => b.ad); }
+        let birlikSırası = kuralar[etapId] ? (etapObj.ciftYol ? kuralar[etapId].flat().filter(x=>x!=='— (Tek)') : kuralar[etapId]) : birlikler.map(b => b.ad);
 
-        if(birlikSırası.length === 0) return;
+        let tableHeader = etapObj.tip === 'senaryo_ozel' ? 
+            `<tr><th>Kura</th><th>Unsur Adı</th><th>Tüfek İsabet Puanı (Max 1300)</th><th>Tabanca İsabet Puanı (Max 200)</th><th>Ceza Pn</th><th>Net Toplam</th></tr>` :
+            `<tr><th>Kura</th><th>Unsur Adı</th><th>Başarılı İsabet / Vuruş</th><th>İsabet Başı Puan</th><th>Ceza Pn</th><th>Net Toplam</th></tr>`;
 
         let tableRows = '';
         birlikSırası.forEach((bAd, idx) => {
             let p = detayPuanlar[bAd]?.[etapId] || {};
-            tableRows += `<tr data-birlik="${bAd}">
-                <td><b>${idx + 1}</b></td>
-                <td style="text-align:left; font-weight:bold;">${bAd}</td>
-                <td><input type="number" class="vurus_input input-mini" value="${p.brutPuan||0}"></td>
-                <td><input type="number" class="ceza_pn input-mini" min="0" value="${p.cezaPuan || 0}"></td>
-                <td><input type="text" class="ceza_neden input-text-mini" value="${p.cezaNedeni || ''}"></td>
-                <td style="color:#2ecc71; font-weight:bold;">${p.puan !== undefined ? p.puan : '—'}</td>
-            </tr>`;
+            if(etapObj.tip === 'senaryo_ozel') {
+                tableRows += `<tr data-birlik="${bAd}">
+                    <td><b>${idx + 1}</b></td>
+                    <td style="text-align:left;"><b>${bAd}</b></td>
+                    <td><input type="number" class="sen_tufek input-mini" style="width:70px !important;" max="1300" value="${p.tufekPuan || 0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="sen_tabanca input-mini" style="width:70px !important;" max="200" value="${p.tabancaPuan || 0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan || 0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan || 0}</td>
+                </tr>`;
+            } else {
+                tableRows += `<tr data-birlik="${bAd}">
+                    <td><b>${idx + 1}</b></td>
+                    <td style="text-align:left;"><b>${bAd}</b></td>
+                    <td><input type="number" class="vurus_cnt input-mini" max="${etapObj.hedefAdet}" value="${p.vurus || 0}" onchange="hesaplaRow(this, ${etapId})"> / ${etapObj.hedefAdet}</td>
+                    <td><b>${etapObj.hedefPuan} Pn</b></td>
+                    <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan || 0}" onchange="hesaplaRow(this, ${etapId})"></td>
+                    <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan || 0}</td>
+                </tr>`;
+            }
         });
 
-        cizelgeAlani.innerHTML = `
-            <table>
-                <thead>
-                    <tr><th>Kura Sıra</th><th>Unsur Adı</th><th>Atış Puanı / Vuruş</th><th>Ceza Pn</th><th>Ceza Nedeni</th><th>Net Puan</th></tr>
-                </thead>
-                <tbody>${tableRows}</tbody>
-            </table>
-            <div style="text-align:center; margin-top:15px;">
-                <button onclick="cizelgeKaydet(${etapId})" style="padding:10px 20px; background:#27ae60;">💾 Verileri Kaydet</button>
-            </div>`;
+        cizelgeAlani.innerHTML = `<table><thead>${tableHeader}</thead><tbody>${tableRows}</tbody></table>
+        <div style="text-align:center; margin-top:15px;"><button onclick="cizelgeKaydet(${etapId})">💾 Tüm Girişleri Kaydet</button></div>`;
+    }
+
+    // SATIR İÇİ ANLIK HESAPLAMA MOTORU
+    function hesaplaRow(el, etapId) {
+        let tr = el.closest('tr');
+        let etapObj = etaplar.find(e => e.id === etapId);
+        let netTd = tr.querySelector('.net_puan');
+
+        if(etapObj.tip === 'senaryo_ozel') {
+            let tuf = parseInt(tr.querySelector('.sen_tufek').value) || 0;
+            let tab = parseInt(tr.querySelector('.sen_tabanca').value) || 0;
+            let ceza = parseInt(tr.querySelector('.ceza_pn').value) || 0;
+            netTd.innerText = Math.max(0, (tuf + tab) - ceza);
+        } else {
+            let vurus = parseInt(tr.querySelector('.vurus_cnt').value) || 0;
+            let ceza = parseInt(tr.querySelector('.ceza_pn').value) || 0;
+            let net = Math.max(0, (vurus * etapObj.hedefPuan) - ceza);
+            netTd.innerText = net;
+        }
     }
 
     function cizelgeKaydet(etapId) {
+        let etapObj = etaplar.find(e => e.id === etapId);
         let rows = document.querySelectorAll('#cizelgeAlani tbody tr');
         rows.forEach(tr => {
             let bAd = tr.getAttribute('data-birlik');
-            let brut = parseInt(tr.querySelector('.vurus_input')?.value) || 0;
-            let ceza = parseInt(tr.querySelector('.ceza_pn')?.value) || 0;
-            let neden = tr.querySelector('.ceza_neden')?.value.trim() || '';
-
             if(!detayPuanlar[bAd]) detayPuanlar[bAd] = {};
-            detayPuanlar[bAd][etapId] = {
-                detay: `Puan/Vuruş: ${brut}`,
-                brutPuan: brut,
-                cezaPuan: ceza,
-                cezaNedeni: neden,
-                puan: brut - ceza
-            };
+
+            if(etapObj.tip === 'senaryo_ozel') {
+                let tuf = parseInt(tr.querySelector('.sen_tufek').value) || 0;
+                let tab = parseInt(tr.querySelector('.sen_tabanca').value) || 0;
+                let ceza = parseInt(tr.querySelector('.ceza_pn').value) || 0;
+                detayPuanlar[bAd][etapId] = { tufekPuan: tuf, tabancaPuan: tab, cezaPuan: ceza, puan: Math.max(0, (tuf + tab) - ceza) };
+            } else {
+                let vurus = parseInt(tr.querySelector('.vurus_cnt').value) || 0;
+                let ceza = parseInt(tr.querySelector('.ceza_pn').value) || 0;
+                detayPuanlar[bAd][etapId] = { vurus: vurus, cezaPuan: ceza, puan: Math.max(0, (vurus * etapObj.hedefPuan) - ceza) };
+            }
         });
-        verileriKaydet(); alert("Girişler kaydedildi."); etapCizelgesiOlustur();
+        verileriKaydet(); alert("Girişler başarıyla kaydedildi.");
     }
 
-    function ciktilariOlustur() {
-        let div = document.getElementById('ciktiAlanlari');
-        div.innerHTML = '';
-        if(Object.keys(kuralar).length === 0) return;
+    // GENEL ŞAMPİYONLUK MATRİSİ (TAM ENTEGRASYON)
+    function matrisGuncelle() {
+        let tbody = document.getElementById('matrisBody');
+        tbody.innerHTML = '';
 
-        etaplar.forEach(etap => {
-            let kuraData = kuralar[etap.id];
-            if(!kuraData) return;
+        birlikler.forEach((b, idx) => {
+            let p = detayPuanlar[b.ad] || {};
+            
+            // 1. ETAP
+            let e1 = p[1]?.puan || 0;
+            let e2 = p[2]?.puan || 0;
+            let e3 = p[3]?.puan || 0;
+            let e4 = p[4]?.puan || 0;
+            let e5 = p[5]?.puan || 0;
+            let e6 = p[6]?.puan || 0;
+            let e7 = p[7]?.puan || 0;
+            let etap1Top = e1 + e2 + e3 + e4 + e5 + e6 + e7;
 
-            let card = document.createElement('div');
-            card.className = 'print-list-card';
-            card.id = `etap_cikti_${etap.id}`;
+            // 2. ETAP
+            let e8 = p[8]?.puan || 0;
+            let e9 = p[9]?.puan || 0;
+            let etap2Top = e8 + e9;
 
-            let headerHtml = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f39c12; padding-bottom:8px; margin-bottom:12px;">
-                <h3 style="margin:0; color:#f39c12;">📋 ${etap.ad} — HAKEM ATIŞ ÇİZELGESİ</h3>
-                <button class="btn-print no-print" onclick="bolumYazdir('${etap.ad} Hakem Çizelgesi', 'etap_cikti_${etap.id}')">🖨 Sadece Bu Etabı Yazdır / PDF</button>
-            </div>`;
+            // 3. ETAP (SENARYO)
+            let senTufek = p[10]?.tufekPuan || 0;
+            let senTabanca = p[10]?.tabancaPuan || 0;
+            let senCeza = p[10]?.cezaPuan || 0;
+            let etap3Top = Math.max(0, (senTufek + senTabanca) - senCeza);
 
-            let tableHtml = `<table>
-                <thead>
-                    <tr><th>Sıra</th><th>Unsur / Birlik Adı</th><th>Keskin Nişancı</th><th>Gözcü</th><th>Atış Puanı</th><th>Ceza Pn</th><th>Hakem İmza</th></tr>
-                </thead>
-                <tbody>`;
+            let genelToplam = etap1Top + etap2Top + etap3Top;
 
-            kuraData.forEach((bAd, idx) => {
-                let b = birlikler.find(x => x.ad === bAd);
-                tableHtml += `<tr>
-                    <td><b>${idx + 1}</b></td>
-                    <td style="text-align:left;"><b>${bAd}</b></td>
-                    <td>${b?.kn.rutbe || ''} ${b?.kn.ad || '—'}</td>
-                    <td>${b?.gozcu.rutbe || ''} ${b?.gozcu.ad || '—'}</td>
-                    <td></td><td></td><td></td>
-                </tr>`;
-            });
-
-            tableHtml += `</tbody></table>`;
-            card.innerHTML = headerHtml + tableHtml;
-            div.appendChild(card);
-        });
-    }
-
-    function detayTablosuGuncelle() {
-        let div = document.getElementById('detayIcerik');
-        div.innerHTML = '';
-        birlikler.forEach(b => {
-            let userPuanlar = detayPuanlar[b.ad] || {};
-            let html = `<div class="card" style="margin-bottom:15px;">
-                <h3 style="color:#f39c12; text-align:left;">🎯 ${b.ad} Karnesi</h3>
-                <table>
-                    <thead><tr><th>Etap No</th><th>Etap Adı</th><th>Brüt Puan</th><th>Ceza</th><th>Net Puan</th></tr></thead>
-                    <tbody>`;
-            let toplam = 0;
-            etaplar.forEach(e => {
-                let rec = userPuanlar[e.id] || { brutPuan: 0, cezaPuan: 0, puan: 0 };
-                toplam += rec.puan;
-                html += `<tr><td>${e.id}</td><td style="text-align:left;">${e.ad}</td><td>${rec.brutPuan}</td><td>${rec.cezaPuan}</td><td style="color:#2ecc71; font-weight:bold;">${rec.puan}</td></tr>`;
-            });
-            html += `</tbody></table><div style="text-align:right; font-weight:bold; color:#f39c12;">TOPLAM NET PUAN: ${toplam}</div></div>`;
-            div.innerHTML += html;
+            tbody.innerHTML += `<tr>
+                <td><b>${idx + 1}</b></td>
+                <td style="text-align:left; font-weight:bold;">${b.ad}</td>
+                <td>${e1}</td><td>${e2}</td><td>${e3}</td><td>${e4}</td><td>${e5}</td><td>${e6}</td><td>${e7}</td>
+                <td style="background:#274e2a; color:#2ecc71; font-weight:bold;">${etap1Top}</td>
+                <td>${e8}</td><td>${e9}</td>
+                <td style="background:#3f4346; color:#bdc3c7; font-weight:bold;">${etap2Top}</td>
+                <td>${senTufek}</td><td>${senTabanca}</td>
+                <td style="background:#53301a; color:#e67e22; font-weight:bold;">${etap3Top}</td>
+                <td style="background:#4a235a; color:#f1c40f; font-weight:bold; font-size:13px;">${genelToplam}</td>
+            </tr>`;
         });
     }
 
@@ -623,41 +490,52 @@
         tbody.innerHTML = '';
         let sonuclar = birlikler.map(b => {
             let p = detayPuanlar[b.ad] || {};
-            let sum = 0;
-            etaplar.forEach(e => sum += (p[e.id]?.puan || 0));
-            return { birlik: b, toplam: sum };
+            let e1 = (p[1]?.puan||0)+(p[2]?.puan||0)+(p[3]?.puan||0)+(p[4]?.puan||0)+(p[5]?.puan||0)+(p[6]?.puan||0)+(p[7]?.puan||0);
+            let e2 = (p[8]?.puan||0)+(p[9]?.puan||0);
+            let e3 = p[10]?.puan||0;
+            return { birlik: b, e1, e2, e3, top: e1+e2+e3 };
         });
-        sonuclar.sort((a, b) => b.toplam - a.toplam);
+        sonuclar.sort((a, b) => b.top - a.top);
         sonuclar.forEach((s, idx) => {
             tbody.innerHTML += `<tr>
                 <td><b>${idx + 1}</b></td>
-                <td style="text-align:left; font-weight:bold;">${s.birlik.ad}</td>
+                <td style="text-align:left;"><b>${s.birlik.ad}</b></td>
                 <td>${s.birlik.kn.ad}</td><td>${s.birlik.gozcu.ad}</td>
-                <td>—</td><td>—</td><td>—</td><td>—</td>
-                <td style="color:#2ecc71; font-weight:bold;">${s.toplam} Puan</td>
+                <td>${s.e1}</td><td>${s.e2}</td><td>${s.e3}</td>
+                <td style="color:#2ecc71; font-weight:bold;">${s.top} Puan</td>
             </tr>`;
         });
     }
 
-    function matrisGuncelle() {
-        let tbody = document.getElementById('matrisBody');
-        tbody.innerHTML = '';
-        birlikler.forEach((b, idx) => {
+    function detayTablosuGuncelle() {
+        let div = document.getElementById('detayIcerik');
+        div.innerHTML = '';
+        birlikler.forEach(b => {
             let p = detayPuanlar[b.ad] || {};
-            let sum = 0;
-            let tds = etaplar.map(e => {
-                let val = p[e.id]?.puan || 0;
-                sum += val;
-                return `<td>${val}</td>`;
-            }).join('');
+            let html = `<div class="card"><h3>${b.ad} Karnesi</h3><table><thead><tr><th>Etap</th><th>Puan</th></tr></thead><tbody>`;
+            let top = 0;
+            etaplar.forEach(e => {
+                let val = p[e.id]?.puan || 0; top += val;
+                html += `<tr><td style="text-align:left;">${e.ad}</td><td>${val}</td></tr>`;
+            });
+            html += `</tbody></table><div style="text-align:right; font-weight:bold; color:#f39c12; margin-top:5px;">TOPLAM: ${top}</div></div>`;
+            div.innerHTML += html;
+        });
+    }
 
-            tbody.innerHTML += `<tr>
-                <td><b>${idx + 1}</b></td><td>${idx + 1}</td>
-                <td style="text-align:left; font-weight:bold;">${b.ad}</td>
-                <td>${b.kn.ad}</td><td>${b.gozcu.ad}</td>
-                ${tds}
-                <td style="color:#f1c40f; font-weight:bold;">${sum}</td>
-            </tr>`;
+    function ciktilariOlustur() {
+        let div = document.getElementById('ciktiAlanlari');
+        div.innerHTML = '';
+        etaplar.forEach(etap => {
+            let data = kuralar[etap.id];
+            if(!data) return;
+            let card = document.createElement('div'); card.className = 'card';
+            let html = `<h3>${etap.ad} - Hakem Çizelgesi</h3><table><thead><tr><th>Sıra</th><th>Unsur</th><th>İsabet / Puan</th><th>Hakem İmza</th></tr></thead><tbody>`;
+            let list = etap.ciftYol ? data.flat().filter(x=>x!=='— (Tek)') : data;
+            list.forEach((bAd, i) => html += `<tr><td>${i+1}</td><td style="text-align:left;">${bAd}</td><td></td><td></td></tr>`);
+            html += `</tbody></table>`;
+            card.innerHTML = html;
+            div.appendChild(card);
         });
     }
 
