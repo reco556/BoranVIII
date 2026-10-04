@@ -32,7 +32,7 @@
         th { background: #1a1a20; color: #f39c12; }
         
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
-        .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; }
+        .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; position: relative; margin-bottom: 15px; }
         
         .input-mini { width: 45px !important; text-align: center; padding: 2px !important; }
         .reset-box { background: #2c2222; border: 1px dashed #e74c3c; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; }
@@ -228,7 +228,7 @@
         <h2>📄 Hakem Atış Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="ciktilariOlustur()" style="background:#e67e22;">🔄 Çıktıları Yenile</button>
-            <button onclick="bolumYazdir('HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨️ Hakem Çizelgelerini Yazdır / PDF</button>
+            <button onclick="bolumYazdir('TÜM HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨️ Tüm Çizelgeleri Yazdır / PDF</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
@@ -303,7 +303,17 @@
     function bolumYazdir(baslik, elementId) {
         let icerik = document.getElementById(elementId).innerHTML;
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:4px;text-align:center;font-size:9px;} .silah-info{font-size:8px; color:#333;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
+        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:4px;text-align:center;font-size:9px;} .silah-info{font-size:8px; color:#333;} .btn-print{display:none!important;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
+        win.document.close();
+        setTimeout(() => { win.print(); }, 400);
+    }
+
+    function tekCiktiYazdir(etapId) {
+        let cardObj = document.getElementById('hakem_card_' + etapId);
+        if(!cardObj) return;
+        let etapObj = etaplar.find(e => e.id === etapId);
+        let win = window.open('', '_blank');
+        win.document.write(`<html><head><title>${etapObj.ad} - Hakem Çizelgesi</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;text-align:center;font-size:10px;} .silah-info{font-size:8px; color:#333;} button{display:none!important;}</style></head><body>${cardObj.innerHTML}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
@@ -902,14 +912,20 @@
         etaplar.forEach(etap => {
             let data = kuralar[etap.id];
             if(!data) return;
-            let card = document.createElement('div'); card.className = 'card';
-            let html = `<h3>${etap.ad} - Hakem Çizelgesi</h3>
+            let card = document.createElement('div'); card.className = 'card'; card.id = 'hakem_card_' + etap.id;
+            let html = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0;">${etap.ad} - Hakem Çizelgesi</h3>
+                <button class="btn-print" onclick="tekCiktiYazdir(${etap.id})">🖨️ Bu Atışı Yazdır / PDF</button>
+            </div>
             <table>
                 <thead>
                     <tr>
                         <th style="width:40px;">Sıra</th>
                         <th>Unsur Adı ve Personel / Silah Bilgileri</th>
-                        <th style="width:100px;">Puan</th>
+                        <th style="width:90px;">Vuruş Sayısı</th>
+                        <th style="width:90px;">Ceza Puanı</th>
+                        <th style="width:90px;">Puan</th>
                         <th style="width:120px;">Hakem İmza</th>
                     </tr>
                 </thead>
@@ -928,6 +944,8 @@
                         <div class="silah-info">🎯 ${knInfo}</div>
                         <div class="silah-info">👁️ ${gzInfo}</div>
                     </td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>`;
