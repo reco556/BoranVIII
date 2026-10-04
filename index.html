@@ -27,8 +27,8 @@
         .btn-print { background: #2980b9; font-size: 14px; padding: 8px 16px; }
         
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; margin-bottom: 15px; }
-        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; margin-bottom: 15px; }
+        th, td { border: 1px solid #444; padding: 6px 4px; text-align: center; font-size: 10px; }
         th { background: #1a1a20; color: #f39c12; }
         
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -45,7 +45,7 @@
         .head-etap3 { background: #5c3214; color: #e67e22; }
         .head-total { background: #8e44ad; color: #fff; }
 
-        .silah-info { font-size: 10px; color: #aaa; margin-top: 2px; }
+        .silah-info { font-size: 9px; color: #aaa; margin-top: 2px; }
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@
             .tab-content { display: none !important; }
             .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
-            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9px !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; }
             th { background: #eee !important; color: #000 !important; }
             .silah-info { color: #333 !important; }
             .card { border: none !important; padding: 0 !important; page-break-after: always; }
@@ -87,7 +87,6 @@
             <button onclick="sadecePuanSifirla()" class="btn-warning">📝 Puanları Sıfırla</button>
         </div>
 
-        <!-- EXCEL İLE TOPLU YÜKLEME PANELİ -->
         <div class="excel-box" style="max-width: 850px; margin: 0 auto 15px auto;">
             <h3 style="color:#2ecc71; margin-top:0;">📊 Excel / CSV Dosyasından Toplu Unsur İçe Aktar</h3>
             <p style="font-size:12px; color:#ccc; margin-bottom:10px;">
@@ -97,7 +96,6 @@
             <button onclick="document.getElementById('excelFileInput').click()" style="background:#27ae60; font-size:14px; padding:8px 16px;">📂 Excel Dosyası Seç ve Yükle</button>
         </div>
 
-        <!-- MANÜEL EKLEME KARTI -->
         <div class="card" style="max-width: 850px; margin: 0 auto;">
             <h3>Tekil Unsur Ekle</h3>
             <div style="margin-bottom:15px; text-align:center;">
@@ -114,7 +112,7 @@
                 </div>
 
                 <div class="personel-box">
-                    <h4 style="color:#3498db; margin-top:0;">👁️️ Gözcü (GZ)</h4>
+                    <h4 style="color:#3498db; margin-top:0;">👁 Gözcü (GZ)</h4>
                     <div><label>Rütbe ve Adı:</label><input type="text" id="gozcuAd" placeholder="J.Uzm.Çvş. Mehmet KAYA"></div>
                     <div><label>Tüfek / S/N:</label><input type="text" id="gozcuTufek" placeholder="MPT-76 / BSUL103"></div>
                     <div><label>Tabanca / S/N:</label><input type="text" id="gozcuTabanca" placeholder="Sarsılmaz / AAB0348"></div>
@@ -129,14 +127,14 @@
         <div id="birlikKartlari" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:15px; margin-top:15px;"></div>
     </div>
 
-    <!-- 2. KURA TABI (ÇİZELGE/TABLO FORMATI) -->
+    <!-- 2. KURA TABI (TEK ÇİZELGE/TABLO FORMATI) -->
     <div id="kuraTab" class="tab-content">
-        <h2>🎲 Kura Sıralamaları Çizelgesi</h2>
+        <h2>🎲 Genel Kura Atış Sıralaması Çizelgesi</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK</button>
-            <button onclick="bolumYazdir('KURA ATIŞ SIRA ÇİZELGESİ', 'kuraSonuclari')" class="btn-print">🖨️ Kura Çizelgesini Yazdır / PDF</button>
+            <button onclick="bolumYazdir('BORAN VIII - GENEL KURA ATIŞ ÇİZELGESİ', 'kuraSonuclari')" class="btn-print">🖨️ Kura Çizelgesini Yazdır / PDF</button>
         </div>
-        <div id="kuraSonuclari" class="grid-container"></div>
+        <div id="kuraSonuclari" class="table-responsive"></div>
     </div>
 
     <!-- 3. PUAN VERİ GİRİŞİ -->
@@ -229,7 +227,7 @@
         <h2>📄 Hakem Atış Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="ciktilariOlustur()" style="background:#e67e22;">🔄 Çıktıları Yenile</button>
-            <button onclick="bolumYazdir('TÜM HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨️️ Tüm Çizelgeleri Yazdır / PDF</button>
+            <button onclick="bolumYazdir('TÜM HAKEM ATIŞ ÇİZELGELERİ', 'ciktiAlanlari')" class="btn-print">🖨 Tüm Çizelgeleri Yazdır / PDF</button>
         </div>
         <div id="ciktiAlanlari"></div>
     </div>
@@ -238,17 +236,17 @@
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
     const etaplar = [
-        { id: 1, ad: "1. Algı Atışı (1)", maxPuan: 300, tip: "standart", hedefAdet: 3, hedefPuan: 100 },
-        { id: 2, ad: "2. Algı Atışı (2)", maxPuan: 200, tip: "standart", hedefAdet: 1, hedefPuan: 200 },
-        { id: 3, ad: "3. Rehine Atışı (1)", maxPuan: 200, tip: "standart", hedefAdet: 1, hedefPuan: 200 },
-        { id: 4, ad: "4. Rehine Atışı (2)", maxPuan: 300, tip: "rehine2_renkli" },
-        { id: 5, ad: "5. Tabanca - Güç Kazandırma", maxPuan: 300, tip: "tabanca_guc_bolgeli" },
-        { id: 6, ad: "6. Tabanca - Düello Atışı", maxPuan: 200, tip: "tabanca_duello" },
-        { id: 7, ad: "7. Kademeli Mesafe Atışı", maxPuan: 750, tip: "kademeli_ozel", ciftYol: true },
-        { id: 8, ad: "8. Sızma Faaliyet Atışı", maxPuan: 500, tip: "sizma_sure_ozel" },
-        { id: 9, ad: "9. Gece Atışı - 1 (3 Atım)", maxPuan: 450, tip: "standart", hedefAdet: 3, hedefPuan: 150 },
-        { id: 10, ad: "10. Gece Atışı - 2 (Tek Atım)", maxPuan: 300, tip: "standart", hedefAdet: 1, hedefPuan: 300 },
-        { id: 11, ad: "11. Senaryo Atışı (Büyük Kapışma)", maxPuan: 1500, tip: "senaryo_yeni" }
+        { id: 1, ad: "1. Algı", maxPuan: 300, tip: "standart", hedefAdet: 3, hedefPuan: 100 },
+        { id: 2, ad: "2. Algı", maxPuan: 200, tip: "standart", hedefAdet: 1, hedefPuan: 200 },
+        { id: 3, ad: "1. Rehine", maxPuan: 200, tip: "standart", hedefAdet: 1, hedefPuan: 200 },
+        { id: 4, ad: "2. Rehine", maxPuan: 300, tip: "rehine2_renkli" },
+        { id: 5, ad: "Tab. Güç", maxPuan: 300, tip: "tabanca_guc_bolgeli" },
+        { id: 6, ad: "Tab. Düello", maxPuan: 200, tip: "tabanca_duello" },
+        { id: 7, ad: "Kademeli", maxPuan: 750, tip: "kademeli_ozel", ciftYol: true },
+        { id: 8, ad: "Sızma", maxPuan: 500, tip: "sizma_sure_ozel" },
+        { id: 9, ad: "Gece-1", maxPuan: 450, tip: "standart", hedefAdet: 3, hedefPuan: 150 },
+        { id: 10, ad: "Gece-2", maxPuan: 300, tip: "standart", hedefAdet: 1, hedefPuan: 300 },
+        { id: 11, ad: "Senaryo", maxPuan: 1500, tip: "senaryo_yeni" }
     ];
 
     let birlikler = [];
@@ -304,7 +302,7 @@
     function bolumYazdir(baslik, elementId) {
         let icerik = document.getElementById(elementId).innerHTML;
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px 4px;text-align:center;font-size:10px;} .silah-info{font-size:9px; color:#333;} .btn-print{display:none!important;} .card{border:none!important; margin-bottom:20px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
+        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:5px 3px;text-align:center;font-size:9px;} .silah-info{font-size:8px; color:#333;} .btn-print{display:none!important;} .card{border:none!important; margin-bottom:20px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
@@ -440,78 +438,73 @@
         verileriKaydet(); kuralariEkranaBas(); etapCizelgesiOlustur();
     }
 
-    // YENİ ÇİZELGE/TABLO FORMATINDA KURA BASTIRMA
+    // 11 ATIŞ CİNSİNİ YAN YANA GÖSTEREN TEK KURA ÇİZELGESİ
     function kuralariEkranaBas() {
         let container = document.getElementById('kuraSonuclari');
-        container.innerHTML = '';
-        etaplar.forEach(etap => {
-            let data = kuralar[etap.id];
-            if(!data) return;
-            
-            let html = `<div class="card">
-                <h3 style="margin-top:0;">${etap.ad} Kura Çizelgesi</h3>
-                <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width:50px;">Sıra</th>
-                            <th style="width:200px;">Birlik / Unsur Adı</th>
-                            <th>Keskin Nişancı (Rütbe / Ad / Silahlar)</th>
-                            <th>Gözcü (Rütbe / Ad / Silahlar)</th>
-                            <th style="width:140px;">İmza</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            
-            if(etap.ciftYol) {
-                let sNo = 1;
-                data.forEach(p => {
-                    let u1 = birlikler.find(b => b.ad === p[0]);
-                    let u2 = birlikler.find(b => b.ad === p[1]);
+        if(birlikler.length === 0) {
+            container.innerHTML = '<p style="text-align:center;">Henüz birlik eklenmedi.</p>';
+            return;
+        }
 
-                    if(u1) {
-                        html += `<tr>
-                            <td><b>${sNo} (Yol 1)</b></td>
-                            <td style="text-align:left;"><b>${u1.ad}</b></td>
-                            <td style="text-align:left;"><b>${u1.kn.ad}</b><div class="silah-info">T: ${u1.kn.tufek} | Tab: ${u1.kn.tabanca}</div></td>
-                            <td style="text-align:left;"><b>${u1.gozcu.ad}</b><div class="silah-info">T: ${u1.gozcu.tufek} | Tab: ${u1.gozcu.tabanca}</div></td>
-                            <td></td>
-                        </tr>`;
-                    }
-                    if(u2) {
-                        html += `<tr>
-                            <td><b>${sNo} (Yol 2)</b></td>
-                            <td style="text-align:left;"><b>${u2.ad}</b></td>
-                            <td style="text-align:left;"><b>${u2.kn.ad}</b><div class="silah-info">T: ${u2.kn.tufek} | Tab: ${u2.kn.tabanca}</div></td>
-                            <td style="text-align:left;"><b>${u2.gozcu.ad}</b><div class="silah-info">T: ${u2.gozcu.tufek} | Tab: ${u2.gozcu.tabanca}</div></td>
-                            <td></td>
-                        </tr>`;
-                    } else if(p[1] === '— (Tek)') {
-                        html += `<tr>
-                            <td><b>${sNo} (Yol 2)</b></td>
-                            <td style="text-align:center;" colspan="4"><i>— TEK BAY geşildi —</i></td>
-                        </tr>`;
-                    }
-                    sNo++;
-                });
-            } else {
-                data.forEach((bAd, idx) => {
-                    let u = birlikler.find(b => b.ad === bAd);
-                    if(u) {
-                        html += `<tr>
-                            <td><b>${idx + 1}</b></td>
-                            <td style="text-align:left;"><b>${u.ad}</b></td>
-                            <td style="text-align:left;"><b>${u.kn.ad}</b><div class="silah-info">T: ${u.kn.tufek} | Tab: ${u.kn.tabanca}</div></td>
-                            <td style="text-align:left;"><b>${u.gozcu.ad}</b><div class="silah-info">T: ${u.gozcu.tufek} | Tab: ${u.gozcu.tabanca}</div></td>
-                            <td></td>
-                        </tr>`;
-                    }
-                });
-            }
-
-            html += `</tbody></table></div></div>`;
-            container.innerHTML += html;
+        let html = `
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:40px;">Sıra</th>
+                    <th style="width:160px;">Birlik / Unsur Adı</th>
+                    <th style="width:180px;">Keskin Nişancı (Rütbe / Ad / Silahlar)</th>
+                    <th style="width:180px;">Gözcü (Rütbe / Ad / Silahlar)</th>`;
+        
+        // 11 Atış Cinsini başlığa ekle
+        etaplar.forEach(e => {
+            html += `<th style="min-width:55px;">${e.ad}</th>`;
         });
+
+        html += `<th style="width:100px;">İmza</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        birlikler.forEach((u, idx) => {
+            html += `<tr>
+                <td><b>${idx + 1}</b></td>
+                <td style="text-align:left;"><b>${u.ad}</b></td>
+                <td style="text-align:left;">
+                    <b>${u.kn.ad}</b>
+                    <div class="silah-info">T: ${u.kn.tufek} | Tab: ${u.kn.tabanca}</div>
+                </td>
+                <td style="text-align:left;">
+                    <b>${u.gozcu.ad}</b>
+                    <div class="silah-info">T: ${u.gozcu.tufek} | Tab: ${u.gozcu.tabanca}</div>
+                </td>`;
+
+            // Her etap için kura sıra numarasını yazdır
+            etaplar.forEach(etap => {
+                let kuraData = kuralar[etap.id];
+                let siraVal = "—";
+
+                if (kuraData) {
+                    if (etap.ciftYol) {
+                        // Çift yollu atışlarda (Kademeli vb.) yol ve sıra bilgisi
+                        let pairIdx = kuraData.findIndex(p => p[0] === u.ad || p[1] === u.ad);
+                        if (pairIdx !== -1) {
+                            let pair = kuraData[pairIdx];
+                            let yol = pair[0] === u.ad ? "Y1" : "Y2";
+                            siraVal = `${pairIdx + 1} (${yol})`;
+                        }
+                    } else {
+                        let pos = kuraData.indexOf(u.ad);
+                        if (pos !== -1) siraVal = pos + 1;
+                    }
+                }
+                html += `<td style="font-weight:bold; color:#f39c12;">${siraVal}</td>`;
+            });
+
+            html += `<td></td></tr>`;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
     }
 
     function sizmaPuanHesapla(dakika) {
