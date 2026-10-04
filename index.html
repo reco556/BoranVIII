@@ -47,8 +47,8 @@
         .two-lane { background: #2c3e50; border: 1px solid #3498db; }
         .lane-box { background: #1a252f; padding: 8px; margin: 4px 0; border-radius: 4px; font-size: 13px; text-align: left; }
         
-        .input-mini { width: 50px !important; text-align: center; padding: 4px !important; margin: 2px !important; }
-        .input-text-mini { width: 120px !important; padding: 4px !important; margin: 2px !important; }
+        .input-mini { width: 42px !important; text-align: center; padding: 3px !important; margin: 1px !important; }
+        .input-text-mini { width: 110px !important; padding: 4px !important; margin: 2px !important; }
 
         .reset-box { background: #2c2222; border: 1px dashed #e74c3c; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
 
@@ -156,7 +156,7 @@
         <div id="kuraSonuclari" class="grid-container"></div>
     </div>
 
-    <!-- 3. PUAN VERİ GİRİŞ TABI (ÇİZELGE MODU) -->
+    <!-- 3. PUAN VERİ GİRİŞ TABI -->
     <div id="puanTab" class="tab-content">
         <h2>📝 Kura Sırasına Göre Etap Veri Giriş Çizelgesi</h2>
         <div style="text-align:center; margin-bottom: 20px;">
@@ -261,8 +261,8 @@
         { id: 2, ad: "2. Algı Atışı (2) [Er Meydanı]" },
         { id: 3, ad: "3. Rehine Atışı (1) [Er Meydanı]" },
         { id: 4, ad: "4. Rehine Atışı (2) [Er Meydanı]" },
-        { id: 5, ad: "5. Tabanca - Güç Kazandırma [Er Meydanı]" },
-        { id: 6, ad: "6. Tabanca - Düello Atışı [Er Meydanı]" },
+        { id: 5, ad: "5. Tabanca - Güç Kazandırma [Er Meydanı] (İki Personel Ort.)" },
+        { id: 6, ad: "6. Tabanca - Düello Atışı [Er Meydanı] (İki Personel Ort.)" },
         { id: 7, ad: "7. Kademeli Mesafe Atışı [Er Meydanı]", ciftYol: true },
         { id: 8, ad: "8. Sızma Faaliyet Atışı [Gece Yaklaşıyor]" },
         { id: 9, ad: "9. Gece Atışı (1 & 2) [Gece Yaklaşıyor]" },
@@ -568,7 +568,6 @@
 
         let kuraData = kuralar[etapId];
 
-        // Eğer kura çekilmediyse sıradan listele ama uyar
         let birlikSırası = [];
         if (kuraData) {
             if(etaplar.find(e=>e.id===etapId)?.ciftYol) {
@@ -652,41 +651,75 @@
                     <td style="color:#2ecc71; font-weight:bold;">${p.puan !== undefined ? p.puan : '—'}</td>
                 </tr>`;
             });
-        } else if (etapId === 5) { // Tabanca Güç
-            tableHeader = `<tr><th>Kura Sıra</th><th>Unsur Adı</th><th>8m (A/B/C/D/E)</th><th>15m (A/B/C/D/E)</th><th>Ceza Pn</th><th>Ceza Nedeni</th><th>Mevcut Puan</th></tr>`;
+        } else if (etapId === 5) { // TABANCA GÜÇ - İKİ PERSONEL
+            tableHeader = `<tr>
+                <th>Kura Sıra</th>
+                <th>Unsur Adı</th>
+                <th style="color:#e67e22;">KN 8m (A/B/C/D/E)</th>
+                <th style="color:#e67e22;">KN 15m (A/B/C/D/E)</th>
+                <th style="color:#3498db;">GZ 8m (A/B/C/D/E)</th>
+                <th style="color:#3498db;">GZ 15m (A/B/C/D/E)</th>
+                <th>Ceza Pn</th>
+                <th>Ceza Nedeni</th>
+                <th>Ort. Net Puan</th>
+            </tr>`;
             birlikSırası.forEach((bAd, idx) => {
                 let p = detayPuanlar[bAd]?.[5] || {};
                 tableRows += `<tr data-birlik="${bAd}">
                     <td><b>${idx + 1}</b></td>
                     <td style="text-align:left; font-weight:bold;">${bAd}</td>
+                    <!-- KN -->
                     <td>
-                        <input type="number" class="t8_a input-mini" placeholder="A" title="A Bölgesi (20P)">
-                        <input type="number" class="t8_b input-mini" placeholder="B" title="B Bölgesi (15P)">
-                        <input type="number" class="t8_c input-mini" placeholder="C" title="C Bölgesi (10P)">
-                        <input type="number" class="t8_d input-mini" placeholder="D" title="D Bölgesi (5P)">
-                        <input type="number" class="t8_e input-mini" placeholder="E" title="E Bölgesi (1P)">
+                        <input type="number" class="kn_t8_a input-mini" placeholder="A" title="A (20P)">
+                        <input type="number" class="kn_t8_b input-mini" placeholder="B" title="B (15P)">
+                        <input type="number" class="kn_t8_c input-mini" placeholder="C" title="C (10P)">
+                        <input type="number" class="kn_t8_d input-mini" placeholder="D" title="D (5P)">
+                        <input type="number" class="kn_t8_e input-mini" placeholder="E" title="E (1P)">
                     </td>
                     <td>
-                        <input type="number" class="t15_a input-mini" placeholder="A" title="A Bölgesi (40P)">
-                        <input type="number" class="t15_b input-mini" placeholder="B" title="B Bölgesi (30P)">
-                        <input type="number" class="t15_c input-mini" placeholder="C" title="C Bölgesi (20P)">
-                        <input type="number" class="t15_d input-mini" placeholder="D" title="D Bölgesi (10P)">
-                        <input type="number" class="t15_e input-mini" placeholder="E" title="E Bölgesi (2P)">
+                        <input type="number" class="kn_t15_a input-mini" placeholder="A" title="A (40P)">
+                        <input type="number" class="kn_t15_b input-mini" placeholder="B" title="B (30P)">
+                        <input type="number" class="kn_t15_c input-mini" placeholder="C" title="C (20P)">
+                        <input type="number" class="kn_t15_d input-mini" placeholder="D" title="D (10P)">
+                        <input type="number" class="kn_t15_e input-mini" placeholder="E" title="E (2P)">
+                    </td>
+                    <!-- GZ -->
+                    <td>
+                        <input type="number" class="gz_t8_a input-mini" placeholder="A" title="A (20P)">
+                        <input type="number" class="gz_t8_b input-mini" placeholder="B" title="B (15P)">
+                        <input type="number" class="gz_t8_c input-mini" placeholder="C" title="C (10P)">
+                        <input type="number" class="gz_t8_d input-mini" placeholder="D" title="D (5P)">
+                        <input type="number" class="gz_t8_e input-mini" placeholder="E" title="E (1P)">
+                    </td>
+                    <td>
+                        <input type="number" class="gz_t15_a input-mini" placeholder="A" title="A (40P)">
+                        <input type="number" class="gz_t15_b input-mini" placeholder="B" title="B (30P)">
+                        <input type="number" class="gz_t15_c input-mini" placeholder="C" title="C (20P)">
+                        <input type="number" class="gz_t15_d input-mini" placeholder="D" title="D (10P)">
+                        <input type="number" class="gz_t15_e input-mini" placeholder="E" title="E (2P)">
                     </td>
                     <td><input type="number" class="ceza_pn input-mini" min="0" value="${p.cezaPuan || 0}"></td>
                     <td><input type="text" class="ceza_neden input-text-mini" value="${p.cezaNedeni || ''}"></td>
                     <td style="color:#2ecc71; font-weight:bold;">${p.puan !== undefined ? p.puan : '—'}</td>
                 </tr>`;
             });
-        } else if (etapId === 6) { // Tabanca Düello
-            tableHeader = `<tr><th>Kura Sıra</th><th>Unsur Adı</th><th>Materyal Hedef Vuruş (0-5) [Her biri 40P]</th><th>Ceza Pn</th><th>Ceza Nedeni</th><th>Mevcut Puan</th></tr>`;
+        } else if (etapId === 6) { // TABANCA DÜELLO - İKİ PERSONEL
+            tableHeader = `<tr>
+                <th>Kura Sıra</th>
+                <th>Unsur Adı</th>
+                <th style="color:#e67e22;">Keskin Nişancı Vuruş (0-5) [Her biri 40P]</th>
+                <th style="color:#3498db;">Gözcü Vuruş (0-5) [Her biri 40P]</th>
+                <th>Ceza Pn</th>
+                <th>Ceza Nedeni</th>
+                <th>Ort. Net Puan</th>
+            </tr>`;
             birlikSırası.forEach((bAd, idx) => {
                 let p = detayPuanlar[bAd]?.[6] || {};
-                let rawV = p.detay ? parseInt(p.detay) || 0 : 0;
                 tableRows += `<tr data-birlik="${bAd}">
                     <td><b>${idx + 1}</b></td>
                     <td style="text-align:left; font-weight:bold;">${bAd}</td>
-                    <td><input type="number" class="vurus_1 input-mini" min="0" max="5" value="${rawV}"></td>
+                    <td><input type="number" class="kn_duello input-mini" min="0" max="5" value="0"></td>
+                    <td><input type="number" class="gz_duello input-mini" min="0" max="5" value="0"></td>
                     <td><input type="number" class="ceza_pn input-mini" min="0" value="${p.cezaPuan || 0}"></td>
                     <td><input type="text" class="ceza_neden input-text-mini" value="${p.cezaNedeni || ''}"></td>
                     <td style="color:#2ecc71; font-weight:bold;">${p.puan !== undefined ? p.puan : '—'}</td>
@@ -830,28 +863,47 @@
                 let s = parseInt(tr.querySelector('.r_sari')?.value) || 0;
                 brutPuan = (y*120) + (b*80) + (m*60) + (s*40);
                 detayMetni = `Yeşil:${y}, Beyaz:${b}, Mavi:${m}, Sarı:${s}`;
-            } else if (etapId === 5) {
-                let t8a = parseInt(tr.querySelector('.t8_a')?.value)||0;
-                let t8b = parseInt(tr.querySelector('.t8_b')?.value)||0;
-                let t8c = parseInt(tr.querySelector('.t8_c')?.value)||0;
-                let t8d = parseInt(tr.querySelector('.t8_d')?.value)||0;
-                let t8e = parseInt(tr.querySelector('.t8_e')?.value)||0;
-                let t15a = parseInt(tr.querySelector('.t15_a')?.value)||0;
-                let t15b = parseInt(tr.querySelector('.t15_b')?.value)||0;
-                let t15c = parseInt(tr.querySelector('.t15_c')?.value)||0;
-                let t15d = parseInt(tr.querySelector('.t15_d')?.value)||0;
-                let t15e = parseInt(tr.querySelector('.t15_e')?.value)||0;
+            } else if (etapId === 5) { // TABANCA GÜÇ ORTALAMA
+                let kn8a = parseInt(tr.querySelector('.kn_t8_a')?.value)||0;
+                let kn8b = parseInt(tr.querySelector('.kn_t8_b')?.value)||0;
+                let kn8c = parseInt(tr.querySelector('.kn_t8_c')?.value)||0;
+                let kn8d = parseInt(tr.querySelector('.kn_t8_d')?.value)||0;
+                let kn8e = parseInt(tr.querySelector('.kn_t8_e')?.value)||0;
+                let kn15a = parseInt(tr.querySelector('.kn_t15_a')?.value)||0;
+                let kn15b = parseInt(tr.querySelector('.kn_t15_b')?.value)||0;
+                let kn15c = parseInt(tr.querySelector('.kn_t15_c')?.value)||0;
+                let kn15d = parseInt(tr.querySelector('.kn_t15_d')?.value)||0;
+                let kn15e = parseInt(tr.querySelector('.kn_t15_e')?.value)||0;
 
-                let p8 = (t8a*20)+(t8b*15)+(t8c*10)+(t8d*5)+(t8e*1);
-                let p15 = (t15a*40)+(t15b*30)+(t15c*20)+(t15d*10)+(t15e*2);
-                brutPuan = p8 + p15;
-                if(brutPuan > 300) brutPuan = 300;
-                detayMetni = `8m: ${p8} Pn, 15m: ${p15} Pn`;
-            } else if (etapId === 6) {
-                let v = parseInt(tr.querySelector('.vurus_1')?.value) || 0;
-                brutPuan = v * 40;
-                if(brutPuan > 200) brutPuan = 200;
-                detayMetni = `${v} Materyal Hedef Vuruşu`;
+                let knPuan = ((kn8a*20)+(kn8b*15)+(kn8c*10)+(kn8d*5)+(kn8e*1)) + ((kn15a*40)+(kn15b*30)+(kn15c*20)+(kn15d*10)+(kn15e*2));
+                if(knPuan > 300) knPuan = 300;
+
+                let gz8a = parseInt(tr.querySelector('.gz_t8_a')?.value)||0;
+                let gz8b = parseInt(tr.querySelector('.gz_t8_b')?.value)||0;
+                let gz8c = parseInt(tr.querySelector('.gz_t8_c')?.value)||0;
+                let gz8d = parseInt(tr.querySelector('.gz_t8_d')?.value)||0;
+                let gz8e = parseInt(tr.querySelector('.gz_t8_e')?.value)||0;
+                let gz15a = parseInt(tr.querySelector('.gz_t15_a')?.value)||0;
+                let gz15b = parseInt(tr.querySelector('.gz_t15_b')?.value)||0;
+                let gz15c = parseInt(tr.querySelector('.gz_t15_c')?.value)||0;
+                let gz15d = parseInt(tr.querySelector('.gz_t15_d')?.value)||0;
+                let gz15e = parseInt(tr.querySelector('.gz_t15_e')?.value)||0;
+
+                let gzPuan = ((gz8a*20)+(gz8b*15)+(gz8c*10)+(gz8d*5)+(gz8e*1)) + ((gz15a*40)+(gz15b*30)+(gz15c*20)+(gz15d*10)+(gz15e*2));
+                if(gzPuan > 300) gzPuan = 300;
+
+                brutPuan = Math.round((knPuan + gzPuan) / 2);
+                detayMetni = `KN: ${knPuan} Pn, GZ: ${gzPuan} Pn (Ort: ${brutPuan})`;
+
+            } else if (etapId === 6) { // TABANCA DÜELLO ORTALAMA
+                let knV = parseInt(tr.querySelector('.kn_duello')?.value) || 0;
+                let gzV = parseInt(tr.querySelector('.gz_duello')?.value) || 0;
+                let knPuan = knV * 40; if(knPuan > 200) knPuan = 200;
+                let gzPuan = gzV * 40; if(gzPuan > 200) gzPuan = 200;
+
+                brutPuan = Math.round((knPuan + gzPuan) / 2);
+                detayMetni = `KN: ${knV} Vuruş (${knPuan} Pn), GZ: ${gzV} Vuruş (${gzPuan} Pn) | Ort: ${brutPuan}`;
+
             } else if (etapId === 7) {
                 let sel = tr.querySelector('.kad_select');
                 brutPuan = parseInt(sel?.value) || 0;
@@ -981,9 +1033,6 @@
                     </thead>
                     <tbody>`;
                 kuraData.forEach((pair, idx) => {
-                    let b1 = birlikler.find(x => x.ad === pair[0]);
-                    let b2 = birlikler.find(x => x.ad === pair[1]);
-
                     tableHtml += `<tr>
                         <td><b>${idx + 1}</b></td>
                         <td style="text-align:left;"><b>${pair[0]}</b></td>
