@@ -25,8 +25,8 @@
         .btn-print { background: #2980b9; font-size: 14px; padding: 8px 16px; }
         
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; margin-bottom: 15px; }
-        th, td { border: 1px solid #444; padding: 5px 3px; text-align: center; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; margin-bottom: 15px; }
+        th, td { border: 1px solid #444; padding: 4px 2px; text-align: center; font-size: 10px; }
         th { background: #1a1a20; color: #f39c12; }
         
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
@@ -48,7 +48,7 @@
             .tab-content { display: none !important; }
             .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
-            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 9px !important; }
+            table, th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; }
             th { background: #eee !important; color: #000 !important; }
         }
     </style>
@@ -220,10 +220,10 @@
         { id: 1, ad: "1. Algı Atışı (1)", maxPuan: 300, tip: "standart", hedefAdet: 3, hedefPuan: 100 },
         { id: 2, ad: "2. Algı Atışı (2)", maxPuan: 200, tip: "standart", hedefAdet: 2, hedefPuan: 100 },
         { id: 3, ad: "3. Rehine Atışı (1)", maxPuan: 200, tip: "standart", hedefAdet: 2, hedefPuan: 100 },
-        { id: 4, ad: "4. Rehine Atışı (2)", maxPuan: 300, tip: "standart", hedefAdet: 3, hedefPuan: 100 },
-        { id: 5, ad: "5. Tabanca - Güç Kazandırma", maxPuan: 300, tip: "tabanca_guc" },
+        { id: 4, ad: "4. Rehine Atışı (2)", maxPuan: 300, tip: "rehine2_renkli" },
+        { id: 5, ad: "5. Tabanca - Güç Kazandırma", maxPuan: 300, tip: "tabanca_guc_bolgeli" },
         { id: 6, ad: "6. Tabanca - Düello Atışı", maxPuan: 200, tip: "tabanca_duello" },
-        { id: 7, ad: "7. Kademeli Mesafe Atışı", maxPuan: 750, tip: "standart", hedefAdet: 5, hedefPuan: 150, ciftYol: true },
+        { id: 7, ad: "7. Kademeli Mesafe Atışı", maxPuan: 750, tip: "kademeli_ozel", ciftYol: true },
         { id: 8, ad: "8. Sızma Faaliyet Atışı", maxPuan: 500, tip: "standart", hedefAdet: 5, hedefPuan: 100 },
         { id: 9, ad: "9. Gece Atışı (1 & 2)", maxPuan: 750, tip: "standart", hedefAdet: 5, hedefPuan: 150 },
         { id: 10, ad: "10. Senaryo Atışı (Büyük Kapışma)", maxPuan: 1500, tip: "senaryo_yeni" }
@@ -283,7 +283,7 @@
     function bolumYazdir(baslik, elementId) {
         let icerik = document.getElementById(elementId).innerHTML;
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:4px;text-align:center;font-size:10px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
+        win.document.write(`<html><head><title>${baslik}</title><style>body{font-family:sans-serif;padding:15px;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:4px;text-align:center;font-size:9px;}</style></head><body><h2>${baslik}</h2>${icerik}</body></html>`);
         win.document.close();
         setTimeout(() => { win.print(); }, 400);
     }
@@ -358,20 +358,40 @@
         let etapObj = etaplar.find(e => e.id === etapId);
         let cizelgeAlani = document.getElementById('cizelgeAlani');
         
-        document.getElementById('etapBilgiNotu').innerText = `${etapObj.ad} - Giriş Paneli`;
+        document.getElementById('etapBilgiNotu').innerText = `${etapObj.ad} - Veri Giriş Paneli`;
 
         let birlikSırası = kuralar[etapId] ? (etapObj.ciftYol ? kuralar[etapId].flat().filter(x=>x!=='— (Tek)') : kuralar[etapId]) : birlikler.map(b => b.ad);
 
         let tableHeader = "";
-        if(etapObj.tip === "tabanca_guc") {
-            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>KN 8m</th><th>KN 15m</th><th>GZ 8m</th><th>GZ 15m</th><th>KN+GZ Ort. Net</th></tr>`;
+        if(etapObj.tip === "rehine2_renkli") {
+            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Sarı (40)</th><th>Mavi (60)</th><th>Beyaz (80)</th><th>Yeşil (120)</th><th>Ceza Pn</th><th>Net Puan</th></tr>`;
+        } else if(etapObj.tip === "tabanca_guc_bolgeli") {
+            tableHeader = `<tr>
+                <th rowspan="2">Kura</th><th rowspan="2">Unsur Adı</th>
+                <th colspan="5">KN 8m Vuruşlar</th><th colspan="5">KN 15m Vuruşlar</th>
+                <th colspan="5">GZ 8m Vuruşlar</th><th colspan="5">GZ 15m Vuruşlar</th>
+                <th rowspan="2">KN+GZ Ort. Net</th>
+            </tr>
+            <tr>
+                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+            </tr>`;
+        } else if(etapObj.tip === "kademeli_ozel") {
+            tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Başarılı Vuruş Adedi (0-4)</th><th>Atılan Fişek Sayısı (4-8)</th><th>Ceza Pn</th><th>Net Puan</th></tr>`;
         } else if(etapObj.tip === "tabanca_duello") {
             tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>KN Vuruş (0-5)</th><th>GZ Vuruş (0-5)</th><th>KN+GZ Ort. Net</th></tr>`;
         } else if(etapObj.tip === "senaryo_yeni") {
             tableHeader = `<tr>
-                <th>Kura</th><th>Unsur Adı</th>
-                <th>Çatı (KN 600m)</th><th>Plat. (GZ 200m)</th><th>Beşik Anahtar (KN)</th><th>Beşik Hrk. (GZ)</th>
-                <th>Z.El (GZ 300m)</th><th>Hrk. (GZ 300m)</th><th>Tab. (KN 8m)</th><th>Süre (Sn)</th><th>Süre Prim/Ceza</th><th>Net Puan</th>
+                <th rowspan="2">Kura</th><th rowspan="2">Unsur Adı</th>
+                <th rowspan="2">Çatı (KN 600m)</th><th rowspan="2">Plat. (GZ 200m)</th><th rowspan="2">Beşik Anahtar (KN)</th><th rowspan="2">Beşik Hrk. (GZ)</th>
+                <th rowspan="2">Z.El (GZ 300m)</th><th rowspan="2">Hrk. (GZ 300m)</th>
+                <th colspan="5">Tabanca (KN 8m) Bölge Vuruşları</th>
+                <th rowspan="2">Süre (Sn)</th><th rowspan="2">Süre Prim/Ceza</th><th rowspan="2">Net Puan</th>
+            </tr>
+            <tr>
+                <th>A (50)</th><th>B (40)</th><th>C (30)</th><th>D (20)</th><th>E (10)</th>
             </tr>`;
         } else {
             tableHeader = `<tr><th>Kura</th><th>Unsur Adı</th><th>Başarılı Vuruş</th><th>İsabet Başı</th><th>Ceza Pn</th><th>Net Puan</th></tr>`;
@@ -381,13 +401,63 @@
         birlikSırası.forEach((bAd, idx) => {
             let p = detayPuanlar[bAd]?.[etapId] || {};
             
-            if(etapObj.tip === "tabanca_guc") {
+            if(etapObj.tip === "rehine2_renkli") {
                 tableRows += `<tr data-birlik="${bAd}">
                     <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
-                    <td><input type="number" class="kn_8m input-mini" value="${p.kn_8m||0}" onchange="hesaplaRow(this, 5)"></td>
-                    <td><input type="number" class="kn_15m input-mini" value="${p.kn_15m||0}" onchange="hesaplaRow(this, 5)"></td>
-                    <td><input type="number" class="gz_8m input-mini" value="${p.gz_8m||0}" onchange="hesaplaRow(this, 5)"></td>
-                    <td><input type="number" class="gz_15m input-mini" value="${p.gz_15m||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="r_sari input-mini" value="${p.sari||0}" onchange="hesaplaRow(this, 4)"></td>
+                    <td><input type="number" class="r_mavi input-mini" value="${p.mavi||0}" onchange="hesaplaRow(this, 4)"></td>
+                    <td><input type="number" class="r_beyaz input-mini" value="${p.beyaz||0}" onchange="hesaplaRow(this, 4)"></td>
+                    <td><input type="number" class="r_yesil input-mini" value="${p.yesil||0}" onchange="hesaplaRow(this, 4)"></td>
+                    <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan||0}" onchange="hesaplaRow(this, 4)"></td>
+                    <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
+                </tr>`;
+            } else if(etapObj.tip === "tabanca_guc_bolgeli") {
+                tableRows += `<tr data-birlik="${bAd}">
+                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td><input type="number" class="kn8_a input-mini" value="${p.kn8_a||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn8_b input-mini" value="${p.kn8_b||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn8_c input-mini" value="${p.kn8_c||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn8_d input-mini" value="${p.kn8_d||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn8_e input-mini" value="${p.kn8_e||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn15_a input-mini" value="${p.kn15_a||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn15_b input-mini" value="${p.kn15_b||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn15_c input-mini" value="${p.kn15_c||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn15_d input-mini" value="${p.kn15_d||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="kn15_e input-mini" value="${p.kn15_e||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz8_a input-mini" value="${p.gz8_a||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz8_b input-mini" value="${p.gz8_b||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz8_c input-mini" value="${p.gz8_c||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz8_d input-mini" value="${p.gz8_d||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz8_e input-mini" value="${p.gz8_e||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz15_a input-mini" value="${p.gz15_a||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz15_b input-mini" value="${p.gz15_b||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz15_c input-mini" value="${p.gz15_c||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz15_d input-mini" value="${p.gz15_d||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td><input type="number" class="gz15_e input-mini" value="${p.gz15_e||0}" onchange="hesaplaRow(this, 5)"></td>
+                    <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
+                </tr>`;
+            } else if(etapObj.tip === "kademeli_ozel") {
+                tableRows += `<tr data-birlik="${bAd}">
+                    <td><b>${idx + 1}</b></td><td><b>${bAd}</b></td>
+                    <td>
+                        <select class="kad_vurus" style="width:70px !important;" onchange="hesaplaRow(this, 7)">
+                            <option value="0" ${p.vurus==0?'selected':''}>0 Hedef</option>
+                            <option value="1" ${p.vurus==1?'selected':''}>1 Hedef</option>
+                            <option value="2" ${p.vurus==2?'selected':''}>2 Hedef</option>
+                            <option value="3" ${p.vurus==3?'selected':''}>3 Hedef</option>
+                            <option value="4" ${p.vurus==4?'selected':''}>4 Hedef</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="kad_fisek" style="width:85px !important;" onchange="hesaplaRow(this, 7)">
+                            <option value="8" ${p.fisek==8?'selected':''}>8 Fişek</option>
+                            <option value="7" ${p.fisek==7?'selected':''}>7 Fişek</option>
+                            <option value="6" ${p.fisek==6?'selected':''}>6 Fişek</option>
+                            <option value="5" ${p.fisek==5?'selected':''}>5 Fişek</option>
+                            <option value="4" ${p.fisek==4?'selected':''}>4 Fişek</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="ceza_pn input-mini" value="${p.cezaPuan||0}" onchange="hesaplaRow(this, 7)"></td>
                     <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
                 </tr>`;
             } else if(etapObj.tip === "tabanca_duello") {
@@ -406,8 +476,12 @@
                     <td><input type="number" class="s_besik_gz input-mini" max="3" value="${p.s_besik_gz||0}" onchange="hesaplaRow(this, 10)"> /3</td>
                     <td><input type="number" class="s_zel input-mini" max="3" value="${p.s_zel||0}" onchange="hesaplaRow(this, 10)"> /3</td>
                     <td><input type="number" class="s_hrk input-mini" max="3" value="${p.s_hrk||0}" onchange="hesaplaRow(this, 10)"> /3</td>
-                    <td><input type="number" class="s_tab input-mini" max="4" value="${p.s_tab||0}" onchange="hesaplaRow(this, 10)"> /4</td>
-                    <td><input type="number" class="s_sure input-mini" style="width:60px !important;" value="${p.s_sure||480}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_tab_a input-mini" value="${p.s_tab_a||0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_tab_b input-mini" value="${p.s_tab_b||0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_tab_c input-mini" value="${p.s_tab_c||0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_tab_d input-mini" value="${p.s_tab_d||0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_tab_e input-mini" value="${p.s_tab_e||0}" onchange="hesaplaRow(this, 10)"></td>
+                    <td><input type="number" class="s_sure input-mini" style="width:55px !important;" value="${p.s_sure||480}" onchange="hesaplaRow(this, 10)"></td>
                     <td class="s_sure_fark" style="color:#f1c40f; font-weight:bold;">0 Pn</td>
                     <td class="net_puan" style="color:#2ecc71; font-weight:bold;">${p.puan||0}</td>
                 </tr>`;
@@ -426,28 +500,67 @@
         <div style="text-align:center; margin-top:15px;"><button onclick="cizelgeKaydet(${etapId})">💾 Verileri Kaydet</button></div>`;
     }
 
-    // HESAPLAMA MOTORU (TÜM KURALLAR BİR ARADA)
+    // HESAPLAMA MOTORU
     function hesaplaRow(el, etapId) {
         let tr = el.closest('tr');
         let etapObj = etaplar.find(e => e.id === etapId);
         let netTd = tr.querySelector('.net_puan');
 
-        if(etapObj.tip === "tabanca_guc") {
-            let k8 = parseInt(tr.querySelector('.kn_8m').value)||0;
-            let k15 = parseInt(tr.querySelector('.kn_15m').value)||0;
-            let g8 = parseInt(tr.querySelector('.gz_8m').value)||0;
-            let g15 = parseInt(tr.querySelector('.gz_15m').value)||0;
-            
-            let knPuan = (k8 + k15) * 25; // MAX 300
-            let gzPuan = (g8 + g15) * 25; // MAX 300
-            let ort = (knPuan + gzPuan) / 2;
-            netTd.innerText = ort;
+        if(etapObj.tip === "rehine2_renkli") {
+            let sari = (parseInt(tr.querySelector('.r_sari').value)||0) * 40;
+            let mavi = (parseInt(tr.querySelector('.r_mavi').value)||0) * 60;
+            let beyaz = (parseInt(tr.querySelector('.r_beyaz').value)||0) * 80;
+            let yesil = (parseInt(tr.querySelector('.r_yesil').value)||0) * 120;
+            let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
+            netTd.innerText = Math.max(0, (sari + mavi + beyaz + yesil) - ceza);
+        } else if(etapObj.tip === "tabanca_guc_bolgeli") {
+            const calcBolge = (a, b, c, d, e) => (a*50) + (b*40) + (c*30) + (d*20) + (e*10);
+            let kn8 = calcBolge(
+                parseInt(tr.querySelector('.kn8_a').value)||0, parseInt(tr.querySelector('.kn8_b').value)||0,
+                parseInt(tr.querySelector('.kn8_c').value)||0, parseInt(tr.querySelector('.kn8_d').value)||0,
+                parseInt(tr.querySelector('.kn8_e').value)||0
+            );
+            let kn15 = calcBolge(
+                parseInt(tr.querySelector('.kn15_a').value)||0, parseInt(tr.querySelector('.kn15_b').value)||0,
+                parseInt(tr.querySelector('.kn15_c').value)||0, parseInt(tr.querySelector('.kn15_d').value)||0,
+                parseInt(tr.querySelector('.kn15_e').value)||0
+            );
+            let gz8 = calcBolge(
+                parseInt(tr.querySelector('.gz8_a').value)||0, parseInt(tr.querySelector('.gz8_b').value)||0,
+                parseInt(tr.querySelector('.gz8_c').value)||0, parseInt(tr.querySelector('.gz8_d').value)||0,
+                parseInt(tr.querySelector('.gz8_e').value)||0
+            );
+            let gz15 = calcBolge(
+                parseInt(tr.querySelector('.gz15_a').value)||0, parseInt(tr.querySelector('.gz15_b').value)||0,
+                parseInt(tr.querySelector('.gz15_c').value)||0, parseInt(tr.querySelector('.gz15_d').value)||0,
+                parseInt(tr.querySelector('.gz15_e').value)||0
+            );
+
+            let knTop = kn8 + kn15;
+            let gzTop = gz8 + gz15;
+            netTd.innerText = (knTop + gzTop) / 2;
+        } else if(etapObj.tip === "kademeli_ozel") {
+            let vurus = parseInt(tr.querySelector('.kad_vurus').value)||0;
+            let fisek = parseInt(tr.querySelector('.kad_fisek').value)||8;
+            let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
+            let bazPuan = 0;
+
+            if (vurus === 1) bazPuan = 50;
+            else if (vurus === 2) bazPuan = 150;
+            else if (vurus === 3) bazPuan = 350;
+            else if (vurus === 4) {
+                if (fisek === 8) bazPuan = 550;
+                else if (fisek === 7) bazPuan = 600;
+                else if (fisek === 6) bazPuan = 650;
+                else if (fisek === 5) bazPuan = 700;
+                else if (fisek === 4) bazPuan = 750;
+            }
+
+            netTd.innerText = Math.max(0, bazPuan - ceza);
         } else if(etapObj.tip === "tabanca_duello") {
             let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
             let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
-            let knP = kv * 40; // MAX 200
-            let gzP = gv * 40; // MAX 200
-            netTd.innerText = (knP + gzP) / 2;
+            netTd.innerText = ((kv * 40) + (gv * 40)) / 2;
         } else if(etapObj.tip === "senaryo_yeni") {
             let cati = (parseInt(tr.querySelector('.s_cati').value)||0) * 200;
             let plat = (parseInt(tr.querySelector('.s_plat').value)||0) * 100;
@@ -455,15 +568,21 @@
             let b_gz = (parseInt(tr.querySelector('.s_besik_gz').value)||0) * 50;
             let zel = (parseInt(tr.querySelector('.s_zel').value)||0) * 100;
             let hrk = (parseInt(tr.querySelector('.s_hrk').value)||0) * 100;
-            let tab = (parseInt(tr.querySelector('.s_tab').value)||0) * 50;
             
+            let tabA = (parseInt(tr.querySelector('.s_tab_a').value)||0) * 50;
+            let tabB = (parseInt(tr.querySelector('.s_tab_b').value)||0) * 40;
+            let tabC = (parseInt(tr.querySelector('.s_tab_c').value)||0) * 30;
+            let tabD = (parseInt(tr.querySelector('.s_tab_d').value)||0) * 20;
+            let tabE = (parseInt(tr.querySelector('.s_tab_e').value)||0) * 10;
+            let tabTop = tabA + tabB + tabC + tabD + tabE;
+
             let sure = parseInt(tr.querySelector('.s_sure').value)||480;
             let sureFark = 0;
-            if(sure < 480) sureFark = (480 - sure) * 1; // Bonus
-            else if(sure > 480) sureFark = (480 - sure) * 5; // Ceza
+            if(sure < 480) sureFark = (480 - sure) * 1;
+            else if(sure > 480) sureFark = (480 - sure) * 5;
             
             tr.querySelector('.s_sure_fark').innerText = (sureFark >= 0 ? `+${sureFark}` : `${sureFark}`) + " Pn";
-            let net = (cati + plat + b_kn + b_gz + zel + hrk + tab) + sureFark;
+            let net = (cati + plat + b_kn + b_gz + zel + hrk + tabTop) + sureFark;
             netTd.innerText = Math.max(0, net);
         } else {
             let vurus = parseInt(tr.querySelector('.vurus_cnt').value)||0;
@@ -479,13 +598,44 @@
             let bAd = tr.getAttribute('data-birlik');
             if(!detayPuanlar[bAd]) detayPuanlar[bAd] = {};
 
-            if(etapObj.tip === "tabanca_guc") {
-                let k8 = parseInt(tr.querySelector('.kn_8m').value)||0;
-                let k15 = parseInt(tr.querySelector('.kn_15m').value)||0;
-                let g8 = parseInt(tr.querySelector('.gz_8m').value)||0;
-                let g15 = parseInt(tr.querySelector('.gz_15m').value)||0;
-                let ort = (((k8 + k15) * 25) + ((g8 + g15) * 25)) / 2;
-                detayPuanlar[bAd][etapId] = { kn_8m: k8, kn_15m: k15, gz_8m: g8, gz_15m: g15, puan: ort };
+            if(etapObj.tip === "rehine2_renkli") {
+                let sari = parseInt(tr.querySelector('.r_sari').value)||0;
+                let mavi = parseInt(tr.querySelector('.r_mavi').value)||0;
+                let beyaz = parseInt(tr.querySelector('.r_beyaz').value)||0;
+                let yesil = parseInt(tr.querySelector('.r_yesil').value)||0;
+                let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
+                let top = (sari*40)+(mavi*60)+(beyaz*80)+(yesil*120)-ceza;
+                detayPuanlar[bAd][etapId] = { sari, mavi, beyaz, yesil, cezaPuan: ceza, puan: Math.max(0, top) };
+            } else if(etapObj.tip === "tabanca_guc_bolgeli") {
+                let getV = cls => parseInt(tr.querySelector('.'+cls).value)||0;
+                let kn8_a = getV('kn8_a'), kn8_b = getV('kn8_b'), kn8_c = getV('kn8_c'), kn8_d = getV('kn8_d'), kn8_e = getV('kn8_e');
+                let kn15_a = getV('kn15_a'), kn15_b = getV('kn15_b'), kn15_c = getV('kn15_c'), kn15_d = getV('kn15_d'), kn15_e = getV('kn15_e');
+                let gz8_a = getV('gz8_a'), gz8_b = getV('gz8_b'), gz8_c = getV('gz8_c'), gz8_d = getV('gz8_d'), gz8_e = getV('gz8_e');
+                let gz15_a = getV('gz15_a'), gz15_b = getV('gz15_b'), gz15_c = getV('gz15_c'), gz15_d = getV('gz15_d'), gz15_e = getV('gz15_e');
+
+                let knPuan = (kn8_a*50+kn8_b*40+kn8_c*30+kn8_d*20+kn8_e*10) + (kn15_a*50+kn15_b*40+kn15_c*30+kn15_d*20+kn15_e*10);
+                let gzPuan = (gz8_a*50+gz8_b*40+gz8_c*30+gz8_d*20+gz8_e*10) + (gz15_a*50+gz15_b*40+gz15_c*30+gz15_d*20+gz15_e*10);
+                let ort = (knPuan + gzPuan) / 2;
+
+                detayPuanlar[bAd][etapId] = { kn8_a, kn8_b, kn8_c, kn8_d, kn8_e, kn15_a, kn15_b, kn15_c, kn15_d, kn15_e, gz8_a, gz8_b, gz8_c, gz8_d, gz8_e, gz15_a, gz15_b, gz15_c, gz15_d, gz15_e, puan: ort };
+            } else if(etapObj.tip === "kademeli_ozel") {
+                let vurus = parseInt(tr.querySelector('.kad_vurus').value)||0;
+                let fisek = parseInt(tr.querySelector('.kad_fisek').value)||8;
+                let ceza = parseInt(tr.querySelector('.ceza_pn').value)||0;
+                let bazPuan = 0;
+
+                if (vurus === 1) bazPuan = 50;
+                else if (vurus === 2) bazPuan = 150;
+                else if (vurus === 3) bazPuan = 350;
+                else if (vurus === 4) {
+                    if (fisek === 8) bazPuan = 550;
+                    else if (fisek === 7) bazPuan = 600;
+                    else if (fisek === 6) bazPuan = 650;
+                    else if (fisek === 5) bazPuan = 700;
+                    else if (fisek === 4) bazPuan = 750;
+                }
+
+                detayPuanlar[bAd][etapId] = { vurus, fisek, cezaPuan: ceza, puan: Math.max(0, bazPuan - ceza) };
             } else if(etapObj.tip === "tabanca_duello") {
                 let kv = parseInt(tr.querySelector('.kn_vurus').value)||0;
                 let gv = parseInt(tr.querySelector('.gz_vurus').value)||0;
@@ -498,18 +648,24 @@
                 let b_gz = (parseInt(tr.querySelector('.s_besik_gz').value)||0) * 50;
                 let zel = (parseInt(tr.querySelector('.s_zel').value)||0) * 100;
                 let hrk = (parseInt(tr.querySelector('.s_hrk').value)||0) * 100;
-                let tab = (parseInt(tr.querySelector('.s_tab').value)||0) * 50;
                 
+                let s_tab_a = parseInt(tr.querySelector('.s_tab_a').value)||0;
+                let s_tab_b = parseInt(tr.querySelector('.s_tab_b').value)||0;
+                let s_tab_c = parseInt(tr.querySelector('.s_tab_c').value)||0;
+                let s_tab_d = parseInt(tr.querySelector('.s_tab_d').value)||0;
+                let s_tab_e = parseInt(tr.querySelector('.s_tab_e').value)||0;
+                let tabTop = (s_tab_a*50)+(s_tab_b*40)+(s_tab_c*30)+(s_tab_d*20)+(s_tab_e*10);
+
                 let sure = parseInt(tr.querySelector('.s_sure').value)||480;
                 let sureFark = sure < 480 ? (480 - sure) * 1 : (480 - sure) * 5;
-                let net = (cati + plat + b_kn + b_gz + zel + hrk + tab) + sureFark;
+                let net = (cati + plat + b_kn + b_gz + zel + hrk + tabTop) + sureFark;
 
                 detayPuanlar[bAd][etapId] = {
                     s_cati: tr.querySelector('.s_cati').value, s_plat: tr.querySelector('.s_plat').value,
                     s_besik_kn: tr.querySelector('.s_besik_kn').value, s_besik_gz: tr.querySelector('.s_besik_gz').value,
                     s_zel: tr.querySelector('.s_zel').value, s_hrk: tr.querySelector('.s_hrk').value,
-                    s_tab: tr.querySelector('.s_tab').value, s_sure: sure,
-                    tufekPuan: (cati + plat + b_kn + b_gz + zel + hrk), tabancaPuan: tab, sureFark: sureFark,
+                    s_tab_a, s_tab_b, s_tab_c, s_tab_d, s_tab_e, s_sure: sure,
+                    tufekPuan: (cati + plat + b_kn + b_gz + zel + hrk), tabancaPuan: tabTop, sureFark: sureFark,
                     puan: Math.max(0, net)
                 };
             } else {
