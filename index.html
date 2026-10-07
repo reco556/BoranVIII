@@ -110,7 +110,7 @@
             <h3 style="color:#2ecc71; margin-top:0;">📊 Excel / CSV Dosyasından Toplu Unsur İçe Aktar</h3>
             <p style="font-size:12px; color:#ccc; margin-bottom:10px;">
                 Excel dosyanızda şu sütun başlıkları olmalıdır: <b>Unsur Adı, KN Rütbe/Ad, KN Tufek, KN Tabanca, GZ Rütbe/Ad, GZ Tufek, GZ Tabanca</b><br>
-                <i>(Not: Unsur Adı kısmına bayrak emojisi ekleyebilirsiniz veya "Türkiye", "Azerbaycan" gibi ülke adını yazabilirsiniz.)</i>
+                <i>(Not: Unsur Adı kısmına doğrudan bayrak emojisi ekleyebilirsiniz veya ülke adını yazabilirsiniz.)</i>
             </p>
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;" onchange="excelYukle(event)">
             <button onclick="document.getElementById('excelFileInput').click()" style="background:#27ae60; font-size:14px; padding:8px 16px;">📂 Excel Dosyası Seç ve Yükle</button>
@@ -120,7 +120,7 @@
             <h3>Tekil Unsur Ekle</h3>
             <div style="margin-bottom:15px; text-align:center;">
                 <label><b>Unsur Adı / Ülke:</b> </label>
-                <input type="text" id="birlikAdi" placeholder="Örn: 🇹🇷 Türkiye 1. Unsur veya 🇦🇿 Azerbaycan 2. Unsur" style="width: 320px;">
+                <input type="text" id="birlikAdi" placeholder="Örn: 🇹🇷 Türkiye 1. Unsur veya 🇦🇿 Azerbaycan 2. Unsur" style="width: 340px;">
             </div>
 
             <div class="form-grid">
@@ -183,7 +183,7 @@
         <h2>🏆 UNSUR SIRALAMASI</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="tabloGuncelle()">🔄 Yenile</button>
-            <button onclick="bolumYazdir('UNSUR SIRALAMASI', 'ozetSkorAlani')" class="btn-print">🖨️️ Yazdır / PDF</button>
+            <button onclick="bolumYazdir('UNSUR SIRALAMASI', 'ozetSkorAlani')" class="btn-print">🖨 Yazdır / PDF</button>
         </div>
         <div id="ozetSkorAlani" class="table-responsive">
             <table>
@@ -255,34 +255,45 @@
 <script>
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
-    // Otomatik Ülke Bayrağı Eşleştirici
-    const ulkeBayraklari = {
-        "turkiye": "🇹🇷", "türkiye": "🇹🇷", "tr": "🇹🇷",
-        "azerbaycan": "🇦🇿", "az": "🇦🇿",
-        "pakistan": "🇵🇰", "pk": "🇵🇰",
-        "katar": "🇶🇦", "qa": "🇶🇦",
-        "ozbekistan": "🇺🇿", "özbekistan": "🇺🇿",
-        "kazakistan": "🇰🇿",
-        "kırgızistan": "🇰🇬", "kirgizistan": "🇰🇬",
-        "kktc": "🇹🇷",
-        "abd": "🇺🇸", "usa": "🇺🇸",
-        "ingiltere": "🇬🇧",
-        "almanya": "🇩🇪",
-        "italya": "🇮🇹",
-        "ispanya": "🇪🇸",
-        "suudi arabistan": "🇸🇦",
-        "bae": "🇦🇪", "üae": "🇦🇪"
+    // 2 Harfli ISO Ülke Kodundan Bütün Dünya Ülke Bayrak Emojilerini Dinamik Üreten Fonksiyon
+    function isoKodundanBayrakUret(iso2) {
+        if (!iso2 || iso2.length !== 2) return "";
+        const codePoints = iso2.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
+        return String.fromCodePoint(...codePoints);
+    }
+
+    // Yaygın Ülke İsimleri / Kodları
+    const ulkeKodHaritasi = {
+        "turkiye": "TR", "türkiye": "TR", "tr": "TR",
+        "azerbaycan": "AZ", "az": "AZ",
+        "pakistan": "PK", "pk": "PK",
+        "katar": "QA", "qa": "QA",
+        "ozbekistan": "UZ", "özbekistan": "UZ", "uz": "UZ",
+        "kazakistan": "KZ", "kz": "KZ",
+        "kirgizistan": "KG", "kırgızistan": "KG", "kg": "KG",
+        "kktc": "TR",
+        "abd": "US", "usa": "US", "us": "US",
+        "ingiltere": "GB", "uk": "GB", "gb": "GB",
+        "almanya": "DE", "de": "DE",
+        "italya": "IT", "it": "IT",
+        "ispanya": "ES", "es": "ES",
+        "suudi arabistan": "SA", "sa": "SA", "ksa": "SA",
+        "bae": "AE", "üae": "AE", "ae": "AE",
+        "umman": "OM", "om": "OM", "jordan": "JO", "ürdün": "JO", "jo": "JO",
+        "bosna": "BA", "bosna hersek": "BA", "ba": "BA",
+        "gurcistan": "GE", "gürcistan": "GE", "ge": "GE"
     };
 
     function otomatikBayrakEkle(metin) {
         if (!metin) return metin;
-        // Eğer zaten bayrak emojisi içeriyorsa dokunma
+        // Metin zaten herhangi bir bayrak emojisi içeriyorsa ellemeyelim
         if (/[\uD83C][\uDDE6-\uDDFF]{2}/.test(metin)) return metin;
 
         let kucuk = metin.toLowerCase();
-        for (let ulke in ulkeBayraklari) {
-            if (kucuk.includes(ulke)) {
-                return ulkeBayraklari[ulke] + " " + metin;
+        for (let key in ulkeKodHaritasi) {
+            if (kucuk.includes(key)) {
+                let bayrak = isoKodundanBayrakUret(ulkeKodHaritasi[key]);
+                return bayrak + " " + metin;
             }
         }
         return metin;
