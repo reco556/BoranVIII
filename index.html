@@ -8,9 +8,13 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e24; color: #fff; margin: 15px; }
         
-        .main-header { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; text-align: center; }
+        .main-header { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; text-align: center; position: relative; }
         .main-header img { width: 95px; height: 95px; border-radius: 50%; border: 2px solid #f39c12; object-fit: cover; background: #000; }
         .main-header h1 { color: #f39c12; margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .auth-status-bar {
+            position: absolute; right: 10px; top: 10px; display: flex; align-items: center; gap: 10px; background: #2b2b36; padding: 6px 12px; border-radius: 20px; border: 1px solid #444; font-size: 12px;
+        }
 
         h2, h3 { color: #f39c12; text-align: center; margin-bottom: 10px; }
         .tab-buttons { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
@@ -40,7 +44,6 @@
             box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
         }
         
-        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .card { background: #1e1e24; padding: 15px; border-radius: 6px; border: 1px solid #444; position: relative; margin-bottom: 15px; }
         
         .input-mini { width: 45px !important; text-align: center; padding: 2px !important; }
@@ -56,18 +59,27 @@
 
         .silah-info { font-size: 9px; color: #aaa; margin-top: 2px; }
 
+        /* Login Modal Stilleri */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .login-card {
+            background: #2b2b36; padding: 30px; border-radius: 12px; border: 2px solid #f39c12; width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        }
+        .login-card input { width: 90%; padding: 10px; margin: 8px 0; background: #1e1e24; border: 1px solid #555; color: #fff; border-radius: 5px; font-size: 14px; text-align: center; }
+        .login-btn { width: 98%; padding: 10px; font-size: 15px; background: #f39c12; color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .guest-btn { width: 98%; padding: 10px; font-size: 14px; background: #34495e; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+
         /* Animasyonlu Satır Efekti */
         @keyframes fadeInRow {
             from { opacity: 0; transform: translateY(-10px); background-color: #f39c12; }
             to { opacity: 1; transform: translateY(0); background-color: transparent; }
         }
-        .animated-row {
-            animation: fadeInRow 0.6s ease-out forwards;
-        }
+        .animated-row { animation: fadeInRow 0.6s ease-out forwards; }
 
         @media print {
             body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
-            .main-header, .tab-buttons, button, input, select, .no-print, .reset-box, .excel-box { display: none !important; }
+            .main-header, .tab-buttons, button, input, select, .no-print, .reset-box, .excel-box, .auth-status-bar { display: none !important; }
             .tab-content { display: none !important; }
             .tab-content.active { display: block !important; background: none !important; padding: 0 !important; }
             h1, h2, h3 { color: #000 !important; }
@@ -81,23 +93,46 @@
 </head>
 <body>
 
+    <!-- GİRİŞ EKRANI (MODAL) -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="login-card">
+            <img src="https://i.ibb.co/L5w2Hyg/boran-logo.jpg" style="width: 70px; height: 70px; border-radius: 50%; border:2px solid #f39c12; margin-bottom: 10px;" onerror="this.onerror=null; this.src=boranLogoFallback;">
+            <h3 style="margin-top:0; color:#f39c12;">SİSTEM GİRİŞİ</h3>
+            <p style="font-size:12px; color:#aaa; margin-bottom:15px;">BORAN VIII Yarışma Yönetim Paneli</p>
+            
+            <input type="text" id="loginUser" placeholder="Kullanıcı Adı">
+            <input type="password" id="loginPass" placeholder="Şifre">
+            
+            <button class="login-btn" onclick="yetkiliGirisiYap()">🔑 Yetkili Girişi Yap</button>
+            <div style="margin: 12px 0; font-size:11px; color:#777;">— VEYA —</div>
+            <button class="guest-btn" onclick="izleyiciGirisiYap()">👁️ Şifresiz Canlı Puan İzle</button>
+        </div>
+    </div>
+
+    <!-- ANA BAŞLIK VEYA KULLANICI DURUMU -->
     <div class="main-header">
         <img id="logoImg" src="https://i.ibb.co/L5w2Hyg/boran-logo.jpg" alt="BORAN Logo" onerror="this.onerror=null; this.src=boranLogoFallback;">
         <h1>BORAN VIII ULUSLARARASI JANDARMA KESKİN NİŞANCI ATIŞ YARIŞMASI</h1>
+        
+        <div class="auth-status-bar">
+            <span id="userStatusText">🔴 İzleyici Modu</span>
+            <button id="authBtn" onclick="girisEkraniniAc()" style="padding: 3px 8px; font-size:11px; background:#e67e22;">🔑 Giriş</button>
+        </div>
     </div>
 
+    <!-- SEKMELER -->
     <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab('birliklerTab')">1. Birlik Kaydı</button>
-        <button class="tab-btn" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
-        <button class="tab-btn" onclick="openTab('puanTab')">3. Veri Giriş Çizelgesi</button>
-        <button class="tab-btn" onclick="openTab('detayTab')">4. Atış Karnesi</button>
+        <button class="tab-btn admin-only active" onclick="openTab('birliklerTab')">1. Birlik Kaydı</button>
+        <button class="tab-btn admin-only" onclick="openTab('kuraTab')">2. Kura Sıralaması</button>
+        <button class="tab-btn admin-only" onclick="openTab('puanTab')">3. Veri Giriş Çizelgesi</button>
+        <button class="tab-btn admin-only" onclick="openTab('detayTab')">4. Atış Karnesi</button>
         <button class="tab-btn" onclick="openTab('skorTab')">5. Unsur Sıralaması</button>
-        <button class="tab-btn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Detaylı Puan Durumu</button>
-        <button class="tab-btn" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Hakem Çıktıları</button>
+        <button class="tab-btn" id="matrisTabBtn" onclick="openTab('matrisTab')" style="background:#8e44ad; color:#fff;">📊 6. Detaylı Puan Durumu</button>
+        <button class="tab-btn admin-only" onclick="openTab('ciktiTab')" style="background:#2980b9; color:#fff;">📄 7. Hakem Çıktıları</button>
     </div>
 
     <!-- 1. BİRLİK KAYDI -->
-    <div id="birliklerTab" class="tab-content active">
+    <div id="birliklerTab" class="tab-content admin-only">
         <h2>Unsur ve Personel Kaydı</h2>
         
         <div class="reset-box">
@@ -120,7 +155,7 @@
             <h3>Tekil Unsur Ekle</h3>
             <div style="margin-bottom:15px; text-align:center;">
                 <label><b>Unsur Adı / Ülke:</b> </label>
-                <input type="text" id="birlikAdi" placeholder="Örn: 🇹🇷 Türkiye 1. Unsur veya 🇦🇿 Azerbaycan 2. Unsur" style="width: 340px;">
+                <input type="text" id="birlikAdi" placeholder="Örn: 🇹🇷 Türkiye 1. Unsur veya 🇦ℤ Azerbaycan 2. Unsur" style="width: 340px;">
             </div>
 
             <div class="form-grid">
@@ -148,7 +183,7 @@
     </div>
 
     <!-- 2. KURA TABI -->
-    <div id="kuraTab" class="tab-content">
+    <div id="kuraTab" class="tab-content admin-only">
         <h2>🎲 Genel Kura Atış Sıralaması Çizelgesi</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button id="btnKuraCek" onclick="kuraCek()" style="background: #e67e22;">🎲 YENİ KURA ÇEK &amp; NUMARA ATA</button>
@@ -158,7 +193,7 @@
     </div>
 
     <!-- 3. PUAN VERİ GİRİŞİ -->
-    <div id="puanTab" class="tab-content">
+    <div id="puanTab" class="tab-content admin-only">
         <h2>📝 Etap Veri Giriş Çizelgesi</h2>
         <div style="text-align:center; margin-bottom: 15px;">
             <label style="font-size:16px; font-weight:bold;">Etap Seçiniz: </label>
@@ -169,7 +204,7 @@
     </div>
 
     <!-- 4. DETAYLI ATIŞ KARNESİ -->
-    <div id="detayTab" class="tab-content">
+    <div id="detayTab" class="tab-content admin-only">
         <h2>📋 Unsur Atış Karneleri</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="detayTablosuGuncelle()">🔄 Yenile</button>
@@ -204,9 +239,9 @@
         </div>
     </div>
 
-    <!-- 6. DETAYLI PUAN DURUMU -->
-    <div id="matrisTab" class="tab-content">
-        <h2>📊 DETAYLI PUAN DURUMU</h2>
+    <!-- 6. DETAYLI PUAN DURUMU (ŞİFRESİZ CANLI MODDA GÖSTERİLEN ANA EKRAN) -->
+    <div id="matrisTab" class="tab-content active">
+        <h2>📊 CANLI DETAYLI PUAN DURUMU</h2>
         <div style="text-align: center; margin-bottom: 15px;">
             <button onclick="matrisGuncelle()">🔄 Tabloyu Yenile</button>
             <button onclick="bolumYazdir('DETAYLI PUAN DURUMU', 'matrisAlani')" class="btn-print">🖨 Matrisi Yazdır / PDF</button>
@@ -243,7 +278,7 @@
     </div>
 
     <!-- 7. HAKEM ÇIKTILARI -->
-    <div id="ciktiTab" class="tab-content">
+    <div id="ciktiTab" class="tab-content admin-only">
         <h2>📄 Hakem Atış Çizelgeleri</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="ciktilariOlustur()" style="background:#e67e22;">🔄 Çıktıları Yenile</button>
@@ -255,45 +290,34 @@
 <script>
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
-    // 2 Harfli ISO Ülke Kodundan Bütün Dünya Ülke Bayrak Emojilerini Dinamik Üreten Fonksiyon
+    // Giriş Yetki Durumu
+    let isAuthorized = false;
+    let autoRefreshTimer = null;
+
+    // Sabit Giriş Bilgileri
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "boran2026";
+
     function isoKodundanBayrakUret(iso2) {
         if (!iso2 || iso2.length !== 2) return "";
         const codePoints = iso2.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
         return String.fromCodePoint(...codePoints);
     }
 
-    // Yaygın Ülke İsimleri / Kodları
     const ulkeKodHaritasi = {
-        "turkiye": "TR", "türkiye": "TR", "tr": "TR",
-        "azerbaycan": "AZ", "az": "AZ",
-        "pakistan": "PK", "pk": "PK",
-        "katar": "QA", "qa": "QA",
-        "ozbekistan": "UZ", "özbekistan": "UZ", "uz": "UZ",
-        "kazakistan": "KZ", "kz": "KZ",
-        "kirgizistan": "KG", "kırgızistan": "KG", "kg": "KG",
-        "kktc": "TR",
-        "abd": "US", "usa": "US", "us": "US",
-        "ingiltere": "GB", "uk": "GB", "gb": "GB",
-        "almanya": "DE", "de": "DE",
-        "italya": "IT", "it": "IT",
-        "ispanya": "ES", "es": "ES",
-        "suudi arabistan": "SA", "sa": "SA", "ksa": "SA",
-        "bae": "AE", "üae": "AE", "ae": "AE",
-        "umman": "OM", "om": "OM", "jordan": "JO", "ürdün": "JO", "jo": "JO",
-        "bosna": "BA", "bosna hersek": "BA", "ba": "BA",
-        "gurcistan": "GE", "gürcistan": "GE", "ge": "GE"
+        "turkiye": "TR", "türkiye": "TR", "tr": "TR", "azerbaycan": "AZ", "az": "AZ",
+        "pakistan": "PK", "pk": "PK", "katar": "QA", "qa": "QA", "ozbekistan": "UZ", "özbekistan": "UZ",
+        "kazakistan": "KZ", "kirgizistan": "KG", "kırgızistan": "KG", "kktc": "TR", "abd": "US", "usa": "US",
+        "ingiltere": "GB", "almanya": "DE", "italya": "IT", "ispanya": "ES", "suudi arabistan": "SA", "bae": "AE"
     };
 
     function otomatikBayrakEkle(metin) {
         if (!metin) return metin;
-        // Metin zaten herhangi bir bayrak emojisi içeriyorsa ellemeyelim
         if (/[\uD83C][\uDDE6-\uDDFF]{2}/.test(metin)) return metin;
-
         let kucuk = metin.toLowerCase();
         for (let key in ulkeKodHaritasi) {
             if (kucuk.includes(key)) {
-                let bayrak = isoKodundanBayrakUret(ulkeKodHaritasi[key]);
-                return bayrak + " " + metin;
+                return isoKodundanBayrakUret(ulkeKodHaritasi[key]) + " " + metin;
             }
         }
         return metin;
@@ -324,6 +348,69 @@
         { ad: "🇦🇿 Azerbaycan 1. Unsur", kn: { ad: "J.Bçvş. Ali DEMİR", tufek: "KSR-11 / 104", tabanca: "Canik / 830" }, gozcu: { ad: "J.Uzm.Çvş. Caner ŞAHİN", tufek: "MPT-76 / 104", tabanca: "Sarsılmaz / 349" } }
     ];
 
+    // GİRİŞ KONTROL
+    function yetkiliGirisiYap() {
+        let u = document.getElementById('loginUser').value.trim();
+        let p = document.getElementById('loginPass').value.trim();
+
+        if (u === ADMIN_USER && p === ADMIN_PASS) {
+            isAuthorized = true;
+            document.getElementById('loginModal').style.display = 'none';
+            yetkileriUygula();
+            openTab('birliklerTab');
+            alert("Yetkili Girişi Başarılı! Tüm yönetim yetkileri tanımlandı.");
+        } else {
+            alert("Hatalı Kullanıcı Adı veya Şifre!");
+        }
+    }
+
+    function izleyiciGirisiYap() {
+        isAuthorized = false;
+        document.getElementById('loginModal').style.display = 'none';
+        yetkileriUygula();
+        openTab('matrisTab');
+    }
+
+    function girisEkraniniAc() {
+        if(isAuthorized) {
+            if(confirm("Sistemden çıkış yapmak istediğinize emin misiniz?")) {
+                isAuthorized = false;
+                yetkileriUygula();
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        } else {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+    }
+
+    function yetkileriUygula() {
+        let adminEls = document.querySelectorAll('.admin-only');
+        let statusText = document.getElementById('userStatusText');
+        let authBtn = document.getElementById('authBtn');
+
+        if (isAuthorized) {
+            adminEls.forEach(el => el.style.display = '');
+            statusText.innerHTML = '🟢 <b>Yetkili GirişiYapıldı</b>';
+            authBtn.innerText = '🔒 Çıkış Yap';
+            authBtn.style.background = '#c0392b';
+            if(autoRefreshTimer) clearInterval(autoRefreshTimer);
+        } else {
+            adminEls.forEach(el => el.style.display = 'none');
+            statusText.innerHTML = '🔴 <b>Canlı İzleyici Modu (Salt Okunur)</b>';
+            authBtn.innerText = '🔑 Giriş Yap';
+            authBtn.style.background = '#e67e22';
+
+            // İzleyici modunda otomatik 5 sn'de bir canlı yenileme
+            if(!autoRefreshTimer) {
+                autoRefreshTimer = setInterval(() => {
+                    verileriYukle();
+                    matrisGuncelle();
+                    tabloGuncelle();
+                }, 5000);
+            }
+        }
+    }
+
     function verileriKaydet() {
         localStorage.setItem('atis_birlikler', JSON.stringify(birlikler));
         localStorage.setItem('atis_kuralar', JSON.stringify(kuralar));
@@ -343,6 +430,7 @@
     }
 
     function tumVerileriSifirla() {
+        if(!isAuthorized) return;
         if(confirm("Tüm kayıtlar silinecek. Onaylıyor musunuz?")) {
             if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
             localStorage.clear(); birlikler = []; kuralar = {}; detayPuanlar = {}; unsurNumaralari = {};
@@ -351,6 +439,7 @@
     }
 
     function sadeceKuraSifirla() { 
+        if(!isAuthorized) return;
         if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
         kuralar = {}; unsurNumaralari = {}; 
         localStorage.setItem('atis_kuralar', JSON.stringify(kuralar)); 
@@ -358,17 +447,32 @@
         kuralariEkranaBas(); etapCizelgesiOlustur(); 
     }
 
-    function sadecePuanSifirla() { detayPuanlar = {}; localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar)); etapCizelgesiOlustur(); }
+    function sadecePuanSifirla() { 
+        if(!isAuthorized) return;
+        detayPuanlar = {}; localStorage.setItem('atis_detayPuanlar', JSON.stringify(detayPuanlar)); etapCizelgesiOlustur(); 
+    }
 
     function init() {
-        verileriYukle(); birlikListele(); etapSelectDoldur(); etapCizelgesiOlustur(); kuralariEkranaBas();
+        verileriYukle(); birlikListele(); etapSelectDoldur(); etapCizelgesiOlustur(); kuralariEkranaBas(); matrisGuncelle();
+        yetkileriUygula();
     }
 
     function openTab(tabId) {
+        if(!isAuthorized && tabId !== 'matrisTab' && tabId !== 'skorTab') {
+            alert("Bu bölüme erişmek için Yetkili Girişi yapmalısınız!");
+            return;
+        }
+
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
+        
+        let targetContent = document.getElementById(tabId);
+        if(targetContent) targetContent.classList.add('active');
+
+        if(event && event.target && event.target.classList.contains('tab-btn')) {
+            event.target.classList.add('active');
+        }
+
         if(tabId === 'puanTab') etapCizelgesiOlustur();
         if(tabId === 'skorTab') tabloGuncelle();
         if(tabId === 'detayTab') detayTablosuGuncelle();
@@ -395,6 +499,7 @@
     }
 
     function birlikEkle() {
+        if(!isAuthorized) return;
         let ad = document.getElementById('birlikAdi').value.trim();
         if (ad) {
             ad = otomatikBayrakEkle(ad);
@@ -409,6 +514,7 @@
     }
 
     function excelYukle(e) {
+        if(!isAuthorized) return;
         let file = e.target.files[0];
         if(!file) return;
 
@@ -464,7 +570,7 @@
         });
     }
 
-    function birlikSil(index) { birlikler.splice(index, 1); verileriKaydet(); birlikListele(); etapSelectDoldur(); }
+    function birlikSil(index) { if(!isAuthorized) return; birlikler.splice(index, 1); verileriKaydet(); birlikListele(); etapSelectDoldur(); }
 
     function etapSelectDoldur() {
         document.getElementById('puanEtapSelect').innerHTML = etaplar.map(e => `<option value="${e.id}">${e.ad} (Max: ${e.maxPuan} Pn)</option>`).join('');
@@ -492,6 +598,7 @@
     }
 
     function kuraCek() {
+        if(!isAuthorized) return;
         if(birlikler.length === 0) return alert("Önce unsur ekleyin!");
         
         if(kuraAnimasyonTimer) clearInterval(kuraAnimasyonTimer);
@@ -838,6 +945,7 @@
     }
 
     function hesaplaRow(el, etapId) {
+        if(!isAuthorized) return;
         let tr = el.closest('tr');
         let etapObj = etaplar.find(e => e.id === etapId);
         let netTd = tr.querySelector('.net_puan');
@@ -944,6 +1052,7 @@
     }
 
     function cizelgeKaydet(etapId) {
+        if(!isAuthorized) return alert("Sadece yetkili kullanıcılar puan kaydı yapabilir!");
         let etapObj = etaplar.find(e => e.id === etapId);
         let rows = document.querySelectorAll('#cizelgeAlani tbody tr');
         rows.forEach(tr => {
