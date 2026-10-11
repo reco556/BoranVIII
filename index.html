@@ -334,7 +334,7 @@
 <script>
 
     // Firebase Yapılandırmanız (Buradaki tırnak içindeki alanları kendi Firebase bilgilerinizle doldurun)
-const firebaseConfig = {
+    const firebaseConfig = {
     apiKey: "AIzaSyATQHFclfABzKRZv9nG1Z_kfm6LrCKC-C8",
     authDomain: "boran-viii-fbc5d.firebaseapp.com",
     databaseURL: https://boran-viii-fbc5d-default-rtdb.firebaseio.com/:null
@@ -345,6 +345,60 @@ const firebaseConfig = {
     measurementId: "G-5J0ZNFNV74"
   };
 
+// Firebase Başlatma
+try {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+} catch (e) {
+    console.error("Firebase başlatma hatası:", e);
+}
+
+const db = firebase.database();
+
+// Verileri Buluta Kaydetme Fonksiyonu
+function verileriKaydet() {
+    try {
+        db.ref('boran_yarisma_verileri').set({
+            birlikler: typeof birlikler !== 'undefined' ? birlikler : [],
+            kuralar: typeof kuralar !== 'undefined' ? kuralar : {},
+            detayPuanlar: typeof detayPuanlar !== 'undefined' ? detayPuanlar : {},
+            unsurNumaralari: typeof unsurNumaralari !== 'undefined' ? unsurNumaralari : {}
+        });
+    } catch (err) {
+        console.error("Kaydetme hatası:", err);
+    }
+}
+
+// Buluttan Verileri Otomatik Dinleme ve Senkronize Etme
+function verileriDinleVeYukle() {
+    try {
+        db.ref('boran_yarisma_verileri').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (typeof birlikler !== 'undefined') birlikler = data.birlikler || [];
+                if (typeof kuralar !== 'undefined') kuralar = data.kuralar || {};
+                if (typeof detayPuanlar !== 'undefined') detayPuanlar = data.detayPuanlar || {};
+                if (typeof unsurNumaralari !== 'undefined') unsurNumaralari = data.unsurNumaralari || {};
+            }
+            
+            // Ekranları güvenli şekilde yenile (Var olan fonksiyon çalışır, yoksa hata verip kilitlenmez)
+            if (typeof birlikListele === 'function') birlikListele();
+            if (typeof etapSelectDoldur === 'function') etapSelectDoldur();
+            if (typeof etapCizelgesiOlustur === 'function') etapCizelgesiOlustur();
+            if (typeof kuralariEkranaBas === 'function') kuralariEkranaBas();
+            if (typeof matrisGuncelle === 'function') matrisGuncelle();
+            if (typeof tabloGuncelle === 'function') tabloGuncelle();
+        });
+    } catch (err) {
+        console.error("Dinleme hatası:", err);
+    }
+}
+
+// Dinlemeyi hemen güvenli başlat
+verileriDinleVeYukle();
+
+    
 // Firebase Başlatma
 try {
     if (!firebase.apps.length) {
