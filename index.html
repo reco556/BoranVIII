@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <meta charset="UTF-8">
     <title>BORAN VIII Uluslararası Jandarma Keskin Nişancı Atış Yarışması</title>
     <!-- iOS / iPhone Ana Ekran Simgesi -->
@@ -328,6 +332,60 @@
     </div>
 
 <script>
+
+    // Firebase Yapılandırmanız (Buradaki tırnak içindeki alanları kendi Firebase bilgilerinizle doldurun)
+const firebaseConfig = {
+    apiKey: "AIzaSyATQHFclfABzKRZv9nG1Z_kfm6LrCKC-C8",
+    authDomain: "boran-viii-fbc5d.firebaseapp.com",
+    databaseURL: https://boran-viii-fbc5d-default-rtdb.firebaseio.com/:null
+    projectId: "boran-viii-fbc5d",
+    storageBucket: "boran-viii-fbc5d.firebasestorage.app",
+    messagingSenderId: "550884828649",
+    appId: "1:550884828649:web:a6dacb28f464a581ce1778",
+    measurementId: "G-5J0ZNFNV74"
+  };
+};
+
+// Firebase Başlatma
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Verileri Buluta Kaydetme Fonksiyonu
+function verileriKaydet() {
+    db.ref('boran_yarisma_verileri').set({
+        birlikler: birlikler,
+        kuralar: kuralar,
+        detayPuanlar: detayPuanlar,
+        unsurNumaralari: unsurNumaralari
+    });
+}
+
+// Buluttan Verileri Otomatik Dinleme ve Senkronize Etme
+function verileriDinleVerYukle() {
+    db.ref('boran_yarisma_verileri').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            birlikler = data.birlikler || [...varsayilanBirlikler];
+            kuralar = data.kuralar || {};
+            detayPuanlar = data.detayPuanlar || {};
+            unsurNumaralari = data.unsurNumaralari || {};
+        } else {
+            birlikler = [...varsayilanBirlikler];
+        }
+        // Ekranı güncel verilerle yenileyecek fonksiyonlarınız (tablo, matris vb.)
+        if(typeof birlikListele === 'function') birlikListele();
+        if(typeof etapCizelgesiOlustur === 'function') etapCizelgesiOlustur();
+        if(typeof tabloGuncelle === 'function') tabloGuncelle();
+    });
+}
+
+// Sayfa açıldığında otomatik başlat
+window.onload = function() {
+    verileriDinleVerYukle();
+    if(typeof yetkileriUygula === 'function') yetkileriUygula();
+};
+
+    
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
     // Giriş Yetki Durumu
