@@ -328,61 +328,6 @@
     </div>
 
 <script>
-// Firebase Başlatma
-try {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-} catch (e) {
-    console.error("Firebase başlatma hatası:", e);
-}
-
-const db = firebase.database();
-
-// Verileri Buluta Kaydetme Fonksiyonu
-function verileriKaydet() {
-    try {
-        db.ref('boran_yarisma_verileri').set({
-            birlikler: typeof birlikler !== 'undefined' ? birlikler : [],
-            kuralar: typeof kuralar !== 'undefined' ? kuralar : {},
-            detayPuanlar: typeof detayPuanlar !== 'undefined' ? detayPuanlar : {},
-            unsurNumaralari: typeof unsurNumaralari !== 'undefined' ? unsurNumaralari : {}
-        });
-    } catch (err) {
-        console.error("Kaydetme hatası:", err);
-    }
-}
-
-// Buluttan Verileri Otomatik Dinleme ve Senkronize Etme
-function verileriDinleVeYukle() {
-    try {
-        db.ref('boran_yarisma_verileri').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                if (typeof birlikler !== 'undefined') birlikler = data.birlikler || [];
-                if (typeof kuralar !== 'undefined') kuralar = data.kuralar || {};
-                if (typeof detayPuanlar !== 'undefined') detayPuanlar = data.detayPuanlar || {};
-                if (typeof unsurNumaralari !== 'undefined') unsurNumaralari = data.unsurNumaralari || {};
-            }
-            
-            // Ekranları güvenli şekilde yenile (Var olan fonksiyon çalışır, yoksa hata verip kilitlenmez)
-            if (typeof birlikListele === 'function') birlikListele();
-            if (typeof etapSelectDoldur === 'function') etapSelectDoldur();
-            if (typeof etapCizelgesiOlustur === 'function') etapCizelgesiOlustur();
-            if (typeof kuralariEkranaBas === 'function') kuralariEkranaBas();
-            if (typeof matrisGuncelle === 'function') matrisGuncelle();
-            if (typeof tabloGuncelle === 'function') tabloGuncelle();
-        });
-    } catch (err) {
-        console.error("Dinleme hatası:", err);
-    }
-}
-
-// Dinlemeyi hemen güvenli başlat
-verileriDinleVeYukle();
-
-
-    
     const boranLogoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><circle cx='250' cy='250' r='240' fill='%23000' stroke='%23f39c12' stroke-width='10'/><circle cx='250' cy='250' r='200' fill='%23112244'/><text x='250' y='140' fill='%23f39c12' font-size='22' font-weight='bold' text-anchor='middle'>BORAN VIII</text><text x='250' y='360' fill='%23f39c12' font-size='38' font-weight='900' text-anchor='middle'>BORAN</text></svg>";
 
     // Giriş Yetki Durumu
